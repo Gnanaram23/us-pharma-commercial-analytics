@@ -1,0 +1,26 @@
+name: GLP-1 fetch only
+on:
+  push:
+    branches: [glp1-fetch]
+permissions:
+  contents: write
+jobs:
+  glp1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - run: |
+          set -o pipefail
+          python 01-glp1-market-and-targeting/fetch_data.py 2>&1 | tee run.log | while read l; do echo "::notice::$l"; done
+          test ${PIPESTATUS[0]} -eq 0 || { tail -25 run.log | sed 's/^/::error::/'; exit 1; }
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B glp1-data
+          git add 01-glp1-market-and-targeting/data
+          git commit -m "GLP-1 data"
+          git push -f origin glp1-data
