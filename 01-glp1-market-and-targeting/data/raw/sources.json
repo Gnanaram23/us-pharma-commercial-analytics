@@ -1,0 +1,105 @@
+{
+ "prescriber_drug_2024": {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2024-12-01",
+  "api": "https://data.cms.gov/data-api/v1/dataset/9552739e-3d05-4c1b-8eff-ecabf391e2e5/data",
+  "csv": "https://data.cms.gov/sites/default/files/2026-05/0ae165f4-eb44-495d-8cac-67f4571b6b83/MUP_DPR_RY26_P04_V10_DY24_NPIBN.csv",
+  "modified": "2026-05-21",
+  "terms": [
+   "semaglutide",
+   "tirzepatide",
+   "dulaglutide",
+   "liraglutide",
+   "exenatide",
+   "lixisenatide",
+   "empagliflozin",
+   "dapagliflozin",
+   "canagliflozin",
+   "ertugliflozin",
+   "bexagliflozin",
+   "sitagliptin",
+   "linagliptin",
+   "saxagliptin",
+   "alogliptin"
+  ],
+  "rows": 932589
+ },
+ "prescriber_drug_2023": {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2023-12-31",
+  "api": "https://data.cms.gov/data-api/v1/dataset/e54db557-cd82-4e91-a0fe-61aad5865d69/data",
+  "csv": "https://data.cms.gov/sites/default/files/2025-04/0d5915ce-002c-4d87-bde8-24ffb08bb6cc/MUP_DPR_RY25_P04_V10_DY23_NPIBN.csv",
+  "modified": "2025-09-09",
+  "terms": [
+   "semaglutide",
+   "tirzepatide",
+   "dulaglutide",
+   "liraglutide",
+   "exenatide",
+   "lixisenatide"
+  ],
+  "rows": 351240
+ },
+ "prescriber_drug_2022": {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2022-12-30",
+  "api": "https://data.cms.gov/data-api/v1/dataset/b101b457-ffa4-49bb-8fd9-27c1266086e2/data",
+  "csv": "https://data.cms.gov/sites/default/files/2024-05/18f82097-61a6-4889-9941-9a0b6ad7523c/MUP_DPR_RY24_P04_V10_DY22_NPIBN.csv",
+  "modified": "2024-06-04",
+  "terms": [
+   "semaglutide",
+   "tirzepatide",
+   "dulaglutide",
+   "liraglutide",
+   "exenatide",
+   "lixisenatide"
+  ],
+  "rows": 230236
+ },
+ "geo_drug_2018": {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2018-12-31",
+  "api": "https://data.cms.gov/data-api/v1/dataset/b083c9b6-b841-4676-8d0a-fb03ee1431a1/data",
+  "csv": "https://data.cms.gov/sites/default/files/2021-08/MUP_DPR_RY21_P04_V10_DY18_Geo.csv",
+  "modified": "2023-05-10",
+  "rows": 1727
+ },
+ "geo_drug_2019": {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2019-12-31",
+  "api": "https://data.cms.gov/data-api/v1/dataset/73a6335e-f16f-4c81-a84b-6b5a986e2bf8/data",
+  "csv": "https://data.cms.gov/sites/default/files/2021-08/MUP_DPR_RY21_P04_V10_DY19_Geo.csv",
+  "modified": "2023-05-10",
+  "rows": 1787
+ },
+ "geo_drug_2020": {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2020-12-31",
+  "api": "https://data.cms.gov/data-api/v1/dataset/83891e77-99cf-4865-b60a-97703b916e09/data",
+  "csv": "https://data.cms.gov/sites/default/files/2022-07/ca71b7df-4d48-4c2d-aded-2ca22285739c/MUP_DPR_RY22_P04_V10_DY20_Geo.csv",
+  "modified": "2024-05-21",
+  "rows": 1807
+ },
+ "geo_drug_2021": {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2021-12-31",
+  "api": "https://data.cms.gov/data-api/v1/dataset/7dda2a9d-034a-446a-b4b3-e1254e0127b2/data",
+  "csv": "https://data.cms.gov/sites/default/files/2023-04/3d3ebd5b-b4bf-45b4-876d-afa7916d1b72/MUP_DPR_RY23_P04_V10_DY21_Geo.csv",
+  "modified": "2023-10-25",
+  "rows": 1794
+ },
+ "geo_drug_2022": {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2022-12-30",
+  "api": "https://data.cms.gov/data-api/v1/dataset/1fc57194-a51d-4864-aee6-de0889488151/data",
+  "csv": "https://data.cms.gov/sites/default/files/2024-05/410ed206-d782-4dba-b442-6bcd45ae2016/MUP_DPR_RY24_P04_V10_DY22_Geo.csv",
+  "modified": "2024-06-04",
+  "rows": 1813
+ },
+ "geo_drug_2023": {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2023-12-31",
+  "api": "https://data.cms.gov/data-api/v1/dataset/3463648b-1971-478d-84ca-80cadc758153/data",
+  "csv": "https://data.cms.gov/sites/default/files/2025-04/9fe6b8a6-0cb9-4b7c-9760-87800da010a8/MUP_DPR_RY25_P04_V10_DY23_Geo.csv",
+  "modified": "2025-04-24",
+  "rows": 1810
+ },
+ "geo_drug_2024": {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2024-12-01",
+  "api": "https://data.cms.gov/data-api/v1/dataset/c8ea3f8e-3a09-4fea-86f2-8902fb4b0920/data",
+  "csv": "https://data.cms.gov/sites/default/files/2026-05/3e80b44e-5a87-4414-959a-b6a7c8c18720/MUP_DPR_RY26_P04_V10_DY24_Geo.csv",
+  "modified": "2026-05-21",
+  "rows": 1986
+ }
+}
