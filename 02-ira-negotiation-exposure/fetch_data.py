@@ -28,7 +28,12 @@ def top_brands() -> pd.DataFrame:
     frames = []
     for part, f in [("D", "partd_spending_by_drug.csv.gz"), ("B", "partb_spending_by_drug.csv.gz")]:
         df = pd.read_csv(SHARED / f, dtype=str)
-        df = df[df["Mftr_Name"].str.strip().str.lower() == "overall"]
+        if "Mftr_Name" in df:          # Part D: one 'Overall' row per drug plus one per manufacturer
+            df = df[df["Mftr_Name"].str.strip().str.lower() == "overall"]
+        else:                          # Part B: one row per billing code; tidy brand names like 'Orencia*'
+            df = df.dropna(subset=["Gnrc_Name"])
+            df["Brnd_Name"] = df["Brnd_Name"].str.replace(r"\*|\(.*?\)", "", regex=True).str.strip()
+            df["Gnrc_Name"] = df["Gnrc_Name"].str.replace("*", "", regex=False).str.strip()
         spend_col = sorted(c for c in df.columns if re.fullmatch(r"Tot_Spndng_\d{4}", c))[-1]
         df["spend"] = pd.to_numeric(df[spend_col], errors="coerce")
         frames.append(df[["Brnd_Name", "Gnrc_Name", "spend"]].assign(part=part))

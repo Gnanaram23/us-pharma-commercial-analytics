@@ -1,0 +1,26 @@
+{
+ "partd_spending_by_drug": {
+  "title": "Medicare Part D Spending by Drug : 2024-01-01",
+  "api": "https://data.cms.gov/data-api/v1/dataset/7e0b4365-fd63-4a29-8f5e-e0ac9f66a81b/data",
+  "csv": "https://data.cms.gov/sites/default/files/2026-06/98218f98-166c-4723-8438-c344a4ef96a6/DSD_PTD_RY26_P04_V10_DY24_BGM.csv",
+  "modified": "2026-06-25",
+  "data_year": 2024,
+  "rows": 14536
+ },
+ "partb_spending_by_drug": {
+  "title": "Medicare Part B Spending by Drug : 2024-01-01",
+  "api": "https://data.cms.gov/data-api/v1/dataset/76a714ad-3a2c-43ac-b76d-9dadf8f7d890/data",
+  "csv": "https://data.cms.gov/sites/default/files/2026-06/6616fc91-eb70-404c-9f27-1448e47a3a73/DSD_PTB_RY26_P06_V10_DYT24_HCPCS-%20260602.csv",
+  "modified": "2026-06-25",
+  "data_year": 2024,
+  "rows": 799
+ },
+ "partd_quarterly_spending_by_drug": {
+  "title": "Medicare Quarterly Part D Spending by Drug : 2026-01-01",
+  "api": "https://data.cms.gov/data-api/v1/dataset/4ff7c618-4e40-483a-b390-c8a58c94fa15/data",
+  "csv": "https://data.cms.gov/sites/default/files/2026-07/QDD_PTD_RQ2603_P01_V10_DQT2601_20260708.csv",
+  "modified": "2026-07-23",
+  "data_year": 2026,
+  "rows": 27748
+ }
+}

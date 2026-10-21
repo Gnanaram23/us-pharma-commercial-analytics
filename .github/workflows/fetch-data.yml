@@ -20,7 +20,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12", cache: pip }
       - run: pip install -r requirements.txt
-      - run: python -m common.fetch_shared
+      - run: |
+          set -o pipefail
+          python -m common.fetch_shared 2>&1 | tee run.log || { tail -25 run.log | sed 's/^/::error::/'; exit 1; }
       - uses: actions/upload-artifact@v4
         with: { name: shared, path: data/shared }
 
@@ -32,7 +34,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12", cache: pip }
       - run: pip install -r requirements.txt
-      - run: python 01-glp1-market-and-targeting/fetch_data.py
+      - run: |
+          set -o pipefail
+          python 01-glp1-market-and-targeting/fetch_data.py 2>&1 | tee run.log || { tail -25 run.log | sed 's/^/::error::/'; exit 1; }
       - uses: actions/upload-artifact@v4
         with: { name: glp1, path: 01-glp1-market-and-targeting/data/raw }
 
@@ -47,7 +51,9 @@ jobs:
       - run: pip install -r requirements.txt
       - uses: actions/download-artifact@v4
         with: { name: shared, path: data/shared }
-      - run: python 02-ira-negotiation-exposure/fetch_data.py
+      - run: |
+          set -o pipefail
+          python 02-ira-negotiation-exposure/fetch_data.py 2>&1 | tee run.log || { tail -25 run.log | sed 's/^/::error::/'; exit 1; }
       - uses: actions/upload-artifact@v4
         with: { name: ira, path: 02-ira-negotiation-exposure/data/raw }
 
@@ -59,7 +65,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12", cache: pip }
       - run: pip install -r requirements.txt
-      - run: python 03-loe-erosion-forecast/fetch_data.py
+      - run: |
+          set -o pipefail
+          python 03-loe-erosion-forecast/fetch_data.py 2>&1 | tee run.log || { tail -25 run.log | sed 's/^/::error::/'; exit 1; }
       - uses: actions/upload-artifact@v4
         with: { name: loe, path: 03-loe-erosion-forecast/data/raw }
 
@@ -71,7 +79,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12", cache: pip }
       - run: pip install -r requirements.txt
-      - run: python 04-obesity-pipeline-intelligence/fetch_data.py
+      - run: |
+          set -o pipefail
+          python 04-obesity-pipeline-intelligence/fetch_data.py 2>&1 | tee run.log || { tail -25 run.log | sed 's/^/::error::/'; exit 1; }
       - uses: actions/upload-artifact@v4
         with: { name: pipeline, path: 04-obesity-pipeline-intelligence/data/raw }
 
