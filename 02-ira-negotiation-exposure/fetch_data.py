@@ -4,8 +4,10 @@ Needs data/shared/ first (python -m common.fetch_shared).
 
 For each of the top brands by Medicare Part B + Part D spend, openFDA Drugs@FDA
 gives the application type (NDA = small molecule, BLA = biologic), the original
-approval date, and whether any generic (ANDA) for the same ingredient is approved.
-Those three facts drive Medicare negotiation eligibility.
+and original approval date. With the time on market, these set Medicare
+negotiation eligibility. Whether a generic is actually on the market is taken
+from the CMS spending data in the analysis, which is more reliable than FDA
+approval records (many approved generics are blocked by patents).
 
 Output: data/raw/fda_approvals.csv.gz
 Run from the repo root:  python 02-ira-negotiation-exposure/fetch_data.py
@@ -68,15 +70,6 @@ def summarise(brand: str, generic: str) -> dict:
             "first_approval": min(d for d in dates if d) if any(dates) else None,
             "sponsor": ";".join(sorted(s for s in sponsors if s)),
         })
-    # Any approved generic (ANDA) for the same active ingredient?
-    ing = generic.split("/")[0].strip().upper()
-    if ing:
-        generics = fda_applications(f'openfda.generic_name:"{ing}" AND application_number:ANDA*', limit=100)
-        marketed = [g for g in generics
-                    if any(p.get("marketing_status") in ("Prescription", "Over-the-counter")
-                           for p in g.get("products", []))]
-        out["anda_count"] = len(generics)
-        out["anda_marketed_count"] = len(marketed)
     return out
 
 
