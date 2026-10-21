@@ -14,7 +14,7 @@ growing share of the pipeline is being developed in China first.
 
 ## Data and method
 
-- **ClinicalTrials.gov API v2:** all 8,309 interventional trials for obesity or
+- **ClinicalTrials.gov API v2:** all 8,311 interventional trials for obesity or
   overweight starting from 2015 onward, 1,300 of them industry-sponsored.
 - **Molecule mapping:** trial interventions are free text ("LY3437943",
   "Retatrutide 12 mg"). [`molecules.py`](molecules.py) maps sponsor code numbers and
@@ -79,6 +79,40 @@ The share of new industry obesity trials with a site in China rose from about **
 in US Phase 3, including mazdutide (Innovent), ecnoglutide (Sciwind), bofanglutide
 (Gan & Lee) and UBT251 (licensed to Novo Nordisk). Several have already been
 licensed by Western companies, and the rest are natural targets.
+
+### 6. Advanced analytics extension: Bayesian success rates and 10,000 simulated futures
+![Monte Carlo](outputs/figures/06_monte_carlo_entrants.png)
+
+The point estimate in section 4 becomes a full range:
+
+1. **Bayesian updating:** the industry-wide metabolic success rates are the
+   prior. The obesity programmes in the data then update them: 9 of 13 molecules
+   moved from Phase 2 to Phase 3, and 5 reached approval with no Phase 3
+   discontinuations. That lifts Phase 2→3 from 45% to **59%**, and Phase 3→approval
+   from 56% to **70%**.
+2. **Monte Carlo simulation:** 10,000 runs in which each molecule succeeds or
+   fails at those rates and its date slips at random.
+
+| By end-2030 | Result |
+|---|---|
+| New US obesity approvals, median (80% range) | **11 (7–14)** |
+| Chance of at least 5 new approvals | 98% |
+| Chance of at least 10 | 65% |
+| Chance at least one new **amylin-based** drug is approved | 97% |
+| … at least one new **oral small-molecule GLP-1** | 92% |
+| … at least one **muscle-preserving** drug | 40% |
+
+The obesity evidence leans optimistic: the class has been unusually
+successful, and failed programmes are under-registered. The prior limits
+that, but the range should be read as optimistic-leaning.
+
+**A documented negative result:** a text classifier (TF-IDF with logistic
+regression) was trained to infer a drug's mechanism from trial titles and
+summaries for the 40% of code numbers that could not be mapped. On molecules it had not seen it
+scored 15% accuracy, below the 25% from always guessing the commonest
+mechanism. Registry text rarely names the mechanism, so mapping new codes still
+needs curated sources. The attempt is kept in the notebook so the conclusion can
+be checked.
 
 ## Recommendations
 

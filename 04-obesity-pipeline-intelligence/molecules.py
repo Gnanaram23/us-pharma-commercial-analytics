@@ -85,7 +85,7 @@ def classify(text: str) -> list[tuple[str, str, str]]:
     """Return every (molecule, sponsor, mechanism) whose alias appears in text."""
     t = (text or "").lower()
     hits = [(name, sponsor, mech) for name, aliases, sponsor, mech in MOLECULES
-            if any(a in t for a in aliases)]
+            if any(a in t or a.replace("-", " ") in t for a in aliases)]
     if not hits:
         # WHO INN stems identify new molecules that are not in the table yet:
         # -glipron = small-molecule GLP-1 agonist, -lintide = amylin analogue,

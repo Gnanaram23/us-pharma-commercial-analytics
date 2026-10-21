@@ -61,6 +61,8 @@ def main() -> None:
             "conditions": "|".join(g(p, "conditionsModule", "conditions", default=[])),
             "countries": "|".join(sorted({l.get("country", "") for l in locs if l.get("country")})),
             "has_results": s.get("hasResults"),
+            "brief_summary": (g(p, "descriptionModule", "briefSummary") or "")[:3000],
+            "keywords": "|".join(g(p, "conditionsModule", "keywords", default=[]) or []),
         })
         for iv in g(p, "armsInterventionsModule", "interventions", default=[]):
             interventions.append({

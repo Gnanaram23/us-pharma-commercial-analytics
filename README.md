@@ -15,6 +15,18 @@ recommendation.
 Each project ends with recommendations and an honest list of limitations.
 Back-tests against real outcomes are included wherever a forecast is made.
 
+### Machine learning and advanced analytics extensions
+
+| # | Extension | Method | What it found |
+|---|---|---|---|
+| 01 | Next-year growth prediction | Gradient-boosted trees, cross-validated on held-out states | Reaches 44% of next-year growth by calling the top 20% of prescribers, against 40% by volume ranking (AUC 0.82 vs 0.78) |
+| 02 | Learning CMS's selection pattern | Logistic regression and gradient boosting, trained on rounds 1–2, tested on round 3 | Pure ML fails (5 of 15); rules plus ML reaches 10 of 15; a 13-drug consensus list for 2027 |
+| 03 | State-level early warning after generic entry | Gradient boosting and ridge regression, leave-one-molecule-out | State data halves the error of national curves; ML does not beat simple persistence, a useful negative result |
+| 04 | Range of new competitors by 2030 | Bayesian updating of phase-success rates plus Monte Carlo simulation (10,000 runs) | Median 11 new approvals (80% range 7–14); a text classifier for unmapped drug codes was tried and documented as not working |
+
+The extensions report what did **not** work as plainly as what did. Each method
+is tested on data it has not seen.
+
 ## How each project is organised
 
 ```
@@ -65,8 +77,11 @@ keeps working when a new year of data is published.
 
 ## Tools
 
-Python (pandas, NumPy, SciPy, scikit-learn, statsmodels, matplotlib), Jupyter,
-and GitHub Actions for automated data refresh.
+Python (pandas, NumPy, SciPy, scikit-learn, matplotlib), Jupyter, and GitHub
+Actions for automated data refresh. Methods used: gradient-boosted trees, logistic
+and ridge regression, k-means clustering, TF-IDF text classification, Bayesian
+updating, Monte Carlo simulation, non-linear curve fitting and grouped,
+out-of-time and leave-one-group-out cross-validation.
 
 ## Author
 

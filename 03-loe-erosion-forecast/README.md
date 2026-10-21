@@ -102,6 +102,28 @@ keep Eliquis preferred after April 2028.
 | ~0.9 million | Normal erosion (slow analog) |
 | **~1.9 million** | Brand retained (free-supply terms continue) |
 
+### 5. Machine learning extension: a state-level early-warning model
+![Early warning](outputs/figures/05_ml_state_early_warning.png)
+
+Each state's Medicaid programme decides for itself whether to keep a brand
+preferred, so a national curve hides most of the variation. The model predicts each
+state's brand share one year after entry from the **first two quarters** of
+state data, plus national early shares, market size and the state's record on
+other molecules. It was tested **leave-one-molecule-out** (always on a molecule it
+never saw) and on the 2025 LOEs:
+
+| Mean absolute error (share points) | Gradient boosting | Ridge | National analog curve | Persistence (share at t=1) |
+|---|---|---|---|---|
+| Analogs, leave-one-out, 1 year after entry | 17.5 | 17.5 | 33.1 | 17.5 |
+| Entresto, 2 quarters after | 23.9 | 22.2 | 31.2 | 24.3 |
+| Brilinta, 3 quarters after | 27.5 | 34.5 | 32.7 | 26.8 |
+
+- **State-level early data roughly halves the error** of the national curve.
+- **The machine-learning models do not beat simple persistence.** With seven
+  analog molecules, a state's own early share already carries the signal. The
+  practical rule is to watch each state's first two quarters. The model pipeline
+  is ready to retrain as more LOEs mature into training data.
+
 ## Recommendations
 
 - **Generic apixaban makers:** Treat Medicaid's roughly 2 million annual

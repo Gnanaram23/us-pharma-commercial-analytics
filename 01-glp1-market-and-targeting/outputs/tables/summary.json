@@ -30,5 +30,34 @@
  "share_of_2024_claims_from_new_writers":0.074,
  "growth_from_existing_writers":0.841,
  "mounjaro_low_share_prescribers":0.3207797387,
- "mounjaro_none_reported":0.2820710185
+ "mounjaro_none_reported":0.2820710185,
+ "ml_n":162410,
+ "ml_eval":{
+  "AUC":{
+   "Gradient boosting":0.8155,
+   "Rank by current volume":0.7797
+  },
+  "Top 10% capture":{
+   "Gradient boosting":0.2888,
+   "Rank by current volume":0.2542
+  },
+  "Top 20% capture":{
+   "Gradient boosting":0.4361,
+   "Rank by current volume":0.3965
+  }
+ },
+ "ml_top_features":[
+  "glp1_benes",
+  "state",
+  "momentum",
+  "specialty"
+ ],
+ "ml_top5000_segments":{
+  "Champions":0.838,
+  "Growth targets":0.123,
+  "Steady adopters":0.036,
+  "Low priority":0.003
+ },
+ "ml_overlap_with_growth_targets":0.1226,
+ "kmeans_ari":0.2384661486
 }

@@ -69,6 +69,37 @@
   "Kesimpta Pen",
   "Triumeq"
  ],
+ "ml_backtest_2028": {
+  "Pure ML: logistic regression": 5,
+  "Pure ML: gradient boosting": 4,
+  "Hybrid: rules + logistic regression": 10,
+  "Hybrid: rules + gradient boosting": 6,
+  "Rule-based screen (section 4)": 11
+ },
+ "ml_consensus_2029": [
+  "Keytruda",
+  "Repatha Sureclick",
+  "Opdivo",
+  "Creon",
+  "Tagrisso",
+  "Ingrezza",
+  "Rinvoq",
+  "Nubeqa",
+  "Kesimpta Pen",
+  "Nucala",
+  "Cabometyx",
+  "Nuplazid",
+  "Lynparza"
+ ],
+ "ml_top_coefficients": {
+  "is_bla": -0.41,
+  "is_combo": -0.15,
+  "n_brands": 0.18,
+  "years_past_rule": 0.19,
+  "growth": 0.24,
+  "spend_rank_pct": 1.41,
+  "log_spend": 1.55
+ },
  "backtest_2027_misses": [
   "Breo Ellipta",
   "Janumet / Janumet XR",

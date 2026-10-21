@@ -1,15 +1,52 @@
 {
- "trials_total":8309.0,
- "industry_trials":1300.0,
- "named_molecules":47.0,
- "in_development":31.0,
- "in_development_ph3":22.0,
- "in_development_ph3_us":14.0,
- "in_development_ph2_us":12.0,
- "china_first_ph3":8.0,
+ "trials_total":8311,
+ "industry_trials":1300,
+ "named_molecules":47,
+ "in_development":31,
+ "in_development_ph3":22,
+ "in_development_ph3_us":14,
+ "in_development_ph2_us":12,
+ "china_first_ph3":8,
  "china_site_share_2015":0.0,
  "china_site_share_2025":0.3596491228,
  "top2_ph3_patient_share":0.483,
+ "bayes":{
+  "Phase 2 \u2192 Phase 3":{
+   "prior mean":0.452,
+   "posterior mean":0.588
+  },
+  "Phase 3 \u2192 approval":{
+   "prior mean":0.555,
+   "posterior mean":0.704
+  }
+ },
+ "bayes_evidence":{
+  "Phase 2 \u2192 Phase 3":"9 of 13 progressed",
+  "Phase 3 \u2192 approval":"5 approved, 0 discontinued"
+ },
+ "mc_2030":{
+  "P10":7.0,
+  "Median":11.0,
+  "P90":14.0
+ },
+ "mc_p_ge5_2030":0.984,
+ "mc_p_ge10_2030":0.647,
+ "mc_p_mechanism":{
+  "Amylin-based (alone or with GLP-1)":0.969,
+  "GIP \/ GLP-1 dual agonist":0.967,
+  "Oral small-molecule GLP-1":0.915,
+  "GLP-1 \/ glucagon dual agonist":0.825,
+  "GLP-1 agonist (injectable)":0.79,
+  "GIP \/ GLP-1 \/ glucagon triple agonist":0.741,
+  "GLP-1 agonist + GIP-receptor antagonist":0.706,
+  "Muscle-preserving (activin \/ myostatin)":0.405
+ },
+ "nlp_labelled_trials":528,
+ "nlp_eval":{
+  "Accuracy":0.1496,
+  "Macro F1":0.1039,
+  "Majority-class baseline accuracy":0.25
+ },
  "expected_new_by_2030_base":9.7,
  "expected_new_by_2030_upside":14.1
 }

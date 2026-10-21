@@ -107,5 +107,26 @@
   "ticagrelor": "2025Q2",
   "ustekinumab": "2025Q2",
   "varenicline": "2021Q4"
+ },
+ "ml_lomo_rows": 200,
+ "ml_mae": {
+  "Analogs, leave-one-out (t=4)": {
+   "Gradient boosting": 0.1753,
+   "Ridge regression": 0.175,
+   "National analog curve": 0.3305,
+   "Persistence (share at t=1)": 0.1749
+  },
+  "Entresto (t=2)": {
+   "Gradient boosting": 0.2387,
+   "Ridge regression": 0.2217,
+   "National analog curve": 0.3119,
+   "Persistence (share at t=1)": 0.2434
+  },
+  "Brilinta (t=3)": {
+   "Gradient boosting": 0.2747,
+   "Ridge regression": 0.3453,
+   "National analog curve": 0.3273,
+   "Persistence (share at t=1)": 0.2679
+  }
  }
 }

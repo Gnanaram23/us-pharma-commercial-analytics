@@ -347,7 +347,167 @@ annual.loc[latest.year] += e.loc[e["period"].dt.year == latest.year, "brand_rx"]
 #   2028. If they do, keeping Eliquis preferred is the cheapest option.
 
 # %% [markdown]
-# ## 6. Summary numbers used in the README
+# ## 6. Machine learning extension: a state-level early-warning model
+#
+# The national curves hide large differences between states, because each
+# state's Medicaid programme makes its own preferred-drug-list decisions. A
+# brand team, or a generic company planning supply, would like to know **within
+# two quarters of generic entry** where the brand will hold up and where it
+# will collapse.
+#
+# **Set-up:**
+# - One row per **molecule × state**, using state-level SDUD data.
+# - **Features known after two quarters:** the state's brand share in the entry
+#   quarter (t=0) and the next (t=1), the drop between them, the national brand
+#   share in those same quarters, the size of the state's pre-entry brand market,
+#   and the state's track record (its average one-year brand share on *other*
+#   molecules).
+# - **Target:** the state's brand share one year after entry (t=4).
+# - **Validation:** *leave-one-molecule-out*. The model is trained on six analog
+#   molecules and tested on the seventh, rotating through all seven. Every
+#   prediction is for a molecule the model has never seen, as it would be in practice.
+# - **Extra test on 2025 LOEs:** the same approach with shorter horizons, because
+#   less time has passed. Brilinta at t=3 and Entresto at t=2.
+#
+# **Models:** gradient-boosted trees and ridge regression (a linear model with a
+# penalty that keeps weights small). **Baselines:** (1) the national analog
+# median curve, the approach in section 3, and (2) "persistence", which assumes
+# the share stays where it was at t=1.
+#
+# **Term:** *MAE* (mean absolute error) is the average gap between predicted
+# and actual brand share, in share points.
+
+# %%
+from sklearn.ensemble import HistGradientBoostingRegressor
+from sklearn.linear_model import Ridge
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+st = sd[(sd["state"] != "XX")].copy()
+st[["molecule", "role"]] = st["product_name"].apply(lambda n: pd.Series(tag(n)))
+st = st.dropna(subset=["molecule"])
+st["period"] = pd.PeriodIndex.from_fields(year=st["year"], quarter=st["quarter"], freq="Q")
+sq = (st.groupby(["molecule", "state", "period", "role"])["number_of_prescriptions"].sum()
+        .unstack("role", fill_value=0).reset_index())
+sq["share"] = sq["brand"] / (sq["brand"] + sq["competitor"]).replace(0, np.nan)
+sq["t"] = [(p - entries[m]).n if m in entries else np.nan for m, p in zip(sq["molecule"], sq["period"])]
+nat_share = q.dropna(subset=["t"]).drop_duplicates(["molecule", "t"]).set_index(["molecule", "t"])["brand_share"]
+
+
+def state_rows(mols, horizon):
+    out = []
+    for m in mols:
+        d = sq[sq["molecule"] == m]
+        piv = d.pivot_table(index="state", columns="t", values="share")
+        pre = d[d["t"].between(-4, -1)].groupby("state")["brand"].mean()
+        need = [0, 1, horizon]
+        if not all(t in piv.columns for t in need):
+            continue
+        r = pd.DataFrame({"share_t0": piv[0], "share_t1": piv[1], "target": piv[horizon], "pre_brand_rx": pre}).dropna()
+        r = r[r["pre_brand_rx"] >= 300]                      # skip tiny state markets (suppression noise)
+        r["drop_t0_t1"] = r["share_t0"] - r["share_t1"]
+        r["nat_t0"], r["nat_t1"] = float(nat_share.loc[(m, 0.0)]), float(nat_share.loc[(m, 1.0)])
+        r["log_pre_rx"] = np.log(r["pre_brand_rx"])
+        r["molecule"] = m
+        out.append(r.reset_index())
+    return pd.concat(out, ignore_index=True)
+
+
+def add_track_record(train_df, test_df):
+    """State's average target share on the training molecules only (no leakage)."""
+    rec = train_df.groupby("state")["target"].mean()
+    for df in (train_df, test_df):
+        df["state_record"] = df["state"].map(rec).fillna(rec.mean())
+    return train_df, test_df
+
+
+FEATS = ["share_t0", "share_t1", "drop_t0_t1", "nat_t0", "nat_t1", "log_pre_rx", "state_record"]
+make = {"Gradient boosting": lambda: HistGradientBoostingRegressor(max_iter=300, learning_rate=0.05, max_depth=3,
+                                                                    min_samples_leaf=15, random_state=7),
+        "Ridge regression": lambda: make_pipeline(StandardScaler(), Ridge(alpha=1.0))}
+
+
+def evaluate(train_mols, test_mols, horizon):
+    rows = state_rows(train_mols + test_mols, horizon)
+    tr, te = rows[rows["molecule"].isin(train_mols)].copy(), rows[rows["molecule"].isin(test_mols)].copy()
+    tr, te = add_track_record(tr, te)
+    for name, f in make.items():
+        te[name] = np.clip(f().fit(tr[FEATS], tr["target"]).predict(te[FEATS]), 0, 1)
+    # Baseline 1: national analog median curve (section 3), the same value for every state
+    te["National analog curve"] = erosion(horizon, K["median"], F["median"])
+    # Baseline 2: persistence
+    te["Persistence (share at t=1)"] = te["share_t1"]
+    return te
+
+
+METHODS = ["Gradient boosting", "Ridge regression", "National analog curve", "Persistence (share at t=1)"]
+lomo = pd.concat([evaluate([m for m in analogs if m != hold], [hold], 4) for hold in analogs], ignore_index=True)
+mae_lomo = {k: (lomo[k] - lomo["target"]).abs().mean() for k in METHODS}
+print(f"Leave-one-molecule-out: {len(lomo)} molecule-state rows across {lomo['molecule'].nunique()} molecules")
+pd.Series(mae_lomo, name="MAE, share at t=4").round(3)
+
+# %%
+recent = pd.concat([evaluate(analogs, ["ticagrelor"], 3), evaluate(analogs, ["sacubitril/valsartan"], 2)], ignore_index=True)
+mae_recent = recent.groupby("molecule").apply(lambda g: pd.Series({k: (g[k] - g["target"]).abs().mean() for k in METHODS}),
+                                              include_groups=False)
+mae_recent.index = mae_recent.index.map({"ticagrelor": "Brilinta (t=3)", "sacubitril/valsartan": "Entresto (t=2)"})
+mae_table = pd.concat([pd.DataFrame(mae_lomo, index=["Analogs, leave-one-out (t=4)"]), mae_recent])
+mae_table.round(3)
+
+# %%
+fig, axes = plt.subplots(1, 2, figsize=(12, 4.8), gridspec_kw={"width_ratios": [1.1, 1]})
+ax = axes[0]
+mols = sorted(lomo["molecule"].unique())
+for i, m in enumerate(mols):
+    d = lomo[lomo["molecule"] == m]
+    ax.scatter(d["target"], d["Gradient boosting"], s=16, alpha=0.75, color=style.PALETTE[i % len(style.PALETTE)], label=m)
+ax.plot([0, 1], [0, 1], color=style.MUTED, ls=":")
+style.pct(ax, "x"); style.pct(ax, "y")
+ax.set_xlabel("Actual brand share one year after entry")
+ax.set_ylabel("Predicted (model never saw this molecule)")
+ax.set_title("State-level predictions, leave-one-molecule-out", fontsize=11)
+ax.legend(fontsize=7.5, loc="upper left")
+
+ax = axes[1]
+plot = mae_table.T * 100
+xpos = np.arange(len(plot.columns))
+w = 0.2
+for i, (meth, c) in enumerate(zip(METHODS, [style.ACCENT, "#2563EB", style.NEUTRAL, "#D1D5DB"])):
+    ax.bar(xpos + (i - 1.5) * w, plot.loc[meth], width=w, color=c, label=meth)
+ax.set_xticks(xpos)
+ax.set_xticklabels([c.replace(", leave-one-out", "\nleave-one-out") for c in plot.columns], fontsize=9)
+ax.set_ylabel("Mean absolute error (share points)")
+ax.set_title("Error by method (lower is better)", fontsize=11)
+ax.legend(fontsize=8)
+ax.grid(axis="x", visible=False)
+fig.suptitle("Early-warning model: predicting each state's brand share from the first two quarters",
+             x=0.01, ha="left", fontsize=13, fontweight="bold", color=style.INK)
+style.source(fig, SRC.replace("national totals", "state-level data"))
+fig.tight_layout()
+style.save(fig, FIG / "05_ml_state_early_warning.png")
+
+# %% [markdown]
+# **Reading the result honestly:**
+# - Moving from one national curve to **state-level early data roughly halves
+#   the error** (about 17–24 share points against 31–33).
+# - The machine-learning models do **not** beat the simple persistence rule
+#   ("the share stays where it was at t=1") by a meaningful margin. With only
+#   seven analog molecules, the state's own early share already carries most of
+#   the signal, and there is not enough variety for a model to learn more.
+# - The practical recommendation is therefore the simple one: watch each state's
+#   first two quarters and use persistence as the base forecast. Keep the model
+#   pipeline ready to retrain as more LOEs, such as Brilinta and Entresto, mature
+#   into training data, because that is when extra features (state track record,
+#   market size) can start to add value.
+#
+# **How to use it:** two quarters after generic entry, score every state. Those
+# predicted to keep the brand preferred are where brand contracting effort and
+# supply should go (for the brand) or where launch volumes will lag (for a
+# generic). For Eliquis in 2028 the same model can run as soon as the first two
+# quarters of state data are published, about six months after entry.
+
+# %% [markdown]
+# ## 7. Summary numbers used in the README
 
 # %%
 q1 = q[q["molecule"].isin(analogs) & (q["t"] == 1)]["brand_share"]
@@ -368,6 +528,7 @@ summary = {
     "biologic_share_q2": {m: float(bio_tbl.loc[2, m]) for m in bio_tbl.columns},
     "humira_share_q8": float(bio_tbl.loc[8, "adalimumab"]) if 8 in bio_tbl.index else None,
     "entries": {m: str(p) for m, p in entries.items()},
+    "ml_lomo_rows": int(len(lomo)), "ml_mae": mae_table.round(4).to_dict(orient="index"),
 }
 (TAB / "summary.json").write_text(json.dumps(summary, indent=1, default=str))
 fc.assign(period=fc["period"].astype(str)).round(0).to_csv(TAB / "eliquis_forecast_quarterly.csv", index=False)

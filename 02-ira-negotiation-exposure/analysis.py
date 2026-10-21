@@ -372,7 +372,180 @@ style.source(fig, SRC + "; openFDA Drugs@FDA for approval dates")
 style.save(fig, FIG / "03_ipay2029_candidates.png")
 
 # %% [markdown]
-# ## 5. Summary numbers used in the README
+# ## 5. Machine learning extension: can a model learn how CMS selects?
+#
+# The rule-based screen encodes the statute by hand. A complementary approach
+# is to let a model **learn the selection pattern from past decisions** and pick
+# up things the rules miss, such as how CMS weighs spend growth or combination
+# products.
+#
+# **Set-up:**
+# - One row per active ingredient per selection round, built only from data
+#   available at that round: spend in the round's data year, spend growth, spend
+#   rank, years on market (with the orphan clock), biologic or not, number of
+#   brands, and flags for generic, biosimilar and orphan-only status.
+# - **Label:** selected by CMS in that round (1) or not (0).
+# - **Train** on the first two rounds (IPAY 2026, selected August 2023 on 2022
+#   spend; IPAY 2027, selected January 2025 on 2024 spend). **Test** on the third
+#   (IPAY 2028), which the model never sees.
+# - Two models: **logistic regression**, whose weights can be read directly, and
+#   **gradient boosting**, which can capture interactions such as "high spend
+#   only matters once the 7-year clock has run".
+#
+# Two designs are compared:
+# 1. **Pure ML:** the model sees every high-spend drug and must learn the
+#    eligibility rules itself.
+# 2. **Hybrid:** the statutory rules filter out ineligible drugs first (law is
+#    not something to learn from 25 examples), and the model only learns how
+#    CMS **prioritises among eligible drugs**.
+#
+# With only 25 positive training examples this is a small-data problem, so the
+# out-of-sample test is the point.
+
+# %%
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+
+GEN_BY_2022 = marketed_generics(d[d["is_overall"]], "Tot_Clms_2022")
+
+
+def build_round(df, selection_date, spend_year, exclude_cycles, generics, label_cycle, top=200):
+    x = df[df["app_type"].isin(["NDA", "BLA"])].copy()
+    x["spend"] = x[f"Tot_Spndng_{spend_year}"]
+    x["spend_prev"] = x[f"Tot_Spndng_{spend_year - 1}"]
+    g = (x.groupby("key")
+          .agg(spend=("spend", "sum"), spend_prev=("spend_prev", "sum"), first_approval=("first_approval", "min"),
+               is_bla=("app_type", lambda s: (s == "BLA").any()), n_brands=("Brnd_Name", "nunique"),
+               lead_brand=("Brnd_Name", lambda s: s.loc[x.loc[s.index, "spend"].idxmax()]),
+               selected=("selected", "first"), sel_cycle=("sel_cycle", "min"))
+          .reset_index())
+    g = g[~g["sel_cycle"].isin(exclude_cycles) & (g["spend"] > 0)]
+    g = g.sort_values("spend", ascending=False).head(top).copy()
+    clock = g["first_approval"].copy()
+    for ing, dt in ORPHAN_CLOCK.items():
+        clock[g["key"] == ing] = pd.Timestamp(dt)
+    first = g["key"].str.split("/").str[0]
+    g["years_on_market"] = (pd.Timestamp(selection_date) - clock).dt.days / 365.25
+    g["years_past_rule"] = g["years_on_market"] - np.where(g["is_bla"], 11, 7)
+    g["log_spend"] = np.log(g["spend"])
+    g["spend_rank_pct"] = g["spend"].rank(pct=True)
+    g["growth"] = np.log((g["spend"] + 1e6) / (g["spend_prev"] + 1e6))
+    g["has_generic"] = g["key"].isin(generics).astype(int)
+    g["biosimilar"] = first.isin(BIOSIMILAR).astype(int)
+    g["orphan_only"] = first.isin(ORPHAN_ONLY).astype(int)
+    g["is_combo"] = g["key"].str.contains("/").astype(int)
+    g["is_bla"] = g["is_bla"].astype(int)
+    g["y"] = (g["sel_cycle"] == label_cycle).astype(int)
+    g["round"] = label_cycle
+    return g
+
+
+ML_FEATS = ["log_spend", "spend_rank_pct", "growth", "years_past_rule", "is_bla", "n_brands",
+            "has_generic", "biosimilar", "orphan_only", "is_combo"]
+r26 = build_round(partd_only, "2023-09-01", 2022, [], GEN_BY_2022, 2026)
+r27 = build_round(partd_only, "2025-02-01", 2024, [2026], GEN_BY_2024, 2027)
+r28 = build_round(cand, "2026-02-01", 2024, [2026, 2027], GEN_BY_LATEST, 2028)
+train = pd.concat([r26, r27])
+print(f"Training rows: {len(train)} ({int(train['y'].sum())} selected); test rows: {len(r28)} ({int(r28['y'].sum())} selected)")
+
+models = {
+    "Logistic regression": make_pipeline(StandardScaler(), LogisticRegression(C=0.5, max_iter=5000)),
+    "Gradient boosting": HistGradientBoostingClassifier(max_iter=200, learning_rate=0.05, max_depth=3,
+                                                        min_samples_leaf=10, random_state=7),
+}
+def eligible(df):
+    return (df["years_past_rule"] >= 0) & (df["has_generic"] == 0) & (df["biosimilar"] == 0) & (df["orphan_only"] == 0)
+
+
+res = {}
+for name, m in models.items():
+    m.fit(train[ML_FEATS].fillna(0), train["y"])
+    r28[f"p_{name}"] = m.predict_proba(r28[ML_FEATS].fillna(0))[:, 1]
+    res[f"Pure ML: {name.lower()}"] = int(r28.nlargest(15, f"p_{name}")["y"].sum())
+HYB_FEATS = ["log_spend", "spend_rank_pct", "growth", "years_past_rule", "is_bla", "n_brands", "is_combo"]
+tr_e, te_e = train[eligible(train)], r28[eligible(r28)].copy()
+hyb = {"logistic regression": make_pipeline(StandardScaler(), LogisticRegression(C=0.5, max_iter=5000)),
+       "gradient boosting": HistGradientBoostingClassifier(max_iter=200, learning_rate=0.05, max_depth=3,
+                                                           min_samples_leaf=10, random_state=7)}
+for name, m in hyb.items():
+    m.fit(tr_e[HYB_FEATS].fillna(0), tr_e["y"])
+    te_e[f"h_{name}"] = m.predict_proba(te_e[HYB_FEATS].fillna(0))[:, 1]
+    res[f"Hybrid: rules + {name}"] = int(te_e.nlargest(15, f"h_{name}")["y"].sum())
+res["Rule-based screen (section 4)"] = len(hits2)
+compare = pd.Series(res, name="of 15 actual IPAY 2028 picks found in top 15")
+compare
+
+# %%
+fig, ax = plt.subplots(figsize=(8.5, 3.8))
+cols = [style.NEUTRAL if "screen" in k else (style.ACCENT_2 if "Pure" in k else style.ACCENT) for k in compare.index]
+ax.barh(compare.index[::-1], compare.values[::-1], color=cols[::-1])
+for yy, v in enumerate(compare.values[::-1]):
+    ax.text(v, yy, f"  {v} of 15", va="center", fontsize=10)
+ax.set_xlim(0, 15)
+ax.set_title("Out-of-sample test on the January 2026 selection (IPAY 2028)")
+style.subtitle(ax, "Models trained only on the first two rounds; how many actual picks land in each top 15")
+ax.grid(axis="y", visible=False)
+style.source(fig, SRC + "; openFDA")
+style.save(fig, FIG / "04_ml_vs_rules_backtest.png")
+
+# %% [markdown]
+# **Reading the test:** the pure model ranks ineligible drugs highly (for
+# example Mounjaro, under 5 years on market) because with so few examples it
+# mostly learns "high spend gets picked". Encoding the law as rules and
+# learning only the prioritisation is the better design.
+#
+# **What the hybrid logistic regression learned** about prioritisation among
+# eligible drugs. Coefficients are on standardised features, so their sizes can
+# be compared: positive raises the chance of selection, negative lowers it.
+
+# %%
+coef = pd.Series(hyb["logistic regression"][-1].coef_[0], index=HYB_FEATS).sort_values()
+coef_labels = {"log_spend": "Medicare spend (log)", "spend_rank_pct": "Spend rank", "growth": "Spend growth",
+               "years_past_rule": "Years past the 7/11-year mark", "is_bla": "Biologic", "n_brands": "Number of brands",
+               "has_generic": "Marketed generic", "biosimilar": "Marketed biosimilar", "orphan_only": "Orphan-only",
+               "is_combo": "Combination product"}
+fig, ax = plt.subplots(figsize=(8, 4.6))
+ax.barh([coef_labels[i] for i in coef.index], coef.values,
+        color=[style.ACCENT if v > 0 else style.ACCENT_2 for v in coef.values])
+ax.axvline(0, color=style.INK, lw=0.8)
+ax.set_title("What drives selection, according to the model")
+style.subtitle(ax, "Hybrid model: standardised coefficients among eligible drugs, rounds 1 and 2")
+ax.grid(axis="y", visible=False)
+style.source(fig, SRC)
+style.save(fig, FIG / "05_ml_selection_drivers.png")
+coef.round(2)
+
+# %% [markdown]
+# ### Combined view for February 2027 (IPAY 2029)
+#
+# Retrain the hybrid model on all three rounds and score the eligible candidates
+# for the next selection.
+# Drugs ranked highly by **both** the rules and the model are the strongest
+# watchlist entries; disagreements are where analyst review adds most.
+
+# %%
+r29 = build_round(cand, "2027-02-01", Y, [2026, 2027, 2028], GEN_BY_LATEST, 2029)
+full = pd.concat([r26, r27, r28])
+full = full[eligible(full)]
+r29 = r29[eligible(r29)].copy()
+lr = make_pipeline(StandardScaler(), LogisticRegression(C=0.5, max_iter=5000)).fit(full[HYB_FEATS].fillna(0), full["y"])
+r29["ml_probability"] = lr.predict_proba(r29[HYB_FEATS].fillna(0))[:, 1]
+r29["ml_rank"] = r29["ml_probability"].rank(ascending=False).astype(int)
+rule_rank = {k: i + 1 for i, k in enumerate(nxt["key"])}
+r29["rule_rank"] = r29["key"].map(rule_rank)
+combined = r29.sort_values("ml_rank").head(20)[["lead_brand", "key", "spend", "years_on_market", "ml_probability", "ml_rank", "rule_rank"]].copy()
+combined["spend_$B"] = (combined.pop("spend") / 1e9).round(2)
+combined["years_on_market"] = combined["years_on_market"].round(1)
+combined["both_top15"] = (combined["ml_rank"] <= 15) & (combined["rule_rank"] <= 15)
+combined.to_csv(TAB / "ipay2029_ml_vs_rules.csv", index=False)
+consensus = combined.loc[combined["both_top15"], "lead_brand"].tolist()
+print("In both top-15 lists:", ", ".join(consensus))
+combined.round(3)
+
+# %% [markdown]
+# ## 6. Summary numbers used in the README
 
 # %%
 import json
@@ -387,6 +560,8 @@ summary = {
     "backtest_2027_hits": len(hits), "backtest_2027_hit_names": sorted(hits),
     "backtest_2028_hits": len(hits2), "backtest_2028_hit_names": sorted(hits2),
     "watchlist_top15": watch["lead_brand"].head(15).tolist(),
+    "ml_backtest_2028": compare.to_dict(), "ml_consensus_2029": consensus,
+    "ml_top_coefficients": coef.round(2).to_dict(),
     "backtest_2027_misses": sorted(actual_2027 - hits), "backtest_2028_misses": sorted(actual_2028 - hits2),
 }
 (TAB / "summary.json").write_text(json.dumps(summary, indent=1))

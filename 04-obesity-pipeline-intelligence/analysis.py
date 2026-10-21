@@ -329,7 +329,183 @@ china_first.to_csv(TAB / "china_first_programmes.csv", index=False)
 china_first
 
 # %% [markdown]
-# ## 8. Summary numbers used in the README
+# ## 8. Advanced analytics extension: Bayesian success rates and Monte Carlo simulation
+#
+# Section 6 gives a single expected number of new approvals. Decision makers
+# need a **range**: how likely is it that the market gets 5 new competitors by
+# 2030, or 15? Two improvements:
+#
+# 1. **Learn obesity-specific success rates from this data (Bayesian updating).**
+#    The industry-wide metabolic rates are the *prior*: the belief before looking at
+#    obesity data. The obesity programmes in this dataset then show how often
+#    molecules actually moved from Phase 2 to Phase 3, and from Phase 3 to approval.
+#    Combining the two gives a *posterior*, a Beta distribution that is pulled
+#    towards the obesity evidence as more of it accumulates. The prior counts as
+#    10 molecules' worth of evidence.
+# 2. **Simulate 10,000 possible futures (Monte Carlo).** In each run, every
+#    pipeline molecule succeeds or fails at a probability drawn from the
+#    posterior, and its approval date slips at random (0–12 months for Phase 3
+#    programmes, 0–30 months for Phase 2, because registry dates usually slip).
+#    Counting approvals in each run gives a full distribution.
+
+# %%
+rng = np.random.default_rng(7)
+mol_hist = (live.groupby("molecule")
+                .agg(first_ph2=("start", lambda s: s[live.loc[s.index, "phase_rank"] == 2].min()),
+                     first_ph3=("start", lambda s: s[live.loc[s.index, "phase_rank"] == 3].min()))
+                .join(pipe.drop_duplicates("molecule").set_index("molecule")["status"]))
+
+# Phase 2 -> 3: molecules whose first Phase 2 started 2015-2021 (enough time to progress)
+c2 = mol_hist[mol_hist["first_ph2"].between("2015-01-01", "2021-12-31")]
+s2 = int(c2["first_ph3"].notna().sum()); n2 = len(c2)
+# Phase 3 -> approval: molecules whose first Phase 3 started 2015-2021
+c3 = mol_hist[mol_hist["first_ph3"].between("2015-01-01", "2021-12-31")]
+ok3 = c3["status"].str.startswith("Approved")
+fail3 = c3["status"].eq("Discontinued")
+s3, f3 = int(ok3.sum()), int(fail3.sum())          # still-running programmes are left out
+PRIOR_N = 10
+prior = {"ph2": .452, "ph3": .714 * .778}
+post = {"ph2": (prior["ph2"] * PRIOR_N + s2, (1 - prior["ph2"]) * PRIOR_N + (n2 - s2)),
+        "ph3": (prior["ph3"] * PRIOR_N + s3, (1 - prior["ph3"]) * PRIOR_N + f3)}
+bayes = pd.DataFrame({
+    "prior mean": [prior["ph2"], prior["ph3"]],
+    "obesity evidence": [f"{s2} of {n2} progressed", f"{s3} approved, {f3} discontinued"],
+    "posterior mean": [post["ph2"][0] / sum(post["ph2"]), post["ph3"][0] / sum(post["ph3"])],
+}, index=["Phase 2 → Phase 3", "Phase 3 → approval"])
+bayes
+
+# %%
+N_SIM = 10_000
+years = list(range(today.year, 2032))
+base_year = cand["exp_approval"].astype(float).values
+is_ph3 = (cand["us_max_phase"] == 3).values
+mech_arr = cand["mechanism"].values
+p2 = rng.beta(*post["ph2"], N_SIM)
+p3 = rng.beta(*post["ph3"], N_SIM)
+counts = np.zeros((N_SIM, len(years)))
+mech_hits = {m: np.zeros(N_SIM, dtype=bool) for m in set(mech_arr)}
+for i in range(N_SIM):
+    p = np.where(is_ph3, p3[i], p2[i] * p3[i])
+    win = rng.random(len(p)) < p
+    # Phase 3 dates slip 0-12 months; Phase 2 timing is far less certain, so 0-30 months
+    when = base_year + np.where(is_ph3, rng.uniform(0, 1, len(p)), rng.uniform(0, 2.5, len(p)))
+    for j, y in enumerate(years):
+        counts[i, j] = (win & (when < y + 1)).sum()
+    for m in mech_hits:
+        mech_hits[m][i] = (win & (when < 2031) & (mech_arr == m)).any()
+
+sim = pd.DataFrame({"P10": np.percentile(counts, 10, axis=0), "Median": np.median(counts, axis=0),
+                    "P90": np.percentile(counts, 90, axis=0)}, index=years)
+fig, ax = plt.subplots(figsize=(8.5, 4.8))
+ax.fill_between(years, sim["P10"], sim["P90"], color=style.ACCENT, alpha=0.18, label="80% of simulated futures")
+ax.plot(years, sim["Median"], color=style.ACCENT, marker="o", lw=2.2, label="Median")
+ax.plot(exp["year"], exp["base"], color=style.MUTED, ls="--", lw=1.4, label="Section 6 point estimate")
+for x, m_, lo_, hi in zip(years, sim["Median"], sim["P10"], sim["P90"]):
+    if x >= 2029:
+        ax.text(x, hi + 0.4, f"{m_:.0f} ({lo_:.0f}–{hi:.0f})", ha="center", fontsize=8.5, color=style.INK)
+ax.set_xticks(years)
+ax.set_ylabel("New US obesity approvals (cumulative)")
+ax.set_title("How many new competitors by 2030? 10,000 simulated futures")
+style.subtitle(ax, "Bayesian success rates (metabolic prior + obesity evidence) with random date slips")
+ax.legend(loc="upper left", fontsize=9)
+style.source(fig, SRC + "; BIO/Biomedtracker/Amplion prior")
+style.save(fig, FIG / "06_monte_carlo_entrants.png")
+sim.round(1)
+
+# %%
+# %% [markdown]
+# **Caution on the obesity evidence:** the Phase 3 record (5 approvals, no
+# Phase 3 discontinuations) comes from a mechanism class that has been unusually
+# successful, and failed programmes are less likely to be fully registered. The
+# prior keeps the estimate from swinging too far, but the simulated range should
+# be read as optimistic-leaning.
+
+# %%
+p_mech = pd.Series({m: v.mean() for m, v in mech_hits.items()}).sort_values(ascending=False)
+p5_2030 = float((counts[:, years.index(2030)] >= 5).mean())
+p10_2030 = float((counts[:, years.index(2030)] >= 10).mean())
+print(f"Probability of at least 5 new approvals by end-2030: {p5_2030:.0%}; at least 10: {p10_2030:.0%}")
+p_mech.rename("P(at least one new approval by end-2030)").round(2)
+
+# %% [markdown]
+# ## 9. A documented negative result: can trial text reveal the mechanism?
+#
+# About 40% of industry trials that test a drug use code numbers the molecule
+# table cannot map ("ZT006", "HDM1005", "MWN109"). Most are early-stage, often
+# China-origin assets, and exactly the ones a business-development team wants to
+# spot early. Their trial records, however, usually describe the drug in words:
+# "a novel GLP-1/GIP dual receptor agonist", "long-acting amylin analogue".
+#
+# **Approach (natural language processing):**
+# - **Training data:** industry trials whose drug *was* mapped by the molecule
+#   table, labelled with that mechanism. The text is the trial title, the
+#   sponsor's brief summary, keywords, and every intervention name, alias and
+#   description.
+# - **Text features:** TF-IDF, which turns text into word and two-word-phrase
+#   weights. Words frequent in one record but rare across all records get the
+#   highest weight.
+# - **Model:** a regularised logistic regression that predicts the mechanism
+#   from those weights.
+# - **Validation:** cross-validation **grouped by molecule**. The model is always
+#   tested on molecules it never saw, so it cannot score well by memorising drug
+#   names; it has to read the mechanism language. That is the situation it faces
+#   with unmapped codes.
+#
+# A large language model might do better, but it would need a paid API and
+# would be harder to reproduce.
+
+# %%
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import GroupKFold
+from sklearn.metrics import f1_score, accuracy_score, confusion_matrix
+
+iv_text = (drug_ivs.assign(desc=ivs.loc[drug_ivs.index, "description"].fillna(""))
+           .groupby("nct_id")[["name", "other_names", "desc"]]
+           .agg(lambda s: " ".join(s.fillna("").astype(str))).agg(" ".join, axis=1))
+tt = trials.set_index("nct_id")
+text = tt["title"].fillna("") + " " + iv_text.reindex(tt.index).fillna("")
+for extra in ["brief_summary", "keywords"]:          # richer text where the extract has it
+    if extra in tt:
+        text = text + " " + tt[extra].fillna("").str.replace("|", " ", regex=False)
+
+ind_ids = set(trials.loc[trials["sponsor_class"] == "INDUSTRY", "nct_id"])
+lab = hits[hits["nct_id"].isin(ind_ids)]
+lab = lab[~lab["molecule"].isin(APPROVED_US_OBESITY | APPROVED_US_OTHER) | lab.groupby("nct_id")["molecule"].transform("size").eq(1)]
+one = lab.groupby("nct_id").filter(lambda g: g["mechanism"].nunique() == 1).drop_duplicates("nct_id")
+counts = one["mechanism"].value_counts()
+keep = counts[counts >= 15].index
+one = one[one["mechanism"].isin(keep)]
+X_text, y_mech, groups = text.reindex(one["nct_id"]).values, one["mechanism"].values, one["molecule"].values
+print(f"{len(one)} labelled industry trials across {len(keep)} mechanisms and {one['molecule'].nunique()} molecules")
+
+
+def text_model():
+    return make_pipeline(TfidfVectorizer(ngram_range=(1, 2), min_df=2, sublinear_tf=True, stop_words="english"),
+                         LogisticRegression(C=5, max_iter=3000, class_weight="balanced"))
+
+
+pred = np.empty(len(one), dtype=object)
+for tr, te in GroupKFold(n_splits=5).split(X_text, y_mech, groups):
+    pred[te] = text_model().fit(X_text[tr], y_mech[tr]).predict(X_text[te])
+majority = pd.Series(y_mech).value_counts().index[0]
+nlp_eval = pd.Series({"Accuracy": accuracy_score(y_mech, pred), "Macro F1": f1_score(y_mech, pred, average="macro"),
+                      "Majority-class baseline accuracy": (y_mech == majority).mean()})
+nlp_eval.round(3)
+
+# %% [markdown]
+# **Result: it does not work, and the reason is useful.** On molecules it has
+# not seen, the classifier does *worse* than always guessing the commonest
+# mechanism. Registry text rarely states the mechanism ("Study of LY3437943 in
+# adults with obesity"); the cues the model can find are route ("oral") and
+# sponsor habits, not biology. Mapping new code numbers to mechanisms still needs
+# curated sources (company pipelines, publications), which is why
+# `molecules.py` is maintained by hand. The attempt is kept here so the
+# conclusion can be checked rather than taken on trust.
+
+# %% [markdown]
+# ## 10. Summary numbers used in the README
 
 # %%
 summary = {
@@ -344,6 +520,11 @@ summary = {
     "china_site_share_2015": float(geo.loc[2015, "china"]) if 2015 in geo.index else None,
     "china_site_share_2025": float(geo.loc[2025, "china"]) if 2025 in geo.index else None,
     "top2_ph3_patient_share": round(float(lead_share), 3),
+    "bayes": bayes.drop(columns="obesity evidence").round(3).to_dict(orient="index"),
+    "bayes_evidence": bayes["obesity evidence"].to_dict(),
+    "mc_2030": sim.loc[2030].round(1).to_dict(), "mc_p_ge5_2030": p5_2030, "mc_p_ge10_2030": p10_2030,
+    "mc_p_mechanism": p_mech.round(3).to_dict(),
+    "nlp_labelled_trials": int(len(one)), "nlp_eval": nlp_eval.round(4).to_dict(),
     "expected_new_by_2030_base": round(float(exp.loc[exp["year"] == 2030, "base"].iloc[0]), 1) if 2030 in exp["year"].values else None,
     "expected_new_by_2030_upside": round(float(exp.loc[exp["year"] == 2030, "upside"].iloc[0]), 1) if 2030 in exp["year"].values else None,
 }

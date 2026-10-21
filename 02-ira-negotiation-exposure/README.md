@@ -104,6 +104,32 @@ The top of the list:
 - **Repatha** reaches its 11-year mark in August 2026. Tagrisso, Rinvoq,
   Cabometyx and Nubeqa follow.
 
+### 5. Machine learning extension: can a model learn how CMS selects?
+![ML vs rules](outputs/figures/04_ml_vs_rules_backtest.png)
+
+Models were trained on the first two selection rounds (2023 and 2025) and tested
+on the third (January 2026), which they never saw:
+
+| Approach | Actual 2028 picks found in the top 15 |
+|---|---|
+| Pure ML, logistic regression | 5 |
+| Pure ML, gradient boosting | 4 |
+| **Hybrid: statutory rules filter, then logistic regression ranks** | **10** |
+| Hybrid: rules, then gradient boosting | 6 |
+| Rule-based screen alone | 11 |
+
+- **Pure ML fails:** with 25 positive examples it learns "high spend gets
+  picked" and ranks ineligible drugs such as Mounjaro (under 5 years on market)
+  at the top.
+- **Rules for the law, ML for the judgement** comes close to the hand-built
+  screen. Among eligible drugs the model confirms that spend dominates, with
+  small positive weights on spend growth and time past the eligibility mark
+  ([drivers](outputs/figures/05_ml_selection_drivers.png)).
+- The useful output is the **consensus list**. Thirteen drugs are in the top 15 of
+  both the rules and the model for February 2027: Keytruda, Repatha, Opdivo,
+  Creon, Tagrisso, Ingrezza, Rinvoq, Nubeqa, Kesimpta, Nucala, Cabometyx,
+  Nuplazid and Lynparza ([table](outputs/tables/ipay2029_ml_vs_rules.csv)).
+
 ## Recommendations
 
 **For market access and finance teams at the exposed companies:**

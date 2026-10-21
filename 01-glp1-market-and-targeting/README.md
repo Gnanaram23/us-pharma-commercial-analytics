@@ -96,6 +96,34 @@ claims for CMS to report (under 11), and another 4% gave it 10% or less. For a
 Mounjaro team these established GLP-1 prescribers are switch targets: they already
 believe in the class, so the job is brand preference, not class education.
 
+### 7. Machine learning extension: who will add the most volume next year?
+![ML growth capture](outputs/figures/07_ml_growth_capture.png)
+
+A **gradient-boosted decision tree** model predicts each prescriber's chance of
+being a *top grower*: the 10% who add the most GLP-1 claims the following year.
+It uses only what was known at the end of 2023 (volume, momentum, brand mix,
+refills per patient, specialty, state). It is validated with **cross-validation
+grouped by state**, so every score is for a state the model did not learn from.
+
+| Ranking method | AUC | Growth reached by calling the top 10% | top 20% |
+|---|---|---|---|
+| Gradient boosting | **0.82** | **29%** | **44%** |
+| Current GLP-1 volume (what most targeting uses) | 0.78 | 25% | 40% |
+
+- The model reaches about **10% more of next year's growth** for the same number
+  of calls. The gain is real but modest: current volume is already a strong
+  baseline, and an honest evaluation shows it.
+- Patient count, state and last year's momentum carry the most weight
+  ([feature importance](outputs/figures/08_ml_feature_importance.png)).
+- 84% of the model's top 5,000 are **champions**, while only 12% are rule-based growth
+  targets. The two lists answer different questions: *who will add volume anyway*
+  versus *who is under-using today*. A sound plan uses both, protecting
+  champions and converting growth targets.
+- A **k-means clustering** check did not reproduce the rule-based segments
+  (adjusted Rand index 0.24). It mainly isolated prescribers whose reportable
+  claims fall in a single drug class, an artifact of CMS's small-count
+  suppression. The transparent rules were kept.
+
 ## Recommendations
 
 1. **Re-weight field effort to primary care.** Put the first wave of rep calls on the

@@ -416,7 +416,211 @@ growth_src = {
 growth_src
 
 # %% [markdown]
-# ## 8. Summary numbers used in the README
+# ## 8. Machine learning extension: who will add the most GLP-1 volume next year?
+#
+# The segments above describe where prescribers are today. A field team also
+# wants to know **who is about to grow**, because calls are worth most just
+# before a prescriber accelerates.
+#
+# **Set-up:**
+# - **Universe:** diabetes-specialty prescribers with reportable GLP-1 claims in 2023.
+# - **Target:** the *top growers*, the 10% of prescribers who added the most
+#   GLP-1 claims from 2023 to 2024 (absolute claims, because that is what a brand
+#   books).
+# - **Features (all known at the end of 2023):** GLP-1 claims and patients,
+#   2022→2023 momentum, whether the prescriber was new to GLP-1s, number of
+#   brands used, Ozempic / Mounjaro / Trulicity mix, cost per claim, refills per
+#   patient, specialty, state and the state's GLP-1 penetration.
+# - **Validation:** 5-fold cross-validation **grouped by state**. The model is
+#   always scored on states it did not learn from, which is the harder and more
+#   honest test for a territory-level tool.
+#
+# **Model:** gradient-boosted decision trees (`HistGradientBoostingClassifier`).
+# The model builds hundreds of small decision trees, each correcting the errors of the
+# ones before. **Baseline:** ranking prescribers by current GLP-1 volume, which is
+# what most targeting already does.
+#
+# **Terms:** *AUC* (area under the ROC curve) is the chance that the model ranks
+# a random top grower above a random other prescriber; 0.5 is a coin flip.
+# *Capture* is the share of all next-year growth reached by calling the top X%
+# of the ranked list.
+
+# %%
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import GroupKFold
+from sklearn.inspection import permutation_importance
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import adjusted_rand_score
+
+DIAB_SPEC = DIABETES_SPECIALTIES
+
+
+def state_penetration(year):
+    g = geo[(geo["Prscrbr_Geo_Lvl"] == "State") & (geo["year"] == year)]
+    p = g.pivot_table(index="Prscrbr_Geo_Desc", columns="cls", values="Tot_Clms", aggfunc="sum").fillna(0)
+    p = p["GLP-1"] / p[["GLP-1", "SGLT2", "DPP-4"]].sum(axis=1)
+    return p.rename(index=STATE_ABBR)
+
+
+claims_by_year = {y: load(RAW / f"prescriber_drug_{y}.csv.gz").query("cls == 'GLP-1'").groupby("Prscrbr_NPI")["Tot_Clms"].sum()
+                  for y in (2022, 2023, 2024)}
+
+
+def features(year):
+    d = load(RAW / f"prescriber_drug_{year}.csv.gz")
+    d = d[(d["cls"] == "GLP-1") & d["Prscrbr_Type"].isin(DIAB_SPEC)]
+    f = d.groupby("Prscrbr_NPI").agg(glp1_claims=("Tot_Clms", "sum"), glp1_benes=("Tot_Benes", "sum"),
+                                     glp1_cost=("Tot_Drug_Cst", "sum"), n_brands=("brand", "nunique"),
+                                     specialty=("Prscrbr_Type", "first"), state=("Prscrbr_State_Abrvtn", "first"))
+    mix = d.pivot_table(index="Prscrbr_NPI", columns="brand", values="Tot_Clms", aggfunc="sum", fill_value=0)
+    for b in ["Ozempic", "Mounjaro", "Trulicity"]:
+        f[f"share_{b.lower()}"] = (mix[b] if b in mix else 0) / f["glp1_claims"]
+    f["cost_per_claim"] = f["glp1_cost"] / f["glp1_claims"]
+    f["claims_per_patient"] = f["glp1_claims"] / f["glp1_benes"].clip(lower=1)
+    f["state_penetration"] = f["state"].map(state_penetration(year))
+    prev = claims_by_year[year - 1].reindex(f.index).fillna(0)
+    f["log_claims"] = np.log1p(f["glp1_claims"])
+    f["momentum"] = np.log1p(f["glp1_claims"]) - np.log1p(prev)
+    f["new_to_glp1"] = (prev == 0).astype(int)
+    return f.drop(columns=["glp1_cost"])
+
+
+FEATS = ["log_claims", "glp1_benes", "momentum", "new_to_glp1", "n_brands", "share_ozempic", "share_mounjaro",
+         "share_trulicity", "cost_per_claim", "claims_per_patient", "state_penetration"]
+CAT = ["specialty", "state"]
+F23 = features(2023)
+F24 = features(2024)
+cats = {c: sorted(set(F23[c].dropna()) | set(F24[c].dropna())) for c in CAT}
+
+
+def matrix(f):
+    X = f[FEATS].copy()
+    for c in CAT:
+        X[c] = pd.Categorical(f[c], categories=cats[c]).codes
+    return X
+
+
+def make_model():
+    return HistGradientBoostingClassifier(max_iter=300, learning_rate=0.05, max_leaf_nodes=31,
+                                          categorical_features=[len(FEATS) + i for i in range(len(CAT))],
+                                          random_state=7)
+
+
+X = matrix(F23)
+gain = claims_by_year[2024].reindex(F23.index).fillna(0) - F23["glp1_claims"]
+y = (gain >= gain.quantile(0.9)).astype(int)
+
+oof = np.zeros(len(X))
+for tr, te in GroupKFold(n_splits=5).split(X, y, groups=F23["state"].fillna("NA")):
+    oof[te] = make_model().fit(X.iloc[tr], y.iloc[tr]).predict_proba(X.iloc[te])[:, 1]
+
+
+def capture(score, frac):
+    order = np.argsort(-np.asarray(score))
+    k = int(frac * len(order))
+    return gain.values[order[:k]].clip(min=0).sum() / gain.clip(lower=0).sum()
+
+
+vol = F23["glp1_claims"].values
+ml_eval = pd.DataFrame({
+    "AUC": [roc_auc_score(y, oof), roc_auc_score(y, vol)],
+    "Top 10% capture": [capture(oof, 0.1), capture(vol, 0.1)],
+    "Top 20% capture": [capture(oof, 0.2), capture(vol, 0.2)],
+}, index=["Gradient boosting", "Rank by current volume"])
+print(f"{len(X):,} prescribers; a top grower added at least {gain.quantile(0.9):.0f} claims in 2024")
+ml_eval.round(3)
+
+# %%
+fig, ax = plt.subplots(figsize=(8, 5))
+xs = np.linspace(0, 1, 101)
+for name, s, c in [("Gradient boosting", oof, style.ACCENT), ("Rank by current volume", vol, style.NEUTRAL)]:
+    ax.plot(xs, [capture(s, x) if x > 0 else 0 for x in xs], color=c, lw=2.2,
+            label=f"{name} (AUC {ml_eval.loc[name, 'AUC']:.2f})")
+ax.plot([0, 1], [0, 1], color=style.GRID, ls=":", label="Random list")
+c20m, c20v = ml_eval.loc["Gradient boosting", "Top 20% capture"], ml_eval.loc["Rank by current volume", "Top 20% capture"]
+ax.annotate(f"calling the top 20%:\nmodel reaches {c20m:.0%} of growth,\nvolume ranking {c20v:.0%}", (0.2, c20m),
+            xytext=(0.33, c20m - 0.25), fontsize=9, arrowprops=dict(arrowstyle="-", color=style.MUTED))
+style.pct(ax, "x"); style.pct(ax, "y")
+ax.set_xlabel("Share of prescribers called, ranked by score")
+ax.set_ylabel("Share of next-year GLP-1 growth reached")
+ax.set_title("Predicting next year's top growers (validated on unseen states)")
+style.subtitle(ax, "2023 profile → 2024 growth, 5-fold cross-validation grouped by state")
+ax.legend(loc="lower right", fontsize=9)
+style.source(fig, SRC)
+style.save(fig, FIG / "07_ml_growth_capture.png")
+
+# %% [markdown]
+# **What drives the prediction?** Permutation importance measures how much AUC
+# drops when one feature is randomly shuffled. A bigger drop means the model
+# relies on that feature more.
+
+# %%
+final = make_model().fit(X, y)
+imp = permutation_importance(final, X, y, scoring="roc_auc", n_repeats=3, random_state=7, n_jobs=-1)
+imp = pd.Series(imp.importances_mean, index=X.columns).sort_values()
+labels = {"log_claims": "Current GLP-1 volume", "glp1_benes": "GLP-1 patients", "momentum": "Last year's growth",
+          "new_to_glp1": "New to GLP-1s", "n_brands": "Number of GLP-1 brands used",
+          "share_ozempic": "Ozempic share", "share_mounjaro": "Mounjaro share", "share_trulicity": "Trulicity share",
+          "cost_per_claim": "Cost per claim (dose / brand mix)", "claims_per_patient": "Refills per patient",
+          "state_penetration": "State GLP-1 penetration", "specialty": "Specialty", "state": "State"}
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.barh([labels[i] for i in imp.index], imp.values, color=style.ACCENT)
+ax.set_title("What the growth model relies on")
+style.subtitle(ax, "Drop in AUC when each feature is shuffled")
+ax.grid(axis="y", visible=False)
+style.source(fig, SRC)
+style.save(fig, FIG / "08_ml_feature_importance.png")
+imp.sort_values(ascending=False).round(4)
+
+# %% [markdown]
+# **Using it:** the model trained on 2023 → 2024 scores each prescriber's 2024
+# profile to rank likely 2025 top growers. The list is compared with the
+# rule-based growth-target segment from section 4. The two answer different
+# questions (who under-uses GLP-1s today vs. who is about to add the most
+# volume), so they work best together.
+
+# %%
+F24["growth_score"] = final.predict_proba(matrix(F24))[:, 1]
+top_ml = F24.sort_values("growth_score", ascending=False).head(5000)
+seg_of_top = hcp["segment"].reindex(top_ml.index).fillna("Not in 2024 universe").value_counts(normalize=True)
+overlap = float(seg_of_top.get("Growth targets", 0))
+ml_list = top_ml[["specialty", "state", "glp1_claims", "momentum", "share_ozempic", "share_mounjaro", "growth_score"]].round(3)
+ml_list.to_csv(TAB / "ml_growth_scores_top5000.csv")
+seg_of_top.round(3)
+
+# %% [markdown]
+# ### Check on the rule-based segments: does unsupervised clustering agree?
+#
+# K-means clustering groups prescribers by similarity without being told the
+# segment rules. If it finds roughly the same four groups, the hand-made rules
+# match real structure in the data. The *adjusted Rand index* (ARI) scores
+# agreement between two groupings: 0 means chance, 1 means identical.
+
+# %%
+km_X = np.column_stack([np.log1p(hcp["modern_claims"]), hcp["glp1_share"],
+                        hcp["SGLT2"] / hcp["modern_claims"], hcp["DPP-4"] / hcp["modern_claims"]])
+km = KMeans(n_clusters=4, n_init=10, random_state=7).fit(StandardScaler().fit_transform(km_X))
+hcp["cluster"] = km.labels_
+ari = adjusted_rand_score(hcp["segment"], hcp["cluster"])
+profile = hcp.groupby("cluster").agg(prescribers=("modern_claims", "size"),
+                                     median_claims=("modern_claims", "median"),
+                                     glp1_share=("glp1_share", "median"))
+print(f"Adjusted Rand index, k-means vs rule segments: {ari:.2f}")
+pd.crosstab(hcp["cluster"], hcp["segment"], normalize="index").round(2).join(profile)
+
+# %% [markdown]
+# **Reading the result:** k-means does *not* reproduce the volume split.
+# Instead it isolates prescribers whose reportable claims sit in only one class
+# (GLP-1 share exactly 0% or 100%). That is mostly an artifact of CMS hiding
+# counts under 11, not a real prescribing style. So clustering adds no better
+# segmentation here, and the transparent rule-based segments are kept. Checking
+# this is still worth doing: an unsupervised method applied without this check
+# would have produced a misleading "segment".
+
+# %% [markdown]
+# ## 9. Summary numbers used in the README
 
 # %%
 summary = {
@@ -432,6 +636,10 @@ summary = {
     **opp, **growth_src,
     "mounjaro_low_share_prescribers": float(dist.loc[["None reported*", "1–10%"], "share_of_prescribers"].sum()),
     "mounjaro_none_reported": float(dist.loc["None reported*", "share_of_prescribers"]),
+    "ml_n": int(len(X)), "ml_eval": ml_eval.round(4).to_dict(),
+    "ml_top_features": imp.sort_values(ascending=False).head(4).index.tolist(),
+    "ml_top5000_segments": seg_of_top.round(3).to_dict(),
+    "ml_overlap_with_growth_targets": float(overlap), "kmeans_ari": float(ari),
 }
 pd.Series(summary).to_json(TAB / "summary.json", indent=1)
 pd.Series(summary)
