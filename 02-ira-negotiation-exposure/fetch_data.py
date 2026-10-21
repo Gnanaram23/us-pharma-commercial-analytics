@@ -50,10 +50,12 @@ def clean(name: str) -> str:
 
 
 def summarise(brand: str, generic: str) -> dict:
-    apps = fda_applications(f'openfda.brand_name:"{clean(brand)}"')
+    # Search the product-level brand name first: some Drugs@FDA records have no 'openfda' block
+    name = clean(brand)
+    apps = fda_applications(f'products.brand_name:"{name}"') or fda_applications(f'openfda.brand_name:"{name}"')
     if not apps:
-        first = clean(brand).split()[0]
-        apps = fda_applications(f'openfda.brand_name:"{first}"') if len(first) > 3 else []
+        first = name.split()[0]
+        apps = fda_applications(f'products.brand_name:"{first}"') if len(first) > 3 else []
     out = {"Brnd_Name": brand, "Gnrc_Name": generic, "fda_found": bool(apps)}
     innovator = [a for a in apps if a.get("application_number", "").startswith(("NDA", "BLA"))]
     if innovator:
