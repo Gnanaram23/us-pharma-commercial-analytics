@@ -1,0 +1,120 @@
+{
+ "molecules": {
+  "pregabalin": [
+   "LYRICA",
+   "PREGABALIN"
+  ],
+  "dimethyl fumarate": [
+   "TECFIDERA",
+   "DIMETHYL F"
+  ],
+  "varenicline": [
+   "CHANTIX",
+   "VARENICLIN"
+  ],
+  "fingolimod": [
+   "GILENYA",
+   "FINGOLIMOD"
+  ],
+  "teriflunomide": [
+   "AUBAGIO",
+   "TERIFLUNOM"
+  ],
+  "lurasidone": [
+   "LATUDA",
+   "LURASIDONE"
+  ],
+  "lisdexamfetamine": [
+   "VYVANSE",
+   "LISDEXAMFE"
+  ],
+  "mirabegron": [
+   "MYRBETRIQ",
+   "MIRABEGRON"
+  ],
+  "ticagrelor": [
+   "BRILINTA",
+   "TICAGRELOR"
+  ],
+  "sacubitril/valsartan": [
+   "ENTRESTO",
+   "SACUBITRIL"
+  ],
+  "apixaban": [
+   "ELIQUIS",
+   "APIXABAN"
+  ],
+  "rivaroxaban": [
+   "XARELTO",
+   "RIVAROXABA"
+  ],
+  "adalimumab": [
+   "HUMIRA",
+   "AMJEVITA",
+   "CYLTEZO",
+   "HYRIMOZ",
+   "HADLIMA",
+   "YUSIMRY",
+   "HULIO",
+   "YUFLYMA",
+   "IDACIO",
+   "ABRILADA",
+   "SIMLANDI",
+   "ADALIMUMAB"
+  ],
+  "ustekinumab": [
+   "STELARA",
+   "WEZLANA",
+   "SELARSDI",
+   "PYZCHIVA",
+   "OTULFI",
+   "IMULDOSA",
+   "YESINTEK",
+   "STEQEYMA",
+   "STARJEMZA",
+   "USTEKINUMA"
+  ]
+ },
+ "files": {
+  "2017": {
+   "url": "https://download.medicaid.gov/data/StateDrugUtilizationData-2017.csv",
+   "rows": 22478
+  },
+  "2018": {
+   "url": "https://download.medicaid.gov/data/StateDrugUtilizationData-2018.csv",
+   "rows": 24722
+  },
+  "2019": {
+   "url": "https://download.medicaid.gov/data/StateDrugUtilizationData-2019.csv",
+   "rows": 34946
+  },
+  "2020": {
+   "url": "https://download.medicaid.gov/data/sdud2020_updatedJuly2026.csv",
+   "rows": 49430
+  },
+  "2021": {
+   "url": "https://download.medicaid.gov/data/sdud2021_updatedJuly2026.csv",
+   "rows": 54147
+  },
+  "2022": {
+   "url": "https://download.medicaid.gov/data/sdud2022_updatedJuly2026.csv",
+   "rows": 56622
+  },
+  "2023": {
+   "url": "https://download.medicaid.gov/data/sdud2023_updatedJuly2026.csv",
+   "rows": 79748
+  },
+  "2024": {
+   "url": "https://download.medicaid.gov/data/sdud2024_updatedJuly2026.csv",
+   "rows": 98451
+  },
+  "2025": {
+   "url": "https://download.medicaid.gov/data/sdud2025_updatedjuly2026.csv",
+   "rows": 113736
+  },
+  "2026": {
+   "url": "https://download.medicaid.gov/data/sdud2026_updated072026.csv",
+   "rows": 31803
+  }
+ }
+}
