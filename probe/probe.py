@@ -1,63 +1,31 @@
-"""One-off probe: discover dataset endpoints and schemas from public sources."""
-import json, urllib.request, urllib.parse, pathlib, traceback
+import json, urllib.request, urllib.parse, pathlib, time
 OUT = pathlib.Path("probe/out"); OUT.mkdir(parents=True, exist_ok=True)
-def get(url, n=None):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 analytics-portfolio"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        b = r.read() if n is None else r.read(n)
-    return b
-def save(name, obj):
-    (OUT / name).write_text(obj if isinstance(obj, str) else json.dumps(obj, indent=1)[:400000])
-log = []
-# 1. CMS catalogue
-try:
-    cat = json.loads(get("https://data.cms.gov/data.json"))
-    keep = []
-    for d in cat.get("dataset", []):
-        t = d.get("title", "")
-        if any(k in t for k in ["Part D", "Part B Spending", "Prescriber"]):
-            keep.append({"title": t, "identifier": d.get("identifier"),
-                         "dist": [{k: x.get(k) for k in ("title", "format", "accessURL", "downloadURL", "temporal", "modified")} for x in d.get("distribution", [])][:40]})
-    save("cms_catalog.json", keep); log.append(f"cms ok {len(keep)}")
-except Exception: log.append("cms FAIL " + traceback.format_exc()[-500:])
-# 2. sample rows from each CMS API distribution of interest
-try:
-    for d in keep:
-        apis = [x for x in d["dist"] if (x.get("format") == "API" or "data-api" in str(x.get("accessURL")))]
-        if not apis: continue
-        u = apis[0]["accessURL"]
-        sep = "&" if "?" in u else "?"
-        try:
-            s = json.loads(get(u + sep + "size=3"))
-            save("sample_" + "".join(c for c in d["title"] if c.isalnum())[:60] + ".json", {"url": u, "rows": s})
-        except Exception as e: log.append(f"sample fail {d['title']}: {e}")
-    # filter test on prescriber-by-drug
-    pd_ = [d for d in keep if d["title"].strip() == "Medicare Part D Prescribers - by Provider and Drug"]
-    if pd_:
-        u = [x for x in pd_[0]["dist"] if x.get("format") == "API"][0]["accessURL"]
-        for q in ["filter[Gnrc_Name]=Semaglutide&size=2", "filter[Brnd_Name]=Ozempic&size=2", "keyword=Ozempic&size=2"]:
-            try: save("filtertest_" + q.split("=")[0].replace("[","_").replace("]","") + ".json", {"q": q, "rows": json.loads(get(u + "?" + q))})
-            except Exception as e: log.append(f"filter fail {q}: {e}")
-        try: save("stats_prescriber.json", json.loads(get(u.replace("/data", "/data-viewer/stats") + "?filter[Gnrc_Name]=Semaglutide")))
-        except Exception as e: log.append(f"stats fail {e}")
-except Exception: log.append("cms sample FAIL " + traceback.format_exc()[-500:])
-# 3. Medicaid metastore
-try:
-    items = json.loads(get("https://data.medicaid.gov/api/1/metastore/schemas/dataset/items"))
-    sd = [{"id": i.get("identifier"), "title": i.get("title"), "dist": [x.get("downloadURL") or x.get("data", {}).get("downloadURL") for x in i.get("distribution", [])]} for i in items if "Drug Utilization" in i.get("title", "") or "NADAC" in i.get("title", "")]
-    save("medicaid_catalog.json", sd); log.append(f"medicaid ok {len(sd)}")
-    sid = [s for s in sd if s["title"].strip().endswith("2023")][0]["id"]
-    q = "https://data.medicaid.gov/api/1/datastore/query/%s/0?limit=3&conditions[0][property]=product_name&conditions[0][value]=HUMIRA&conditions[0][operator]=starts%%20with" % sid
-    try: save("medicaid_sample.json", json.loads(get(q)))
-    except Exception as e:
-        log.append(f"medicaid query fail {e}")
-        save("medicaid_sample.json", json.loads(get("https://data.medicaid.gov/api/1/datastore/query/%s/0?limit=3" % sid)))
-except Exception: log.append("medicaid FAIL " + traceback.format_exc()[-500:])
-# 4. openFDA + CT.gov + Orange Book/Purple
-for name, u in [("openfda_label", "https://api.fda.gov/drug/drugsfda.json?search=openfda.brand_name:%22MOUNJARO%22&limit=1"),
-                ("ctgov", "https://clinicaltrials.gov/api/v2/studies?query.cond=obesity&query.intr=GLP-1&pageSize=2&countTotal=true"),
-                ("cms_ira_page", "https://www.cms.gov/inflation-reduction-act-and-medicare/medicare-drug-price-negotiation")]:
+api = "https://data.cms.gov/data-api/v1/dataset/9552739e-3d05-4c1b-8eff-ecabf391e2e5/data"
+def get(u):
+    t=time.time()
+    with urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent":"x"}), timeout=300) as r: b=r.read()
+    return b, round(time.time()-t,1)
+res = {}
+tests = {
+ "keyword_sema": "keyword=semaglutide&size=5",
+ "keyword_sema_off": "keyword=semaglutide&size=5000&offset=0",
+ "filter_eq": "filter[Gnrc_Name]=Semaglutide&size=5",
+ "filter_brand": "filter[Brnd_Name]=Ozempic&size=5",
+ "filter_cond_contains": "filter[f1][condition][path]=Gnrc_Name&filter[f1][condition][operator]=CONTAINS&filter[f1][condition][value]=glutide&size=5",
+ "filter_cond_in": "filter[f1][condition][path]=Gnrc_Name&filter[f1][condition][operator]=IN&filter[f1][condition][value][1]=Semaglutide&filter[f1][condition][value][2]=Tirzepatide&size=5",
+}
+for k,q in tests.items():
     try:
-        b = get(u, 300000); save(name + (".json" if "api" in u else ".html"), b.decode("utf-8", "ignore")); log.append(f"{name} ok")
-    except Exception as e: log.append(f"{name} fail {e}")
-save("log.txt", "\n".join(log)); print("\n".join(log))
+        b,t = get(api+"?"+q); rows=json.loads(b)
+        res[k] = {"secs":t, "n":len(rows), "gn":[r.get("Gnrc_Name") for r in rows[:5]], "bn":[r.get("Brnd_Name") for r in rows[:5]]}
+    except Exception as e: res[k] = {"err": str(e)}
+for k,q in {"stats_keyword": "keyword=semaglutide", "stats_filter": "filter[Gnrc_Name]=Semaglutide", "stats_all": ""}.items():
+    try:
+        b,t = get(api.replace("/data","/data-viewer/stats")+"?"+q); res[k] = {"secs":t, "body": json.loads(b)}
+    except Exception as e: res[k] = {"err": str(e)}
+# also stats endpoint variant
+try:
+    b,t = get("https://data.cms.gov/data-api/v1/dataset/9552739e-3d05-4c1b-8eff-ecabf391e2e5/data/stats?keyword=semaglutide"); res["stats2"] = {"secs":t,"body":json.loads(b)}
+except Exception as e: res["stats2"]={"err":str(e)}
+(OUT/"api_tests.json").write_text(json.dumps(res, indent=1))
+print(json.dumps(res)[:3000])
