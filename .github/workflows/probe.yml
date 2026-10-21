@@ -1,12 +1,15 @@
 name: probe-data-sources
 on: { workflow_dispatch: {}, push: { branches: [probe] } }
-permissions: { contents: write }
+permissions: { contents: write, issues: write }
 jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python probe/probe.py
-      - run: |
+      - run: python probe/probe.py | while read l; do echo "::notice::$l"; done
+      - name: commit
+        run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add probe/out && git commit -m "probe output" && git push
+          git add probe/out 2>&1 | sed 's/^/::warning::/'
+          git commit -m "probe output [skip ci]" > c.txt 2>&1 || true; sed 's/^/::warning::commit /' c.txt | head -5
+          git push origin HEAD:probe-out > p.txt 2>&1 || (sed 's/^/::error::push /' p.txt; exit 1)
