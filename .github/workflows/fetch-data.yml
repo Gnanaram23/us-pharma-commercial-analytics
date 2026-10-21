@@ -1,0 +1,100 @@
+# Downloads the public source data for every project and commits it to the
+# `data-refresh` branch. Run it from the Actions tab ("Run workflow"), or by
+# pushing to the `data-fetch` branch.
+name: Fetch public data
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [data-fetch]
+
+permissions:
+  contents: write
+
+jobs:
+  shared:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - run: python -m common.fetch_shared
+      - uses: actions/upload-artifact@v4
+        with: { name: shared, path: data/shared }
+
+  glp1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - run: python 01-glp1-market-and-targeting/fetch_data.py
+      - uses: actions/upload-artifact@v4
+        with: { name: glp1, path: 01-glp1-market-and-targeting/data/raw }
+
+  ira:
+    needs: shared
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with: { name: shared, path: data/shared }
+      - run: python 02-ira-negotiation-exposure/fetch_data.py
+      - uses: actions/upload-artifact@v4
+        with: { name: ira, path: 02-ira-negotiation-exposure/data/raw }
+
+  loe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - run: python 03-loe-erosion-forecast/fetch_data.py
+      - uses: actions/upload-artifact@v4
+        with: { name: loe, path: 03-loe-erosion-forecast/data/raw }
+
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - run: python 04-obesity-pipeline-intelligence/fetch_data.py
+      - uses: actions/upload-artifact@v4
+        with: { name: pipeline, path: 04-obesity-pipeline-intelligence/data/raw }
+
+  commit:
+    needs: [shared, glp1, ira, loe, pipeline]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { path: _artifacts }
+      - name: Place files and commit to data-refresh
+        run: |
+          set -e
+          [ -d _artifacts/shared ]   && mkdir -p data/shared && cp -r _artifacts/shared/. data/shared/
+          [ -d _artifacts/glp1 ]     && mkdir -p 01-glp1-market-and-targeting/data/raw && cp -r _artifacts/glp1/. 01-glp1-market-and-targeting/data/raw/
+          [ -d _artifacts/ira ]      && mkdir -p 02-ira-negotiation-exposure/data/raw && cp -r _artifacts/ira/. 02-ira-negotiation-exposure/data/raw/
+          [ -d _artifacts/loe ]      && mkdir -p 03-loe-erosion-forecast/data/raw && cp -r _artifacts/loe/. 03-loe-erosion-forecast/data/raw/
+          [ -d _artifacts/pipeline ] && mkdir -p 04-obesity-pipeline-intelligence/data/raw && cp -r _artifacts/pipeline/. 04-obesity-pipeline-intelligence/data/raw/
+          rm -rf _artifacts
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B data-refresh
+          git add -A data */data
+          git commit -m "Refresh public source data ($(date -u +%Y-%m-%d))" || echo "nothing to commit"
+          git push -f origin data-refresh
