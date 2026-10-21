@@ -1,0 +1,6 @@
+cms ok 65
+medicaid ok 52
+medicaid query fail HTTP Error 400: Bad Request
+openfda_label ok
+ctgov ok
+cms_ira_page ok

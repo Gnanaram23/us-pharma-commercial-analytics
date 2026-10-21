@@ -1,0 +1,1988 @@
+[
+ {
+  "title": "Medicare Quarterly Part B Spending by Drug : 2026-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/bf6a5b3b-31ee-4abb-b1ad-2607a1e7510a/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Quarterly Part B Spending by Drug : 2026-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/bf6a5b3b-31ee-4abb-b1ad-2607a1e7510a/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2026-01-01",
+      "endDate": "2026-03-31"
+     }
+    ],
+    "modified": "2026-07-23"
+   },
+   {
+    "title": "Medicare Quarterly Part B Spending by Drug : 2026-01-01",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-07/6d9e955a-d199-42cf-9f73-7e0d93c33b3e/qddptb_r2603_p06_v10_dqt2601_260722.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2026-01-01",
+      "endDate": "2026-03-31"
+     }
+    ],
+    "modified": "2026-07-23"
+   },
+   {
+    "title": "Medicare Quarterly Part B Spending by Drug : 2026-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/5cb9fd56-2358-4a7a-b21e-05f3ea93ec12/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2026-01-01",
+      "endDate": "2026-03-31"
+     }
+    ],
+    "modified": "2026-07-23"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Quarterly Part D Spending by Drug : 2026-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/4ff7c618-4e40-483a-b390-c8a58c94fa15/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Quarterly Part D Spending by Drug : 2026-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/4ff7c618-4e40-483a-b390-c8a58c94fa15/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2026-01-01",
+      "endDate": "2026-03-31"
+     }
+    ],
+    "modified": "2026-07-23"
+   },
+   {
+    "title": "Medicare Quarterly Part D Spending by Drug : 2026-01-01",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-07/QDD_PTD_RQ2603_P01_V10_DQT2601_20260708.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2026-01-01",
+      "endDate": "2026-03-31"
+     }
+    ],
+    "modified": "2026-07-23"
+   },
+   {
+    "title": "Medicare Quarterly Part D Spending by Drug : 2026-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/43ed210a-bf5d-49ba-baa4-5713a5a5ded1/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2026-01-01",
+      "endDate": "2026-03-31"
+     }
+    ],
+    "modified": "2026-07-23"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2013-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/b0672216-95a8-4dfe-b728-a82f6eebd384/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2013-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-05/CPS_MDCR_UTLZN_D_ALL_5.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2013-01-01",
+      "endDate": "2013-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2014-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/c5a7d842-9672-403f-8711-17d3caf42c63/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2014-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-05/CPS_MDCR_UTLZN_D_ALL_4.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2014-01-01",
+      "endDate": "2014-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2015-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/0a6950e4-df12-45cb-bd37-d44c580ea919/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2015-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-05/CPS_MDCR_UTLZN_D_ALL_3.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2015-01-01",
+      "endDate": "2015-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2016-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/87048692-6535-445c-a30b-13c559852200/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2016-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-05/CPS_MDCR_UTLZN_D_ALL_2.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2016-01-01",
+      "endDate": "2016-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2017-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/c716987b-6250-40d1-9c78-5567fe8b719a/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2017-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-05/CPS_MDCR_UTLZN_D_ALL_1.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2017-01-01",
+      "endDate": "2017-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2018-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/b7b58ee9-f4d7-4c0e-8fff-010e0f073d2e/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2018-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-05/CPS_MDCR_UTLZN_D_ALL_0.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2018-01-01",
+      "endDate": "2018-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2019-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/04a4294b-960a-49d0-a11f-079dd45c882b/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2019-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-05/CPS_MDCR_UTLZN_D_ALL.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2019-01-01",
+      "endDate": "2019-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2020-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/8919313b-221a-4fd2-bd66-883ad7af516f/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2020-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2022-02/CPS%20MDCR%20UTLZN%20D%202020.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2020-01-01",
+      "endDate": "2020-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2021-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/97a6c84d-a287-48d4-af21-94a076e0ff30/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2021-01-01",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2023-02/CPS%20MDCR%20UTLZN%20D%202021.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2021-01-01",
+      "endDate": "2021-12-31"
+     }
+    ],
+    "modified": "2025-09-08"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2022-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/d2975acb-d47f-4cfe-93ab-c91aaae44485/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2022-01-01",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2025-09/147fe37d-2220-4b41-9c8a-5b27112eee11/MDCR%20UTLZN%20D_CPS12UPD_2022.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2022-01-01",
+      "endDate": "2022-12-31"
+     }
+    ],
+    "modified": "2025-09-30"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2023-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/e5e93d65-1d8e-46e4-82fc-160490f4591d/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2023-01-01",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2025-09/8580dab0-0060-4c42-a897-f2599e8a35fc/MDCR%20UTLZN%20D_CPS12UPD_2023.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+     }
+    ],
+    "modified": "2025-09-30"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D : 2024-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/439f1941-e0c3-474a-a771-d041fdc3ff65/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D : 2024-01-01",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-09/0b3b2b7f-a97d-4344-b1b2-f09a114d98ae/MDCR%20UTLZN%20D_CPS12UPD_2024.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-09-30"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Spending by Drug : 2024-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/7e0b4365-fd63-4a29-8f5e-e0ac9f66a81b/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Spending by Drug : 2024-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/7e0b4365-fd63-4a29-8f5e-e0ac9f66a81b/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-06-25"
+   },
+   {
+    "title": "Medicare Part D Spending by Drug : 2024-01-01",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-06/98218f98-166c-4723-8438-c344a4ef96a6/DSD_PTD_RY26_P04_V10_DY24_BGM.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-06-25"
+   },
+   {
+    "title": "Medicare Part D Spending by Drug : 2024-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/da5ff50b-e5da-42de-b68b-6cfac1f64f35/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-06-25"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part B Spending by Drug : 2024-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/76a714ad-3a2c-43ac-b76d-9dadf8f7d890/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part B Spending by Drug : 2024-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/76a714ad-3a2c-43ac-b76d-9dadf8f7d890/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-06-25"
+   },
+   {
+    "title": "Medicare Part B Spending by Drug : 2024-01-01",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-06/6616fc91-eb70-404c-9f27-1448e47a3a73/DSD_PTB_RY26_P06_V10_DYT24_HCPCS-%20260602.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-06-25"
+   },
+   {
+    "title": "Medicare Part B Spending by Drug : 2024-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/f48ced88-541a-4c51-947b-149197e5eaf3/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-06-25"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Opioid Prescribing Rates - by Geography : 2024-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/94d00f36-73ce-4520-9b3f-83cd3cded25c/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Opioid Prescribing Rates - by Geography : 2024-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/94d00f36-73ce-4520-9b3f-83cd3cded25c/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-06-11"
+   },
+   {
+    "title": "Medicare Part D Opioid Prescribing Rates - by Geography : 2024-01-01",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-06/9b59e852-c8a0-4c8d-a13a-8fb087211bdd/OMT_MDCR_RY26_P04_V10_Y24_GEO.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-06-11"
+   },
+   {
+    "title": "Medicare Part D Opioid Prescribing Rates - by Geography : 2024-01-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/841fa537-5f35-4e53-b6ed-25a906132d39/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-06-11"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2013-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/c6905d43-45de-470d-897c-9ed8e75e256d/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2013-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/5fb694b1-2ec5-4e00-8efe-14161bdbdbea/MUP_DPR_RY24_P04_V10_DY13_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2013-01-01",
+      "endDate": "2013-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2013-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/c6905d43-45de-470d-897c-9ed8e75e256d/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2013-01-01",
+      "endDate": "2013-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2014-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/0779bc8d-18dd-40b8-9d61-7addc8b0daf1/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2014-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/06e87540-68a5-4a10-bf9c-a0521dc4ebed/MUP_DPR_RY24_P04_V10_DY14_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2014-01-01",
+      "endDate": "2014-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2014-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/0779bc8d-18dd-40b8-9d61-7addc8b0daf1/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2014-01-01",
+      "endDate": "2014-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2015-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/1d650894-8afe-4056-ba31-a85cb0e3cee6/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2015-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/bc1caf7f-dcbb-4258-b243-ee3666b6a20b/MUP_DPR_RY24_P04_V10_DY15_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2015-01-01",
+      "endDate": "2015-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2015-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/1d650894-8afe-4056-ba31-a85cb0e3cee6/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2015-01-01",
+      "endDate": "2015-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2016-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/25106f9d-0eb8-4ba7-b237-486ee87d910a/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2016-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/67c457c6-b62d-424f-ad85-2bb8117c928d/MUP_DPR_RY24_P04_V10_DY16_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2016-01-01",
+      "endDate": "2016-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2016-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/25106f9d-0eb8-4ba7-b237-486ee87d910a/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2016-01-01",
+      "endDate": "2016-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2017-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/05f108dd-76c4-49f4-9fdc-788d8f4251ec/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2017-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/d9d685a0-dc49-4da5-9416-4cf3e6349296/MUP_DPR_RY24_P04_V10_DY17_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2017-01-01",
+      "endDate": "2017-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2017-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/05f108dd-76c4-49f4-9fdc-788d8f4251ec/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2017-01-01",
+      "endDate": "2017-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2018-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/802fe556-311f-4962-8d75-d5f4ff405884/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2018-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/be3019b4-1164-4b40-af5d-cab40847d222/MUP_DPR_RY24_P04_V10_DY18_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2018-01-01",
+      "endDate": "2018-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2018-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/802fe556-311f-4962-8d75-d5f4ff405884/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2018-01-01",
+      "endDate": "2018-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2019-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/2a6705e6-7a1e-460c-ba22-35249a531918/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2019-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/129e7c21-d492-425b-be03-d2e59d933ab6/MUP_DPR_RY24_P04_V10_DY19_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2019-01-01",
+      "endDate": "2019-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2019-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/2a6705e6-7a1e-460c-ba22-35249a531918/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2019-01-01",
+      "endDate": "2019-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2020-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/7795fe20-e80e-435a-a9ed-d2d65e05feeb/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2020-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/75fecc51-c9e8-4904-b570-9da9dc101721/MUP_DPR_RY24_P04_V10_DY20_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2020-01-01",
+      "endDate": "2020-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2020-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/7795fe20-e80e-435a-a9ed-d2d65e05feeb/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2020-01-01",
+      "endDate": "2020-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2021-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/f68114ed-f854-4ffc-9c6e-ed78b5e2f8d0/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2021-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/43359391-e7fa-40b9-9bd4-5dc295e18712/MUP_DPR_RY24_P04_V10_DY21_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2021-01-01",
+      "endDate": "2021-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2021-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/f68114ed-f854-4ffc-9c6e-ed78b5e2f8d0/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2021-01-01",
+      "endDate": "2021-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2022-12-30",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/b101b457-ffa4-49bb-8fd9-27c1266086e2/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2022-12-30",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/18f82097-61a6-4889-9941-9a0b6ad7523c/MUP_DPR_RY24_P04_V10_DY22_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2022-01-01",
+      "endDate": "2022-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2022-12-30",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/b101b457-ffa4-49bb-8fd9-27c1266086e2/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2022-01-01",
+      "endDate": "2022-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2023-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/e54db557-cd82-4e91-a0fe-61aad5865d69/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2023-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2025-04/0d5915ce-002c-4d87-bde8-24ffb08bb6cc/MUP_DPR_RY25_P04_V10_DY23_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+     }
+    ],
+    "modified": "2025-09-09"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2023-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/e54db557-cd82-4e91-a0fe-61aad5865d69/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+     }
+    ],
+    "modified": "2025-09-09"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider and Drug : 2024-12-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/9552739e-3d05-4c1b-8eff-ecabf391e2e5/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2024-12-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/9552739e-3d05-4c1b-8eff-ecabf391e2e5/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-05-21"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2024-12-01",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-05/0ae165f4-eb44-495d-8cac-67f4571b6b83/MUP_DPR_RY26_P04_V10_DY24_NPIBN.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-05-21"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider and Drug : 2024-12-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/d5aa71a8-dcc0-4570-8bcf-bd39deac69fe/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-05-21"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2013-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/b220b86f-30f6-4196-ab70-72fc209aae94/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2013-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/c39345cb-ea6d-4312-a695-8410b45c92ab/mup_dpr_ry21_p04_v20_dy13_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2013-01-01",
+      "endDate": "2013-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2013-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/b220b86f-30f6-4196-ab70-72fc209aae94/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2013-01-01",
+      "endDate": "2013-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2014-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/f342f282-97d5-4c96-bc8a-7e8987c2e379/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2014-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/e11a5415-1967-4207-8ae3-329cfe3fedef/mup_dpr_ry21_p04_v20_dy14_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2014-01-01",
+      "endDate": "2014-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2014-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/f342f282-97d5-4c96-bc8a-7e8987c2e379/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2014-01-01",
+      "endDate": "2014-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2015-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/d3e63361-723e-45ae-a8c5-c4de4ca0152a/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2015-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/a846e593-06fb-4ed5-9b2f-b5a31acfef82/mup_dpr_ry21_p04_v20_dy15_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2015-01-01",
+      "endDate": "2015-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2015-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/d3e63361-723e-45ae-a8c5-c4de4ca0152a/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2015-01-01",
+      "endDate": "2015-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2016-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/5ca8ef44-a61c-496b-b82a-424851316264/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2016-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/e8255bdf-5e85-425c-9e6c-1cc460ccce51/mup_dpr_ry21_p04_v20_dy16_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2016-01-01",
+      "endDate": "2016-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2016-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/5ca8ef44-a61c-496b-b82a-424851316264/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2016-01-01",
+      "endDate": "2016-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2017-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/1233b56f-b7b2-4ee0-9d9c-94b74b7fdc79/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2017-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/8a65e4c8-3c6a-48f2-99ba-422987d953af/mup_dpr_ry21_p04_v20_dy17_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2017-01-01",
+      "endDate": "2017-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2017-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/1233b56f-b7b2-4ee0-9d9c-94b74b7fdc79/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2017-01-01",
+      "endDate": "2017-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2018-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/0b4a3f5a-9cc0-4f61-a2a9-34945b85d84b/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2018-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/a4b0ff0a-f869-4a51-9dce-59a5b018a609/mup_dpr_ry21_p04_v20_dy18_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2018-01-01",
+      "endDate": "2018-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2018-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/0b4a3f5a-9cc0-4f61-a2a9-34945b85d84b/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2018-01-01",
+      "endDate": "2018-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2019-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/1f0bef67-2dae-460d-ac47-02866bb3a4bb/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2019-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/d4a0a871-5e6a-4180-8d89-82b56ff08175/mup_dpr_ry21_p04_v20_dy19_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2019-01-01",
+      "endDate": "2019-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2019-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/1f0bef67-2dae-460d-ac47-02866bb3a4bb/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2019-01-01",
+      "endDate": "2019-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2020-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/265b3d0b-495d-424c-a204-5e3b86e4e6d0/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2020-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/0df99eb3-9bfe-46ac-8dd0-c5e700781aae/mup_dpr_ry22_p04_v20_dy20_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2020-01-01",
+      "endDate": "2020-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2020-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/265b3d0b-495d-424c-a204-5e3b86e4e6d0/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2020-01-01",
+      "endDate": "2020-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2021-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/838f7a4c-0423-4370-8227-588ce9b94b93/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2021-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/a8cb773f-4a79-42de-b7ad-83da254416bf/mup_dpr_ry23_p04_v20_dy21_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2021-01-01",
+      "endDate": "2021-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2021-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/838f7a4c-0423-4370-8227-588ce9b94b93/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2021-01-01",
+      "endDate": "2021-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2022-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/adcdaca6-0c9c-485f-af21-1abc16104d6c/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2022-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/0cdbfc0d-257d-4eb0-bcc8-71e5462ec320/mup_dpr_ry24_p04_v20_dy22_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2022-01-01",
+      "endDate": "2022-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2022-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/adcdaca6-0c9c-485f-af21-1abc16104d6c/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2022-01-01",
+      "endDate": "2022-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2023-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/42888afe-3b85-4a61-a4ee-091f00bd62bc/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2023-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/7f74c86e-ca81-4255-8951-3275c4361241/mup_dpr_ry25_p04_v20_dy23_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2023-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/42888afe-3b85-4a61-a4ee-091f00bd62bc/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Provider : 2024-12-03",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/14d8e8a9-7e9b-4370-a044-bf97c46b4b44/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2024-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/14d8e8a9-7e9b-4370-a044-bf97c46b4b44/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2024-12-03",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-08/373e45e5-33ec-452c-9302-a4bdbc203459/mup_dpr_ry26_p04_v20_dy24_npi.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Provider : 2024-12-03",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/2d38b6fd-f7a9-4edd-98f6-06ae3b4d1b8c/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-08-03"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2013-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/9aec2a70-4ef2-438a-bc35-1747fe2492c9/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2013-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-08/MUP_DPR_RY21_P04_V10_DY13_Geo_0.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2013-01-01",
+      "endDate": "2013-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2013-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/9aec2a70-4ef2-438a-bc35-1747fe2492c9/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2013-01-01",
+      "endDate": "2013-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2014-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/63099eb4-6c9e-4fec-8c9e-b6b132f1b7f4/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2014-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-08/MUP_DPR_RY21_P04_V10_DY14_Geo_0.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2014-01-01",
+      "endDate": "2014-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2014-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/63099eb4-6c9e-4fec-8c9e-b6b132f1b7f4/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2014-01-01",
+      "endDate": "2014-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2015-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/73748d0b-2acb-420a-ac66-27d8e238fdc8/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2015-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-08/MUP_DPR_RY21_P04_V10_DY15_Geo_0.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2015-01-01",
+      "endDate": "2015-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2015-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/73748d0b-2acb-420a-ac66-27d8e238fdc8/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2015-01-01",
+      "endDate": "2015-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2016-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/c5b3c840-5eb2-4e4c-ac35-c30995dcb051/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2016-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-08/MUP_DPR_RY21_P04_V10_DY16_Geo_0.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2016-01-01",
+      "endDate": "2016-12-31"
+     }
+    ],
+    "modified": "2024-01-30"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2016-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/c5b3c840-5eb2-4e4c-ac35-c30995dcb051/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2016-01-01",
+      "endDate": "2016-12-31"
+     }
+    ],
+    "modified": "2024-01-30"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2017-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/7863e41c-3f6f-4889-93a8-be65e9f3d073/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2017-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-02/efe83dea-bdce-457f-b8b3-fe3b8e9e0c33/MUP_DPR_RY21_P04_V10_DY17_Geo.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2017-01-01",
+      "endDate": "2017-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2017-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/7863e41c-3f6f-4889-93a8-be65e9f3d073/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2017-01-01",
+      "endDate": "2017-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2018-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/b083c9b6-b841-4676-8d0a-fb03ee1431a1/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2018-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-08/MUP_DPR_RY21_P04_V10_DY18_Geo.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2018-01-01",
+      "endDate": "2018-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2018-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/b083c9b6-b841-4676-8d0a-fb03ee1431a1/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2018-01-01",
+      "endDate": "2018-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2019-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/73a6335e-f16f-4c81-a84b-6b5a986e2bf8/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2019-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-08/MUP_DPR_RY21_P04_V10_DY19_Geo.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2019-01-01",
+      "endDate": "2019-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2019-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/73a6335e-f16f-4c81-a84b-6b5a986e2bf8/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2019-01-01",
+      "endDate": "2019-12-31"
+     }
+    ],
+    "modified": "2023-05-10"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2020-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/83891e77-99cf-4865-b60a-97703b916e09/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2020-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2022-07/ca71b7df-4d48-4c2d-aded-2ca22285739c/MUP_DPR_RY22_P04_V10_DY20_Geo.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2020-01-01",
+      "endDate": "2020-12-31"
+     }
+    ],
+    "modified": "2024-05-21"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2020-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/83891e77-99cf-4865-b60a-97703b916e09/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2020-01-01",
+      "endDate": "2020-12-31"
+     }
+    ],
+    "modified": "2024-05-21"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2021-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/7dda2a9d-034a-446a-b4b3-e1254e0127b2/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2021-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2023-04/3d3ebd5b-b4bf-45b4-876d-afa7916d1b72/MUP_DPR_RY23_P04_V10_DY21_Geo.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2021-01-01",
+      "endDate": "2021-12-31"
+     }
+    ],
+    "modified": "2023-10-25"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2021-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/7dda2a9d-034a-446a-b4b3-e1254e0127b2/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2021-01-01",
+      "endDate": "2021-12-31"
+     }
+    ],
+    "modified": "2023-10-25"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2022-12-30",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/1fc57194-a51d-4864-aee6-de0889488151/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2022-12-30",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2024-05/410ed206-d782-4dba-b442-6bcd45ae2016/MUP_DPR_RY24_P04_V10_DY22_Geo.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2022-01-01",
+      "endDate": "2022-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2022-12-30",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/1fc57194-a51d-4864-aee6-de0889488151/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2022-01-01",
+      "endDate": "2022-12-31"
+     }
+    ],
+    "modified": "2024-06-04"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2023-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/3463648b-1971-478d-84ca-80cadc758153/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2023-12-31",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2025-04/9fe6b8a6-0cb9-4b7c-9760-87800da010a8/MUP_DPR_RY25_P04_V10_DY23_Geo.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+     }
+    ],
+    "modified": "2025-04-24"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2023-12-31",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/3463648b-1971-478d-84ca-80cadc758153/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+     }
+    ],
+    "modified": "2025-04-24"
+   }
+  ]
+ },
+ {
+  "title": "Medicare Part D Prescribers - by Geography and Drug : 2024-12-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/c8ea3f8e-3a09-4fea-86f2-8902fb4b0920/data-viewer",
+  "dist": [
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2024-12-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/c8ea3f8e-3a09-4fea-86f2-8902fb4b0920/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-05-21"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2024-12-01",
+    "format": "CSV",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-05/3e80b44e-5a87-4414-959a-b6a7c8c18720/MUP_DPR_RY26_P04_V10_DY24_Geo.csv",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-05-21"
+   },
+   {
+    "title": "Medicare Part D Prescribers - by Geography and Drug : 2024-12-01",
+    "format": "API",
+    "accessURL": "https://data.cms.gov/data-api/v1/dataset/9b4c142c-69cc-4a96-a09a-7cf2ba7f5816/data",
+    "downloadURL": null,
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-05-21"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2013-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/adaca380-da17-4168-b2de-5779e48d969e/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2013-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2020-01/CPS_MDCR_ENROLL_D_ALL_2.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2013-01-01",
+      "endDate": "2013-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2014-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/ffb5fe92-a8a8-4b77-acf2-36fa62fa6bfa/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2014-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2020-01/CPS_MDCR_ENROLL_D_ALL_1.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2014-01-01",
+      "endDate": "2014-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2015-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/822b230b-ab2c-4f91-8591-169a5d056b9f/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2015-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2020-01/CPS_MDCR_ENROLL_D_ALL_0.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2015-01-01",
+      "endDate": "2015-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2016-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/78439d05-e8fd-4bdd-a3f5-613f0b9de781/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2016-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2020-01/CPS_MDCR_ENROLL_D_ALL.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2016-01-01",
+      "endDate": "2016-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2017-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/67ddfd83-be7c-414d-a194-cc70250d1d8d/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2017-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2019-12/CPS_MDCR_ENROLL_D_2017.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2017-01-01",
+      "endDate": "2017-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2018-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/123dd60a-acd9-4066-b9ed-f47893e86aad/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2018-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-01/CPS%20MDCR%20TOTAL%20ENROLL%20D.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2018-01-01",
+      "endDate": "2018-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2019-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/5f9e4acd-5996-4ebe-8ffc-0a33ed0d3c8f/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2019-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2021-01/CPS_MDCR_ENROLL_D_1-3.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2019-01-01",
+      "endDate": "2019-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2020-12-31",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/af0582a1-3706-405b-b974-cf0231f9be17/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2020-12-31",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2022-02/CPS%20MDCR%20ENROLL%20D%202020.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2020-01-01",
+      "endDate": "2020-12-31"
+     }
+    ],
+    "modified": "2025-05-14"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2021-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/c62d1526-12b2-40ed-a8c0-446dc71d5f2a/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2021-01-01",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2023-02/CPS%20MDCR%20ENROLL%20D%202021.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2021-01-01",
+      "endDate": "2021-12-31"
+     }
+    ],
+    "modified": "2025-09-08"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2022-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/89fb5d47-a17b-4cb9-ae3b-bdeb984119ec/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2022-01-01",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2025-09/3b6620c9-ee79-4472-8fef-a234638070c5/MDCR%20ENROLL%20D_CPS_03EPD_2022.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2022-01-01",
+      "endDate": "2022-12-31"
+     }
+    ],
+    "modified": "2025-09-30"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2023-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/96ae3f16-9e68-4f58-a604-a61abbb71b38/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2023-01-01",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2025-09/c0458b01-5731-43b4-a45c-16944a8253e7/MDCR%20ENROLL%20D_CPS_03EPD_2023.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+     }
+    ],
+    "modified": "2025-09-30"
+   }
+  ]
+ },
+ {
+  "title": "CMS Program Statistics - Medicare Part D Enrollment : 2024-01-01",
+  "identifier": "https://data.cms.gov/data-api/v1/dataset/81d3fe8f-0f30-40c0-882b-6c917cd89611/data-viewer",
+  "dist": [
+   {
+    "title": "CMS Program Statistics - Medicare Part D Enrollment : 2024-01-01",
+    "format": "ZIP",
+    "accessURL": null,
+    "downloadURL": "https://data.cms.gov/sites/default/files/2026-09/34722ca9-3ac4-47fa-87b9-0b7856a51d7d/MDCR%20ENROLL%20D_CPS_03EPD_2024.zip",
+    "temporal": [
+     {
+      "@type": "PeriodOfTime",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+     }
+    ],
+    "modified": "2026-09-30"
+   }
+  ]
+ }
+]

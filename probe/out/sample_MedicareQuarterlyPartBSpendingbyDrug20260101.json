@@ -1,0 +1,41 @@
+{
+ "url": "https://data.cms.gov/data-api/v1/dataset/bf6a5b3b-31ee-4abb-b1ad-2607a1e7510a/data",
+ "rows": [
+  {
+   "Brnd_Name": "HYPERHEP B*",
+   "Gnrc_Name": "HEPATITIS B IMMUNE GLOBULIN*",
+   "HCPCS_Cd": "90371",
+   "HCPCS_Desc": "HEP B IG IM",
+   "Year": "2025 (Q1-Q4)",
+   "Tot_Benes": "42",
+   "Tot_Clms": "82",
+   "Tot_Spndng": "58578.82",
+   "Avg_Spnd_Per_Bene": "1394.7338095",
+   "Avg_Spnd_Per_Clm": "714.37585366"
+  },
+  {
+   "Brnd_Name": "HYPERHEP B*",
+   "Gnrc_Name": "HEPATITIS B IMMUNE GLOBULIN*",
+   "HCPCS_Cd": "90371",
+   "HCPCS_Desc": "HEP B IG IM",
+   "Year": "2026 (Q1)",
+   "Tot_Benes": "19",
+   "Tot_Clms": "28",
+   "Tot_Spndng": "24281.06",
+   "Avg_Spnd_Per_Bene": "1277.9505263",
+   "Avg_Spnd_Per_Clm": "867.18071429"
+  },
+  {
+   "Brnd_Name": "HYPERRAB",
+   "Gnrc_Name": "RABIES IMMUNE GLOBULIN",
+   "HCPCS_Cd": "90375",
+   "HCPCS_Desc": "RABIES IG IM/SC",
+   "Year": "2025 (Q1-Q4)",
+   "Tot_Benes": "4205",
+   "Tot_Clms": "4219",
+   "Tot_Spndng": "11965232.66",
+   "Avg_Spnd_Per_Bene": "2845.4774459",
+   "Avg_Spnd_Per_Clm": "2836.0352358"
+  }
+ ]
+}

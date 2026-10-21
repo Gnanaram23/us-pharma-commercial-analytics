@@ -1,0 +1,44 @@
+{
+ "url": "https://data.cms.gov/data-api/v1/dataset/4ff7c618-4e40-483a-b390-c8a58c94fa15/data",
+ "rows": [
+  {
+   "Brnd_Name": "1st Tier Unifine Pentips",
+   "Gnrc_Name": "Pen Needle, Diabetic",
+   "Tot_Mftr": "1",
+   "Mftr_Name": "Overall",
+   "Year": "2025 (Q1-Q4)",
+   "Tot_Benes": "123",
+   "Tot_Clms": "215",
+   "Tot_Spndng": "6054.98",
+   "Avg_Spnd_Per_Bene": "49.23",
+   "Avg_Spnd_Per_Clm": "28.16",
+   "Drug_Uses": "\"Drug uses not available\""
+  },
+  {
+   "Brnd_Name": "1st Tier Unifine Pentips",
+   "Gnrc_Name": "Pen Needle, Diabetic",
+   "Tot_Mftr": "1",
+   "Mftr_Name": "Owen Mumford Us",
+   "Year": "2025 (Q1-Q4)",
+   "Tot_Benes": "123",
+   "Tot_Clms": "215",
+   "Tot_Spndng": "6054.98",
+   "Avg_Spnd_Per_Bene": "49.23",
+   "Avg_Spnd_Per_Clm": "28.16",
+   "Drug_Uses": "\"Drug uses not available\""
+  },
+  {
+   "Brnd_Name": "1st Tier Unifine Pentips Plus",
+   "Gnrc_Name": "Pen Needle, Diabetic",
+   "Tot_Mftr": "1",
+   "Mftr_Name": "Overall",
+   "Year": "2025 (Q1-Q4)",
+   "Tot_Benes": "187",
+   "Tot_Clms": "472",
+   "Tot_Spndng": "12467.82",
+   "Avg_Spnd_Per_Bene": "66.67",
+   "Avg_Spnd_Per_Clm": "26.41",
+   "Drug_Uses": "\"Drug uses not available\""
+  }
+ ]
+}

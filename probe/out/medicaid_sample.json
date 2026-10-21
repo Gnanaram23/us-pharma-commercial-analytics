@@ -1,0 +1,145 @@
+{
+ "results": [
+  {
+   "ndc_description": "12HR NASAL DECONGEST ER 120 MG",
+   "ndc": "24385005452",
+   "nadac_per_unit": "0.28255",
+   "effective_date": "2022-12-21",
+   "pricing_unit": "EA",
+   "pharmacy_type_indicator": "C/I",
+   "otc": "Y",
+   "explanation_code": "1",
+   "classification_for_rate_setting": "G",
+   "corresponding_generic_drug_nadac_per_unit": "",
+   "corresponding_generic_drug_effective_date": null,
+   "as_of_date": "2023-01-04"
+  },
+  {
+   "ndc_description": "12HR NASAL DECONGEST ER 120 MG",
+   "ndc": "70000047501",
+   "nadac_per_unit": "0.28255",
+   "effective_date": "2022-12-21",
+   "pricing_unit": "EA",
+   "pharmacy_type_indicator": "C/I",
+   "otc": "Y",
+   "explanation_code": "1",
+   "classification_for_rate_setting": "G",
+   "corresponding_generic_drug_nadac_per_unit": "",
+   "corresponding_generic_drug_effective_date": null,
+   "as_of_date": "2023-01-04"
+  },
+  {
+   "ndc_description": "24H NASAL ALLERGY 55 MCG SPRAY",
+   "ndc": "46122038576",
+   "nadac_per_unit": "0.78326",
+   "effective_date": "2022-12-21",
+   "pricing_unit": "ML",
+   "pharmacy_type_indicator": "C/I",
+   "otc": "Y",
+   "explanation_code": "1, 5",
+   "classification_for_rate_setting": "G",
+   "corresponding_generic_drug_nadac_per_unit": "",
+   "corresponding_generic_drug_effective_date": null,
+   "as_of_date": "2023-01-04"
+  }
+ ],
+ "count": 1376395,
+ "schema": {
+  "deff30b4-7846-57ac-8346-1ba87666d59f": {
+   "fields": {
+    "ndc_description": {
+     "type": "text",
+     "mysql_type": "text",
+     "description": "NDC Description"
+    },
+    "ndc": {
+     "type": "text",
+     "mysql_type": "text",
+     "description": "NDC"
+    },
+    "nadac_per_unit": {
+     "type": "numeric",
+     "precision": "10",
+     "scale": "5",
+     "mysql_type": "decimal",
+     "description": "NADAC Per Unit"
+    },
+    "effective_date": {
+     "type": "varchar",
+     "mysql_type": "date",
+     "description": "Effective Date"
+    },
+    "pricing_unit": {
+     "type": "text",
+     "mysql_type": "text",
+     "description": "Pricing Unit"
+    },
+    "pharmacy_type_indicator": {
+     "type": "text",
+     "mysql_type": "text",
+     "description": "Pharmacy Type Indicator"
+    },
+    "otc": {
+     "type": "text",
+     "mysql_type": "text",
+     "description": "OTC"
+    },
+    "explanation_code": {
+     "type": "text",
+     "mysql_type": "text",
+     "description": "Explanation Code"
+    },
+    "classification_for_rate_setting": {
+     "type": "text",
+     "mysql_type": "text",
+     "description": "Classification for Rate Setting"
+    },
+    "corresponding_generic_drug_nadac_per_unit": {
+     "type": "text",
+     "mysql_type": "text",
+     "description": "Corresponding Generic Drug NADAC Per Unit"
+    },
+    "corresponding_generic_drug_effective_date": {
+     "type": "varchar",
+     "mysql_type": "date",
+     "description": "Corresponding Generic Drug Effective Date"
+    },
+    "as_of_date": {
+     "type": "varchar",
+     "mysql_type": "date",
+     "description": "As of Date"
+    }
+   }
+  }
+ },
+ "query": {
+  "limit": 3,
+  "resources": [
+   {
+    "id": "deff30b4-7846-57ac-8346-1ba87666d59f",
+    "alias": "t"
+   }
+  ],
+  "offset": 0,
+  "count": true,
+  "results": true,
+  "schema": true,
+  "keys": true,
+  "format": "json",
+  "rowIds": false,
+  "properties": [
+   "ndc_description",
+   "ndc",
+   "nadac_per_unit",
+   "effective_date",
+   "pricing_unit",
+   "pharmacy_type_indicator",
+   "otc",
+   "explanation_code",
+   "classification_for_rate_setting",
+   "corresponding_generic_drug_nadac_per_unit",
+   "corresponding_generic_drug_effective_date",
+   "as_of_date"
+  ]
+ }
+}
