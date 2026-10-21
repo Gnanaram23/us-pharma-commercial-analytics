@@ -238,11 +238,11 @@ fig_bt.suptitle(f"Back-test on two held-out 2025 LOEs (mean absolute error: Entr
 style.source(fig_bt, SRC)
 fig_bt.tight_layout()
 style.save(fig_bt, FIG / "02_backtest.png")
-bt[["molecule", "period", "t", "brand_share", "forecast", "error"]].round(3)
+bt[["molecule", "period", "t", "brand_share", "forecast", "error"]].round({"brand_share": 3, "forecast": 3, "error": 3})
 
 # %% [markdown]
 # **Entresto** tracked the median forecast closely. **Brilinta** eroded more
-# slowly than any training analog. Seven generic makers launched the 90 mg tablet
+# slowly than any training analog. Six generic makers launched the 90 mg tablet
 # on day one, so the slower decline points to factors the public data cannot
 # show, such as state preferred-drug-list status and brand contracting.
 #
@@ -297,7 +297,7 @@ bio_tbl.round(2)
 ELQ = "apixaban"
 e = q[q["molecule"] == ELQ].sort_values("period").copy()
 e["usd_per_rx"] = e["brand_usd"] / e["brand_rx"]
-print(e[["period", "brand_rx", "brand_usd", "usd_per_rx"]].tail(6).round(0).to_string(index=False))
+print(e[["period", "brand_rx", "brand_usd", "usd_per_rx"]].tail(6).assign(period=lambda x: x["period"].astype(str)).round(0).to_string(index=False))
 
 hist = e[e["period"] < latest].tail(8)            # latest quarter excluded from the trend: claims still arriving
 slope, intercept = np.polyfit(range(len(hist)), hist["brand_rx"], 1)
@@ -370,5 +370,5 @@ summary = {
     "entries": {m: str(p) for m, p in entries.items()},
 }
 (TAB / "summary.json").write_text(json.dumps(summary, indent=1, default=str))
-fc.round(0).to_csv(TAB / "eliquis_forecast_quarterly.csv", index=False)
+fc.assign(period=fc["period"].astype(str)).round(0).to_csv(TAB / "eliquis_forecast_quarterly.csv", index=False)
 summary

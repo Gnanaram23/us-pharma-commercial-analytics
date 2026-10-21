@@ -5,7 +5,15 @@ on free public government data. Each one takes a commercial question a brand,
 market access or strategy team would actually ask, and works through to a
 recommendation.
 
-<!-- PROJECT_TABLE -->
+| # | Project | Business question | Headline finding |
+|---|---|---|---|
+| 01 | [**GLP-1 market sizing & prescriber targeting**](01-glp1-market-and-targeting/) | Where is GLP-1 growth left in Medicare, and which prescribers should reps call on first? | Spend grew 40% a year to $27.9B (2024). About 33,000 high-volume primary care prescribers under-use GLP-1s, worth about 4M extra claims a year; half of that sits with 6,700 prescribers. |
+| 02 | [**Medicare price negotiation (IRA) exposure**](02-ira-negotiation-exposure/) | Which manufacturers lose most from negotiated prices, and which drugs are next? | The 40 selected drugs took $126B of Medicare spend; estimated net impact is $21–25B a year, led by Novo Nordisk. A transparent screen recovered 11 of 15 actual selections in two back-tests and ranks Keytruda first for the February 2027 selection. |
+| 03 | [**Loss-of-exclusivity erosion forecast**](03-loe-erosion-forecast/) | How fast do brands erode after generic entry, and what happens to Eliquis in 2028? | Medicaid shows two regimes: most brands fall to about 20% share within a year, some keep two-thirds. A December 2025 free-supply deal points Eliquis towards brand retention. |
+| 04 | [**Obesity pipeline competitive intelligence**](04-obesity-pipeline-intelligence/) | Who will compete in US obesity by 2030, and when are the key readouts? | About 10 new US approvals expected by 2030, almost all in 2029–30; Lilly and Novo run 48% of Phase 3 patients; China's share of new trials rose from 0% to 36%. |
+
+Each project ends with recommendations and an honest list of limitations.
+Back-tests against real outcomes are included wherever a forecast is made.
 
 ## How each project is organised
 

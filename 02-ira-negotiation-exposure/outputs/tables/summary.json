@@ -1,0 +1,84 @@
+{
+ "spend_year": 2024,
+ "partD_total": 288667842058.4,
+ "partB_total": 52704082169.75,
+ "selected_spend_by_cycle": {
+  "2026": 61355340056.81,
+  "2027": 42382195859.619995,
+  "2028": 21873687867.329998
+ },
+ "selected_partD_share_by_cycle": {
+  "2026": 0.2122701481948357,
+  "2027": 0.14681994210856958,
+  "2028": 0.06522562600225772
+ },
+ "net_impact_total_mid": 22677639761.616947,
+ "net_impact_total_range": [
+  20967197631.123173,
+  24692633525.39034
+ ],
+ "top_manufacturers": {
+  "Novo Nordisk": 4856985806.877512,
+  "Bristol Myers Squibb": 2891492158.692929,
+  "GSK": 2353530282.9730053,
+  "Boehringer Ingelheim": 2158678012.6392717,
+  "Johnson & Johnson": 1316107069.8318539
+ },
+ "backtest_2027_hits": 11,
+ "backtest_2027_hit_names": [
+  "Austedo / Austedo XR",
+  "Calquence",
+  "Ibrance",
+  "Linzess",
+  "Ofev",
+  "Ozempic / Rybelsus / Wegovy",
+  "Pomalyst",
+  "Trelegy Ellipta",
+  "Vraylar",
+  "Xifaxan",
+  "Xtandi"
+ ],
+ "backtest_2028_hits": 11,
+ "backtest_2028_hit_names": [
+  "Biktarvy",
+  "Cimzia",
+  "Entyvio",
+  "Erleada",
+  "Kisqali",
+  "Lenvima",
+  "Orencia",
+  "Rexulti",
+  "Trulicity",
+  "Verzenio",
+  "Xeljanz"
+ ],
+ "watchlist_top15": [
+  "Keytruda",
+  "Creon",
+  "Opdivo",
+  "Ingrezza",
+  "Repatha Sureclick",
+  "Tagrisso",
+  "Rinvoq",
+  "Cabometyx",
+  "Nubeqa",
+  "Nuplazid",
+  "Tivicay",
+  "Lynparza",
+  "Nucala",
+  "Kesimpta Pen",
+  "Triumeq"
+ ],
+ "backtest_2027_misses": [
+  "Breo Ellipta",
+  "Janumet / Janumet XR",
+  "Otezla",
+  "Tradjenta"
+ ],
+ "backtest_2028_misses": [
+  "Anoro Ellipta",
+  "Botox",
+  "Cosentyx",
+  "Xolair"
+ ]
+}

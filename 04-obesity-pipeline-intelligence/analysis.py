@@ -116,7 +116,7 @@ ax.set_ylabel("Trials started")
 ax.legend(loc="upper left", fontsize=8.5, ncol=2)
 ax.set_xticks(by_year.index)
 ax.tick_params(axis="x", rotation=0)
-style.source(fig, SRC + ". Latest year is partial.")
+style.source(fig, SRC + f". {int(by_year.index.max())} includes trials with planned start dates later in the year.")
 style.save(fig, FIG / "01_trial_starts_by_mechanism.png")
 by_year
 
@@ -173,6 +173,14 @@ pipe
 # %%
 ph3 = trials[(trials["sponsor_class"] == "INDUSTRY") & (trials["phase"] == "PHASE3") & (trials["start_year"] >= 2020)
              & ~trials["overall_status"].isin(["WITHDRAWN"])]
+def short(name: str) -> str:
+    name = name.split(",")[0]
+    for x in [" and Company", " A/S", " Inc.", " Co. Ltd.", " Pharmaceuticals", " (Suzhou)", " (China)", " Limited", " Co.", " GmbH"]:
+        name = name.replace(x, "")
+    return name.replace("Hoffmann-La Roche", "Roche").strip()
+
+
+ph3 = ph3.assign(sponsor=ph3["sponsor"].map(short))
 spon = (ph3.groupby("sponsor").agg(trials=("nct_id", "count"), patients=("enrollment", "sum"))
            .sort_values("patients", ascending=False))
 top = spon.head(10).iloc[::-1]
@@ -185,6 +193,7 @@ for y, (p, t) in enumerate(zip(top["patients"], top["trials"])):
 ax.set_title("Phase 3 obesity enrolment by sponsor, trials started 2020+")
 style.subtitle(ax, "Two companies account for most late-stage patients")
 ax.set_xlabel("Patients enrolled (planned or actual)")
+ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:,.0f}"))
 ax.grid(axis="y", visible=False)
 ax.set_xlim(0, top["patients"].max() * 1.35)
 style.source(fig, SRC + "; industry-sponsored, excluding withdrawn trials")
@@ -224,7 +233,7 @@ ax.invert_yaxis()
 ax.set_title("Phase 3 readout calendar for obesity candidates")
 style.subtitle(ax, "Dots = Phase 3 primary completion dates; number = Phase 3 trials")
 handles = [plt.Line2D([], [], marker="o", ls="", color=c, label=k) for k, c in cmap.items()]
-ax.legend(handles=handles, loc="lower left", fontsize=8, ncol=2, bbox_to_anchor=(0, -0.32))
+ax.legend(handles=handles, loc="upper left", fontsize=8.5, bbox_to_anchor=(1.01, 1.0), title="Mechanism", title_fontsize=9)
 style.source(fig, SRC + "; industry Phase 3 trials with US sites, primary completion 2023 or later")
 style.save(fig, FIG / "03_phase3_readout_calendar.png")
 

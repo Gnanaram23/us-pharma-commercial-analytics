@@ -14,6 +14,7 @@ PALETTE = ["#0F766E", "#2563EB", "#B45309", "#7C3AED", "#DC2626", "#0891B2", "#6
 
 def apply() -> None:
     mpl.rcParams.update({
+        "text.parse_math": False,   # so '$' in labels prints as a dollar sign
         "figure.dpi": 110, "savefig.dpi": 160, "savefig.bbox": "tight",
         "font.family": "DejaVu Sans", "font.size": 10.5,
         "axes.edgecolor": GRID, "axes.labelcolor": INK, "axes.titlecolor": INK,
@@ -26,8 +27,11 @@ def apply() -> None:
 
 
 def subtitle(ax, text: str) -> None:
-    """Grey line under the title saying what the reader should notice."""
-    ax.text(0, 1.02, text, transform=ax.transAxes, color=MUTED, fontsize=10, va="bottom")
+    """Grey line under the title saying what the reader should notice.
+
+    Call after ax.set_title(); the title is lifted to make room."""
+    ax.set_title(ax.get_title(loc="left"), loc="left", pad=26)
+    ax.text(0, 1.015, text, transform=ax.transAxes, color=MUTED, fontsize=10, va="bottom")
 
 
 def source(fig, text: str) -> None:
@@ -36,7 +40,7 @@ def source(fig, text: str) -> None:
 
 def dollars(ax, axis="y", unit="B") -> None:
     div = {"B": 1e9, "M": 1e6, "K": 1e3}[unit]
-    fmt = FuncFormatter(lambda v, _: f"${v / div:,.0f}{unit}" if v / div >= 10 or v == 0 else f"${v / div:,.1f}{unit}")
+    fmt = FuncFormatter(lambda v, _: f"${v / div:,.0f}{unit}" if float(v / div).is_integer() else f"${v / div:,.1f}{unit}")
     (ax.yaxis if axis == "y" else ax.xaxis).set_major_formatter(fmt)
 
 
@@ -46,6 +50,13 @@ def pct(ax, axis="y", decimals=0) -> None:
 
 
 def save(fig, path) -> None:
+    """Save the chart for the README and, inside a notebook, show it inline too."""
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, facecolor="white")
+    try:
+        get_ipython  # noqa: F821  (only defined inside Jupyter)
+        from IPython.display import Image, display
+        display(Image(filename=str(path)))
+    except NameError:
+        pass
     plt.close(fig)

@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common.sources import cms_dataset, cms_keyword_rows, write_csv_gz, write_json  # noqa: E402
+from common.sources import cms_csv_rows, cms_dataset, write_csv_gz, write_json  # noqa: E402
 
 HERE = Path(__file__).parent
 RAW = HERE / "data" / "raw"
@@ -28,34 +28,31 @@ KEEP_COLS = ["Prscrbr_NPI", "Prscrbr_Last_Org_Name", "Prscrbr_First_Name", "Prsc
              "Tot_30day_Fills", "Tot_Day_Suply", "Tot_Drug_Cst", "Tot_Benes"]
 
 
-def matches(terms):
-    return lambda row: any(t in row.get("Gnrc_Name", "").lower() for t in terms)
+def pull(title: str, year: int, terms: list[str], keep_cols=None) -> tuple[list[dict], dict]:
+    """Stream the full CMS CSV for one year and keep rows whose generic name matches.
 
-
-def pull(title: str, year: int, terms: list[str], key_cols: list[str], keep_cols=None) -> tuple[list[dict], dict]:
+    The provider-level file is about 25 million rows (several GB), so it is read
+    line by line rather than loaded; streaming is much faster than paging the API."""
     ds = cms_dataset(title, year)
-    print(f"{title} {year}")
-    seen, rows = set(), []
-    for term in terms:
-        for r in cms_keyword_rows(ds["api"], term, matches([term])):
-            k = tuple(r.get(c) for c in key_cols)
-            if k in seen:
-                continue
-            seen.add(k)
+    print(f"{title} {year}: {ds['csv']}")
+    rows = []
+    for i, r in enumerate(cms_csv_rows(ds["csv"]), 1):
+        g = r.get("Gnrc_Name", "").lower()
+        if any(t in g for t in terms):
             rows.append({c: r.get(c) for c in keep_cols} if keep_cols else r)
+        if i % 5_000_000 == 0:
+            print(f"  {i:,} rows read, {len(rows):,} kept")
     return rows, ds
 
 
 def main() -> None:
     meta = {}
     for year, terms in PROVIDER_YEARS.items():
-        rows, ds = pull("Medicare Part D Prescribers - by Provider and Drug", year, terms,
-                        ["Prscrbr_NPI", "Brnd_Name", "Gnrc_Name"], KEEP_COLS)
+        rows, ds = pull("Medicare Part D Prescribers - by Provider and Drug", year, terms, KEEP_COLS)
         write_csv_gz(rows, RAW / f"prescriber_drug_{year}.csv.gz")
         meta[f"prescriber_drug_{year}"] = {**ds, "terms": terms, "rows": len(rows)}
     for year in GEO_YEARS:
-        rows, ds = pull("Medicare Part D Prescribers - by Geography and Drug", year,
-                        GLP1 + SGLT2 + DPP4, ["Prscrbr_Geo_Lvl", "Prscrbr_Geo_Cd", "Brnd_Name", "Gnrc_Name"])
+        rows, ds = pull("Medicare Part D Prescribers - by Geography and Drug", year, GLP1 + SGLT2 + DPP4)
         write_csv_gz(rows, RAW / f"geo_drug_{year}.csv.gz")
         meta[f"geo_drug_{year}"] = {**ds, "rows": len(rows)}
     write_json(meta, RAW / "sources.json")

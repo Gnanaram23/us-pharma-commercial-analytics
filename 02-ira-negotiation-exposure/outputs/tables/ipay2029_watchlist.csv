@@ -1,0 +1,26 @@
+rank,lead_brand,brands,key,clock_start,years_on_market,sponsor,type,spend_$B
+1,Keytruda,Keytruda,pembrolizumab,2015-10-02,11.3,MERCK SHARP DOHME,BLA,6.13
+2,Creon,Creon / Zenpep,lipase/protease/amylase,2009-04-30,17.8,ABBVIE,BLA,2.09
+3,Opdivo,Opdivo,nivolumab,2015-03-04,11.9,BRISTOL MYERS SQUIBB;BRISTOL-MYERS SQUIBB,BLA,1.98
+4,Ingrezza,Ingrezza,valbenazine,2017-04-11,9.8,NEUROCRINE,NDA,1.96
+5,Repatha Sureclick,Repatha Sureclick / Repatha Syringe,evolocumab,2015-08-27,11.4,AMGEN INC,BLA,1.91
+6,Tagrisso,Tagrisso,osimertinib,2015-11-13,11.2,ASTRAZENECA,NDA,1.63
+7,Rinvoq,Rinvoq,upadacitinib,2019-08-16,7.5,ABBVIE,NDA,1.39
+8,Cabometyx,Cabometyx,cabozantinib/malate,2016-04-25,10.8,EXELIXIS INC,NDA,1.22
+9,Nubeqa,Nubeqa,darolutamide,2019-07-30,7.5,BAYER HEALTHCARE,NDA,1.0
+10,Nuplazid,Nuplazid,pimavanserin,2016-04-29,10.8,ACADIA PHARMS INC,NDA,0.66
+11,Tivicay,Tivicay,dolutegravir,2013-08-12,13.5,VIIV HLTHCARE,NDA,0.63
+12,Lynparza,Lynparza,olaparib,2014-12-19,12.1,ASTRAZENECA,NDA,0.59
+13,Nucala,Nucala,mepolizumab,2015-11-04,11.2,GLAXOSMITHKLINE;GLAXOSMITHKLINE LLC,BLA,0.59
+14,Kesimpta Pen,Kesimpta Pen,ofatumumab,2009-10-26,17.3,NOVARTIS,BLA,0.58
+15,Triumeq,Triumeq,abacavir/dolutegravir/lamivudi,2014-08-22,12.4,VIIV HLTHCARE,NDA,0.57
+16,Genvoya,Genvoya,elviteg/cob/emtri/tenof,2015-11-05,11.2,GILEAD SCIENCES INC,NDA,0.55
+17,Descovy,Descovy,emtricitabine/tenofov,2016-04-04,10.8,GILEAD SCIENCES INC,NDA,0.54
+18,Dovato,Dovato,dolutegravir/lamivudine,2019-04-08,7.8,VIIV HLTHCARE,NDA,0.54
+19,Yervoy,Yervoy,ipilimumab,2011-03-25,15.9,BRISTOL MYERS SQUIBB,BLA,0.52
+20,Sandostatin Lar Depot,Sandostatin Lar Depot,octreotide/spheres,1998-11-25,28.2,NOVARTIS,NDA,0.51
+21,Xiidra,Xiidra,lifitegrast,2016-07-11,10.6,BAUSCH AND LOMB INC,NDA,0.51
+22,Krystexxa,Krystexxa,pegloticase,2010-09-14,16.4,HORIZON PHARMA,BLA,0.5
+23,Stiolto Respimat,Stiolto Respimat,tiotropium/olodaterol,2015-05-21,11.7,BOEHRINGER INGELHEIM,NDA,0.45
+24,Symtuza,Symtuza,darunavir/cob/emtri/tenof,2018-07-17,8.5,JANSSEN PRODS,NDA,0.45
+25,Inlyta,Inlyta,axitinib,2012-01-27,15.0,PF PRISM CV,NDA,0.44

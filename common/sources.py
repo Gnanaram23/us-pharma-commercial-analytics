@@ -153,20 +153,29 @@ def medicaid_sdud_filter(url: str, prefixes: Iterable[str]) -> list[dict]:
 
 # --------------------------------------------------------------------- openFDA
 
-def fda_applications(search: str, limit: int = 100) -> list[dict]:
-    """Query openFDA Drugs@FDA. Returns [] when nothing matches (openFDA answers 404)."""
-    try:
-        r = SESSION.get("https://api.fda.gov/drug/drugsfda.json",
-                        params={"search": search, "limit": limit}, timeout=60)
-    except requests.RequestException:
-        return []
-    if r.status_code == 404:
-        return []
-    if r.status_code != 200:
+def fda_applications(search: str, limit: int = 100, tries: int = 6) -> list[dict]:
+    """Query openFDA Drugs@FDA. Returns [] when nothing matches (openFDA answers 404).
+
+    openFDA rate-limits anonymous users, so 429 and 5xx answers are retried with back-off."""
+    for attempt in range(tries):
+        try:
+            r = SESSION.get("https://api.fda.gov/drug/drugsfda.json",
+                            params={"search": search, "limit": limit}, timeout=60)
+        except requests.RequestException:
+            time.sleep(2 ** attempt)
+            continue
+        if r.status_code == 200:
+            time.sleep(0.4)
+            return r.json().get("results", [])
+        if r.status_code == 404:
+            return []
+        if r.status_code in (429, 500, 502, 503, 504):
+            time.sleep(2 ** attempt)
+            continue
         print(f"  openFDA {r.status_code} for search={search!r}")
         return []
-    time.sleep(0.3)  # stay well under openFDA's unauthenticated rate limit
-    return r.json().get("results", [])
+    print(f"  openFDA gave up on search={search!r}")
+    return []
 
 
 # --------------------------------------------------------- ClinicalTrials.gov
