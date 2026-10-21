@@ -98,6 +98,11 @@ def load(path: Path) -> pd.DataFrame:
 geo = pd.concat([load(f).assign(year=int(f.name[9:13])) for f in sorted(RAW.glob("geo_drug_*.csv.gz"))])
 nat = geo[geo["Prscrbr_Geo_Lvl"] == "National"]
 trend = nat[nat["cls"] == "GLP-1"].pivot_table(index="year", columns="brand", values="Tot_Drug_Cst", aggfunc="sum").fillna(0)
+# Fold brands that never reach 2% of class spend into 'Other GLP-1' (Part D does not
+# cover drugs used only for weight loss, so Saxenda and Zepbound barely appear)
+small = trend.columns[(trend.div(trend.sum(axis=1), axis=0).max() < 0.02)]
+trend["Other GLP-1"] = trend.get("Other GLP-1", 0) + trend[small].sum(axis=1)
+trend = trend.drop(columns=[c for c in small if c != "Other GLP-1"])
 trend = trend[trend.sum().sort_values(ascending=False).index]
 cls_trend = nat.pivot_table(index="year", columns="cls", values=["Tot_Drug_Cst", "Tot_Clms"], aggfunc="sum")
 
@@ -157,7 +162,9 @@ TILES = {"AK": (0, 0), "ME": (0, 11), "VT": (1, 10), "NH": (1, 11), "WA": (2, 1)
     "NC": (5, 7), "SC": (5, 8), "DC": (5, 9), "OK": (6, 4), "LA": (6, 5), "MS": (6, 6), "AL": (6, 7), "GA": (6, 8),
     "HI": (7, 0), "TX": (7, 4), "FL": (7, 8)}
 
-vals = {STATE_ABBR[s]: v for s, v in pen["glp1_share"].items() if s in STATE_ABBR}
+pen = pen[pen.index.isin(STATE_ABBR)]          # 50 states + DC; territories and 'Unknown' dropped
+pen.to_csv(TAB / "state_glp1_penetration.csv")
+vals = {STATE_ABBR[s]: v for s, v in pen["glp1_share"].items()}
 lo, hi = min(vals.values()), max(vals.values())
 cmap = plt.get_cmap("YlGnBu")
 fig, ax = plt.subplots(figsize=(10, 6.2))
@@ -234,8 +241,16 @@ conc
 # %% [markdown]
 # ## 4. Segment prescribers by potential and adoption
 #
-# The universe is every prescriber with reportable claims for any GLP-1, SGLT2 or
-# DPP-4 drug in 2024. Two measures define the segments:
+# The universe is every prescriber in a **diabetes-managing specialty** (family
+# and internal medicine, general practice, geriatrics, endocrinology, nurse
+# practitioners and physician assistants) with reportable claims for any GLP-1,
+# SGLT2 or DPP-4 drug in 2024. Cardiologists and nephrologists are left out on
+# purpose: they write SGLT2 inhibitors mainly for heart failure and kidney
+# disease, so a low GLP-1 share there is not under-use in diabetes. They are a
+# separate audience for the cardiovascular and kidney indications that
+# semaglutide has added.
+#
+# Two measures define the segments:
 #
 # - **Potential**: decile of the prescriber's total modern diabetes claims
 #   (GLP-1 + SGLT2 + DPP-4). Decile 10 is the busiest 10% of prescribers.
@@ -256,6 +271,12 @@ hcp = (hcp_drug[hcp_drug["cls"].isin(["GLP-1", "SGLT2", "DPP-4"])]
        .pivot_table(index="Prscrbr_NPI", columns="cls", values="Tot_Clms", aggfunc="sum", fill_value=0))
 info = hcp_drug.drop_duplicates("Prscrbr_NPI").set_index("Prscrbr_NPI")[["Prscrbr_Type", "Prscrbr_City", "Prscrbr_State_Abrvtn"]]
 hcp = hcp.join(info)
+DIABETES_SPECIALTIES = {"Family Practice", "Internal Medicine", "Nurse Practitioner", "Physician Assistant",
+                        "Endocrinology", "General Practice", "Geriatric Medicine", "Family Medicine"}
+excluded = hcp[~hcp["Prscrbr_Type"].isin(DIABETES_SPECIALTIES)]
+print(f"Left out of the universe: {len(excluded):,} prescribers in other specialties; top ones:")
+print(excluded["Prscrbr_Type"].value_counts().head(5).to_string())
+hcp = hcp[hcp["Prscrbr_Type"].isin(DIABETES_SPECIALTIES)].copy()
 hcp["modern_claims"] = hcp[["GLP-1", "SGLT2", "DPP-4"]].sum(axis=1)
 hcp["glp1_share"] = hcp["GLP-1"] / hcp["modern_claims"]
 hcp["decile"] = pd.qcut(hcp["modern_claims"].rank(method="first"), 10, labels=range(1, 11)).astype(int)
@@ -287,6 +308,7 @@ d8 = hcp.loc[hcp["decile"] == 8, "modern_claims"].min()
 ax.axvline(d8, color=style.INK, lw=0.8, ls="--")
 ax.axhline(median_share, color=style.INK, lw=0.8, ls="--")
 ax.set_xscale("log")
+ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:,.0f}"))
 ax.set_xlabel("Modern type 2 diabetes claims per prescriber, 2024 (log scale)")
 ax.set_ylabel("GLP-1 share of those claims")
 style.pct(ax)
@@ -342,7 +364,8 @@ target_list.head(15)
 # ## 6. Brand view: where Mounjaro is under-indexed
 #
 # A second lens for one brand team. Among prescribers writing at least 50 GLP-1
-# claims, what share goes to Mounjaro (tirzepatide)? High-volume GLP-1 writers who
+# claims, what share goes to Mounjaro (tirzepatide)? "None reported" means fewer
+# than 11 Mounjaro claims, since CMS suppresses smaller counts. High-volume GLP-1 writers who
 # rarely use Mounjaro are conversion targets for its team. The same logic could
 # be run for any brand.
 
@@ -352,7 +375,7 @@ gl["total"] = gl.sum(axis=1)
 gl = gl[gl["total"] >= 50]
 gl["mounjaro_share"] = gl.get("Mounjaro", 0) / gl["total"]
 bins = pd.cut(gl["mounjaro_share"], [-0.001, 0.0, 0.1, 0.25, 0.5, 1.0],
-              labels=["0%", "1–10%", "10–25%", "25–50%", ">50%"])
+              labels=["None reported*", "1–10%", "10–25%", "25–50%", ">50%"])
 dist = gl.groupby(bins, observed=False)["total"].agg(["size", "sum"])
 dist.columns = ["prescribers", "glp1_claims"]
 dist["share_of_prescribers"] = dist["prescribers"] / dist["prescribers"].sum()
@@ -367,7 +390,7 @@ style.subtitle(ax, f"{len(gl):,} prescribers with 50+ GLP-1 claims")
 style.pct(ax)
 ax.set_xlabel("Mounjaro share of the prescriber's GLP-1 claims")
 ax.set_ylabel("Share of prescribers")
-style.source(fig, SRC)
+style.source(fig, SRC + ". *Fewer than 11 Mounjaro claims, which CMS does not report.")
 style.save(fig, FIG / "06_mounjaro_share_distribution.png")
 dist.round(3)
 
@@ -407,7 +430,8 @@ summary = {
     "universe_prescribers": int(len(hcp)), "median_glp1_share": float(median_share),
     **{f"seg_{k.lower().replace(' ', '_')}": int(v) for k, v in seg["prescribers"].items()},
     **opp, **growth_src,
-    "mounjaro_low_share_prescribers": float(dist.loc[["0%", "1–10%"], "share_of_prescribers"].sum()),
+    "mounjaro_low_share_prescribers": float(dist.loc[["None reported*", "1–10%"], "share_of_prescribers"].sum()),
+    "mounjaro_none_reported": float(dist.loc["None reported*", "share_of_prescribers"]),
 }
 pd.Series(summary).to_json(TAB / "summary.json", indent=1)
 pd.Series(summary)

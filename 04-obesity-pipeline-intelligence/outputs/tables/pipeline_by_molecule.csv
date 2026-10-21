@@ -1,0 +1,48 @@
+molecule,mol_sponsor,mechanism,max_phase,trials,ph3_trials,ph3_enrolment,last_ph3_pcd,us_relevant,us_max_phase,last_us_ph3_pcd,china_trials,status
+dulaglutide,Eli Lilly,GLP-1 agonist (injectable),4.0,1,0,0,,False,0.0,,0,Approved (US diabetes only)
+lixisenatide,Sanofi,GLP-1 agonist (injectable),2.0,1,0,0,,False,0.0,,0,Approved (US diabetes only)
+exenatide,AstraZeneca,GLP-1 agonist (injectable),1.0,1,0,0,,False,0.0,,0,Approved (US diabetes only)
+semaglutide (inj.),Novo Nordisk,GLP-1 agonist (injectable),4.0,112,52,51057,2030-03-20,True,4.0,2030-03-20,18,Approved (US obesity)
+tirzepatide,Eli Lilly,GIP / GLP-1 dual agonist,4.0,63,26,34185,2028-09-25,True,4.0,2028-09-25,11,Approved (US obesity)
+liraglutide,Novo Nordisk,GLP-1 agonist (injectable),4.0,22,6,1401,2023-08-01,True,4.0,2023-08-01,0,Approved (US obesity)
+orlistat,various,Older oral agents,4.0,6,1,638,,True,4.0,,0,Approved (US obesity)
+naltrexone/bupropion,Currax,Older oral agents,4.0,4,0,0,,True,4.0,,0,Approved (US obesity)
+phentermine/topiramate,Vivus,Older oral agents,4.0,5,0,0,,True,4.0,,0,Approved (US obesity)
+orforglipron,Eli Lilly,Oral small-molecule GLP-1,3.0,26,18,17831,2028-08-26,True,3.0,2028-08-26,16,Approved (US obesity)
+setmelanotide,Rhythm Pharmaceuticals,MC4R agonist,3.0,16,10,824,2027-03-13,True,3.0,2027-03-13,0,Approved (US obesity)
+oral semaglutide,Novo Nordisk,Oral peptide GLP-1,3.0,4,1,667,2023-03-24,True,3.0,2023-03-24,0,Approved (US obesity)
+cotadutide,AstraZeneca (discontinued),GLP-1 / glucagon dual agonist,2.0,13,0,0,,True,2.0,,1,Discontinued
+danuglipron,Pfizer (discontinued),Oral small-molecule GLP-1,2.0,8,0,0,,True,2.0,,0,Discontinued
+lotiglipron,Pfizer (discontinued),Oral small-molecule GLP-1,2.0,6,0,0,,True,2.0,,0,Discontinued
+SAR425899,Sanofi (discontinued),GLP-1 / glucagon dual agonist,1.0,4,0,0,,False,1.0,,0,Discontinued
+maridebart cafraglutide,Amgen,GLP-1 agonist + GIP-receptor antagonist,3.0,27,12,29573,2028-09-04,True,3.0,2028-06-30,2,In development
+retatrutide,Eli Lilly,GIP / GLP-1 / glucagon triple agonist,3.0,17,10,18757,2028-01-24,True,3.0,2028-01-24,2,In development
+cagrilintide,Novo Nordisk,Amylin-based (alone or with GLP-1),3.0,35,13,11224,2030-03-20,True,3.0,2030-03-20,2,In development
+amycretin,Novo Nordisk,Amylin-based (alone or with GLP-1),3.0,21,10,10796,2029-07-23,True,3.0,2029-07-23,5,In development
+survodutide,Boehringer Ingelheim,GLP-1 / glucagon dual agonist,3.0,23,9,9361,2029-04-29,True,3.0,2029-04-29,7,In development
+eloralintide,Eli Lilly,Amylin-based (alone or with GLP-1),3.0,21,7,8730,2028-02-10,True,3.0,2028-02-10,7,In development
+berobenatide (MET-097i),Pfizer (from Metsera),GLP-1 agonist (injectable),3.0,20,10,7895,2029-03-14,True,3.0,2028-06-01,3,In development
+HRS9531,Hengrui / Kailera,GIP / GLP-1 dual agonist,3.0,22,8,7164,2028-03-27,True,3.0,2028-03-27,14,In development
+petrelintide,Zealand Pharma / Roche,Amylin-based (alone or with GLP-1),3.0,9,3,7000,2030-07-28,True,3.0,2030-07-28,0,In development
+VK2735,Viking Therapeutics,GIP / GLP-1 dual agonist,3.0,7,4,6720,2027-07-01,True,3.0,2027-07-01,0,In development
+elecoglipron,AstraZeneca,Oral small-molecule GLP-1,3.0,12,2,4851,2028-07-31,True,3.0,2028-07-31,3,In development
+aleniglipron,Structure Therapeutics,Oral small-molecule GLP-1,3.0,8,2,4700,2028-07-17,True,3.0,2028-07-17,0,In development
+AZD6234,AstraZeneca,Amylin-based (alone or with GLP-1),3.0,12,3,4500,2028-08-11,True,3.0,2028-08-11,4,In development
+CT-388,Roche,GIP / GLP-1 dual agonist,3.0,7,3,3900,2028-08-07,True,3.0,2028-08-07,3,In development
+mazdutide,Innovent / Eli Lilly,GLP-1 / glucagon dual agonist,3.0,17,7,2676,2027-10-31,True,2.0,,14,In development
+bofanglutide,Gan & Lee,GLP-1 agonist (injectable),3.0,18,6,2182,2028-09-28,True,2.0,,15,In development
+ecnoglutide,Sciwind Biosciences,GLP-1 agonist (injectable),3.0,13,5,1496,2028-06-19,True,2.0,,8,In development
+HRS-7535,Hengrui / Kailera,Oral small-molecule GLP-1,3.0,7,2,1204,2028-05-29,False,0.0,,7,In development
+BGM0504,BrightGene,GIP / GLP-1 dual agonist,3.0,11,2,1024,2028-09-30,False,1.0,,9,In development
+UBT251,United Laboratories / Novo Nordisk,GIP / GLP-1 / glucagon triple agonist,3.0,9,3,900,2028-10-10,True,2.0,,4,In development
+zovaglutide,"Beijing QL Biopharmaceutical Co.,Ltd",GLP-1 agonist (injectable),3.0,3,1,755,2027-05-29,False,0.0,,3,In development
+olatorepatide,Regeneron / Hansoh,GIP / GLP-1 dual agonist,3.0,6,1,604,2026-01-04,True,2.0,,3,In development
+AZD9550,AstraZeneca,GLP-1 / glucagon dual agonist,2.0,4,0,0,,True,2.0,,1,In development
+CT-996,Roche,Oral small-molecule GLP-1,2.0,4,0,0,,True,2.0,,1,In development
+MET-233i,Pfizer (from Metsera),Amylin-based (alone or with GLP-1),2.0,2,0,0,,True,2.0,,0,In development
+apitegromab,Scholar Rock,Muscle-preserving (activin / myostatin),2.0,1,0,0,,True,2.0,,0,In development
+bimagrumab,Eli Lilly,Muscle-preserving (activin / myostatin),2.0,3,0,0,,True,2.0,,0,In development
+pemvidutide,Altimmune,GLP-1 / glucagon dual agonist,2.0,6,0,0,,True,2.0,,0,In development
+trevogrumab / garetosmab,Regeneron,Muscle-preserving (activin / myostatin),2.0,1,0,0,,True,2.0,,0,In development
+dapiglutide,Zealand Pharma,GLP-1 / glucagon dual agonist,1.0,1,0,0,,False,0.0,,0,In development
+efinopegdutide,Merck,GLP-1 / glucagon dual agonist,1.0,1,0,0,,False,1.0,,0,In development

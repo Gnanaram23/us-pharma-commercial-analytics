@@ -58,8 +58,13 @@ def load_spend(path: Path, part: str) -> pd.DataFrame:
         if re.match(r"(Tot_|Avg_)", c):
             df[c] = pd.to_numeric(df[c], errors="coerce")
     df["part"] = part
-    df["mftr"] = df["Mftr_Name"].str.strip()
-    df["is_overall"] = df["mftr"].str.lower() == "overall"
+    df["Brnd_Name"] = df["Brnd_Name"].fillna("").str.replace(r"\*|\(.*?\)", "", regex=True).str.strip()
+    if "Mftr_Name" in df:   # Part D: an 'Overall' row per drug plus one row per manufacturer
+        df["mftr"] = df["Mftr_Name"].str.strip()
+        df["is_overall"] = df["mftr"].str.lower() == "overall"
+    else:                   # Part B: one row per billing code, no manufacturer split
+        df["mftr"] = None
+        df["is_overall"] = df["Gnrc_Name"].notna()
     return df
 
 
@@ -158,11 +163,19 @@ imp.sort_values("est_annual_net_impact", ascending=False).round(3).head(25)
 # 75th percentile of the net-impact ratios seen in cycles 1 and 2.
 
 # %%
+# Part B data has no manufacturer split, so its selected drugs are assigned by hand
+PARTB_MFTR = {"Orencia": "Bristol Myers Squibb", "Entyvio": "Takeda", "Botox": "AbbVie", "Xolair": "Roche",
+              "Cimzia": "UCB", "Stelara": "Johnson & Johnson", "Cosentyx": "Novartis", "Enbrel": "Amgen"}
+
+
 def mftr_spend(df):
     x = df[~df["is_overall"] & df["selected"].notna()]
     return x.groupby(["selected", "mftr"])[spend_col].sum()
 
-ms = pd.concat([mftr_spend(d), mftr_spend(b)]).groupby(level=[0, 1]).sum().rename("spend").reset_index()
+
+bx = b[b["selected"].notna()].assign(mftr=lambda x: x["selected"].map(PARTB_MFTR).fillna("Other"))
+partb_ms = bx.groupby(["selected", "mftr"])[spend_col].sum()
+ms = pd.concat([mftr_spend(d), partb_ms]).groupby(level=[0, 1]).sum().rename("spend").reset_index()
 ms = ms.merge(sel[["drug", "cycle"]], left_on="selected", right_on="drug")
 ratio_by_drug = imp["net_impact_ratio"]
 lo_r, mid_r, hi_r = ratio_by_drug.quantile([0.25, 0.5, 0.75])
@@ -173,7 +186,7 @@ for s in ("mid", "lo", "hi"):
     ms[f"impact_{s}"] = ms["spend"] * ms[f"ratio_{s}"]
 
 # Consolidate CMS labeler names to parent companies for readability
-PARENT = [("bristol", "Bristol Myers Squibb"), ("squibb", "Bristol Myers Squibb"), ("pfizer", "Pfizer"),
+PARENT = [("bristol", "Bristol Myers Squibb"), ("bms", "Bristol Myers Squibb"), ("squibb", "Bristol Myers Squibb"), ("pfizer", "Pfizer"),
           ("novo", "Novo Nordisk"), ("lilly", "Eli Lilly"), ("boehringer", "Boehringer Ingelheim"),
           ("janssen", "Johnson & Johnson"), ("johnson", "Johnson & Johnson"), ("astrazeneca", "AstraZeneca"),
           ("merck", "Merck"), ("novartis", "Novartis"), ("sandoz", "Novartis"), ("amgen", "Amgen"), ("abbvie", "AbbVie"),
@@ -217,83 +230,127 @@ style.save(fig, FIG / "02_manufacturer_exposure.png")
 #
 # Eligibility rules applied, from the statute and CMS guidance:
 # 1. **Time on market:** at least 7 years since first approval for a small molecule
-#    (NDA) or 11 years for a biologic (BLA), counted to the selection date (Feb 1, 2027).
-# 2. **No generic or biosimilar on the market.** Approved, marketed generics
-#    (ANDAs in Drugs@FDA) are excluded. Biosimilar competition is flagged by hand.
-# 3. **Not already selected.**
-# 4. Ranked by combined Part B + Part D gross spend. CMS picks up to 15 drugs.
+#    (NDA) or 11 years for a biologic (BLA), counted to the selection date.
+# 2. **No generic or biosimilar on the market.** A generic is treated as marketed
+#    when CMS's own spending data show Medicare claims for the generic version.
+#    This is more reliable than FDA approvals, since many approved generics are
+#    blocked by patents. Marketed biosimilars are flagged by hand.
+# 3. **Orphan drugs:** since July 2025, drugs approved only for rare diseases are
+#    excluded, and for drugs that later gain a common indication the clock starts
+#    when that indication is approved. Known cases are applied by hand below.
+# 4. **Not already selected**, then ranked by Part B + Part D gross spend. CMS
+#    picks up to 15 drugs, grouping all brands of one active ingredient.
 #
-# Not modelled: the orphan-drug exclusion (widened in July 2025 to cover drugs with
-# several orphan indications) and plasma-derived products. These are flagged for
-# manual review instead of guessed.
-#
-# **Validation first.** Before trusting the screen for 2029, run it as if it were
-# January 2025 against Part D only, and compare with the 15 drugs CMS actually picked for IPAY 2027.
+# **Validation first:** run the screen as if it were January 2025, against Part D
+# only, and compare with the 15 drugs CMS actually picked for IPAY 2027.
 
 # %%
 fda = pd.read_csv(RAW / "fda_approvals.csv.gz")
-fda["first_approval"] = pd.to_datetime(fda["first_approval"].astype(str), format="%Y%m%d", errors="coerce")
+fda["first_approval"] = pd.to_datetime(fda["first_approval"].astype("Int64").astype(str), format="%Y%m%d", errors="coerce")
 
 overall = pd.concat([d[d["is_overall"]], b[b["is_overall"]]])
+for df in (overall,):
+    df["Brnd_Name"] = df["Brnd_Name"].str.replace(r"\*|\(.*?\)", "", regex=True).str.strip()
+    df["Gnrc_Name"] = df["Gnrc_Name"].fillna("").str.replace("*", "", regex=False).str.strip()
 cand = (overall.groupby(["Brnd_Name", "Gnrc_Name"])[[f"Tot_Spndng_{y}" for y in YEARS]].sum().reset_index())
-cand = cand.merge(fda.drop(columns=["Gnrc_Name"], errors="ignore"), on="Brnd_Name", how="left")
+cand = cand.merge(fda.drop(columns=["Gnrc_Name"], errors="ignore").drop_duplicates("Brnd_Name"), on="Brnd_Name", how="left")
 cand["selected"] = cand["Brnd_Name"].map(selected_drug)
 cand["sel_cycle"] = cand["selected"].map(sel.set_index("drug")["cycle"])
 
-# Biologics with marketed US biosimilars as of late 2026 (manual flag)
-BIOSIMILAR_COMPETITION = {"humira", "stelara", "remicade", "neulasta", "neupogen", "herceptin", "avastin",
-                          "rituxan", "lantus", "epogen", "procrit", "prolia", "xgeva", "eylea", "soliris", "tysabri",
-                          "actemra", "simponi", "lucentis", "nplate"}
+
+def moiety(name: str) -> str:
+    """Active-ingredient key: first word of each component, so salts and suffixes match.
+    'Fluticasone Propion/Salmeterol' and 'Fluticasone-Salmeterol' both give 'fluticasone/salmeterol'."""
+    parts = re.split(r"[/]|-(?=[a-z])", str(name).lower())
+    return "/".join(p.strip().split(" ")[0] for p in parts if p.strip())
 
 
-def screen(df, selection_date, spend_year, exclude_cycles, parts_col_note=""):
-    x = df.copy()
+cand["key"] = cand["Gnrc_Name"].map(moiety)
+
+
+def marketed_generics(df, clm_col):
+    """Ingredients whose generic version (a row named after the ingredient itself) has
+    at least 2% of the ingredient's Medicare claims."""
+    x = df.assign(key=df["Gnrc_Name"].map(moiety), bkey=df["Brnd_Name"].map(moiety),
+                  clms=pd.to_numeric(df[clm_col], errors="coerce").fillna(0))
+    x["is_generic"] = x["bkey"] == x["key"]
+    share = x[x["is_generic"]].groupby("key")["clms"].sum() / x.groupby("key")["clms"].sum()
+    return set(share[share >= 0.02].index)
+
+
+qd = pd.read_csv(SHARED / "partd_quarterly_spending_by_drug.csv.gz", dtype=str)
+qd = qd[(qd["Mftr_Name"].str.lower() == "overall") & qd["Year"].str.startswith(str(qd["Year"].str[:4].max()))]
+GEN_BY_2024 = marketed_generics(d[d["is_overall"]], f"Tot_Clms_{Y}")
+GEN_BY_LATEST = GEN_BY_2024 | marketed_generics(qd, "Tot_Clms")
+print(f"Ingredients with marketed generics: {len(GEN_BY_2024)} in {Y}, {len(GEN_BY_LATEST)} by {qd['Year'].iloc[0]}")
+
+# Biologics with marketed US biosimilars by 2026 (manual)
+BIOSIMILAR = {"adalimumab", "ustekinumab", "infliximab", "pegfilgrastim", "filgrastim", "trastuzumab", "bevacizumab",
+              "rituximab", "insulin", "epoetin", "denosumab", "aflibercept", "eculizumab", "natalizumab",
+              "tocilizumab", "ranibizumab", "romiplostim", "omalizumab"}
+# Orphan-only drugs (excluded since July 2025) and orphan-first drugs whose clock restarts at
+# the first common-disease approval. Hand-coded from FDA labels; not exhaustive.
+ORPHAN_ONLY = {"ruxolitinib", "tafamidis", "daratumumab", "venetoclax", "ravulizumab", "eculizumab", "zanubrutinib",
+               "macitentan", "riociguat", "treprostinil", "elexacaftor"}   # PAH and cystic fibrosis drugs
+ORPHAN_CLOCK = {"pembrolizumab": "2015-10-02",   # Keytruda: first non-orphan approval (NSCLC)
+                "nivolumab": "2015-03-04"}      # Opdivo: first non-orphan approval (squamous NSCLC)
+
+
+def screen(df, selection_date, spend_year, exclude_cycles, generics, top=15):
+    """Group brands by active ingredient (CMS selects at that level), then apply the rules."""
+    x = df[df["app_type"].isin(["NDA", "BLA"])].copy()
     x["spend"] = x[f"Tot_Spndng_{spend_year}"]
-    years_on_market = (pd.Timestamp(selection_date) - x["first_approval"]).dt.days / 365.25
-    need = np.where(x["app_type"] == "BLA", 11, 7)
-    x["years_on_market"] = years_on_market.round(1)
-    x["eligible_time"] = years_on_market >= need
-    x["has_generic"] = x["anda_marketed_count"].fillna(0) > 0
-    x["biosimilar"] = x["Brnd_Name"].str.lower().str.split().str[0].isin(BIOSIMILAR_COMPETITION)
-    x["already_selected"] = x["sel_cycle"].isin(exclude_cycles)
-    ok = x["fda_found"].fillna(False).astype(bool) & x["eligible_time"] & ~x["has_generic"] & ~x["biosimilar"] & ~x["already_selected"]
-    return x[ok].sort_values("spend", ascending=False)
+    g = (x.groupby("key")
+          .agg(spend=("spend", "sum"), first_approval=("first_approval", "min"),
+               is_bla=("app_type", lambda s: (s == "BLA").any()),
+               brands=("Brnd_Name", lambda s: " / ".join(sorted(set(s))[:3])),
+               lead_brand=("Brnd_Name", lambda s: s.loc[x.loc[s.index, "spend"].idxmax()]),
+               selected=("selected", "first"), sel_cycle=("sel_cycle", "min"),
+               sponsor=("sponsor", "first"))
+          .reset_index())
+    g["clock_start"] = g["first_approval"]
+    for ing, dt in ORPHAN_CLOCK.items():
+        g.loc[g["key"] == ing, "clock_start"] = pd.Timestamp(dt)
+    yrs = (pd.Timestamp(selection_date) - g["clock_start"]).dt.days / 365.25
+    g["years_on_market"] = yrs.round(1)
+    g["rule_years"] = np.where(g["is_bla"], 11, 7)
+    first = g["key"].str.split("/").str[0]
+    ok = ((yrs >= g["rule_years"]) & ~g["key"].isin(generics)
+          & ~first.isin(BIOSIMILAR) & ~first.isin(ORPHAN_ONLY) & ~g["sel_cycle"].isin(exclude_cycles))
+    return g[ok].sort_values("spend", ascending=False).head(top)
 
 
-# Back-test 1: IPAY 2027 selection (Jan 2025), Part D only, using CY2024 spend
-partd_only = cand[cand["Brnd_Name"].isin(d.loc[d["is_overall"], "Brnd_Name"])].copy()
-partd_only[[f"Tot_Spndng_{y}" for y in YEARS]] = (
-    d[d["is_overall"]].groupby("Brnd_Name")[[f"Tot_Spndng_{y}" for y in YEARS]].sum()
-    .reindex(partd_only["Brnd_Name"]).values)
-bt = screen(partd_only, "2025-02-01", 2024, exclude_cycles=[2026])
-bt_groups = bt.assign(group=bt["selected"].fillna(bt["Gnrc_Name"])).drop_duplicates("group").head(15)
+spend_cols = [f"Tot_Spndng_{y}" for y in YEARS]
+partd_spend = overall[overall["part"] == "D"].groupby(["Brnd_Name", "Gnrc_Name"])[spend_cols].sum()
+partd_only = (cand.drop(columns=spend_cols).merge(partd_spend.reset_index(), on=["Brnd_Name", "Gnrc_Name"]))
+bt = screen(partd_only, "2025-02-01", 2024, [2026], GEN_BY_2024)
 actual_2027 = set(sel.loc[sel["cycle"] == 2027, "drug"])
-hits = set(bt_groups["selected"].dropna()) & actual_2027
-print(f"Back-test IPAY 2027: screen's top 15 contains {len(hits)} of the 15 drugs CMS selected")
-bt_groups[["Brnd_Name", "Gnrc_Name", "spend", "app_type", "years_on_market", "selected"]].assign(
-    spend=lambda x: (x["spend"] / 1e9).round(2))
-
-# %% [markdown]
-# The misses are informative: they show what the public data cannot see
-# (CMS groups all brands of one active moiety, uses a November–October spend
-# window, and applies exclusions such as orphan status). The screen is a
-# shortlist for analysts to review, not an oracle.
+hits = set(bt["selected"].dropna()) & actual_2027
+print(f"Back-test IPAY 2027: the screen's top 15 contains {len(hits)} of the 15 drugs CMS selected")
+bt[["lead_brand", "brands", "spend", "years_on_market", "selected"]].assign(spend=lambda x: (x["spend"] / 1e9).round(2))
 
 # %%
-bt2 = screen(cand, "2026-02-01", 2024, exclude_cycles=[2026, 2027])
-bt2_groups = bt2.assign(group=bt2["selected"].fillna(bt2["Gnrc_Name"])).drop_duplicates("group").head(15)
+bt2 = screen(cand, "2026-02-01", 2024, [2026, 2027], GEN_BY_LATEST)
 actual_2028 = set(sel.loc[sel["cycle"] == 2028, "drug"])
-hits2 = set(bt2_groups["selected"].dropna()) & actual_2028
-print(f"Back-test IPAY 2028 (Part B + D): screen's top 15 contains {len(hits2)} of the 15 drugs CMS selected")
+hits2 = set(bt2["selected"].dropna()) & actual_2028
+print(f"Back-test IPAY 2028 (Part B + D): the screen's top 15 contains {len(hits2)} of the 15 drugs CMS selected")
+bt2[["lead_brand", "brands", "spend", "years_on_market", "selected"]].assign(spend=lambda x: (x["spend"] / 1e9).round(2))
+
+# %% [markdown]
+# The misses come from what public data cannot see. CMS uses a November–October
+# spend window and applies orphan and small-biotech exceptions case by case. The
+# small-biotech exception, which protected some drugs from small companies, applies
+# only to the first three cycles. The screen is a shortlist for analysts to
+# review, not an oracle.
 
 # %% [markdown]
 # ### Forecast: likely candidates for the February 2027 selection (IPAY 2029)
 
 # %%
-nxt = screen(cand, "2027-02-01", Y, exclude_cycles=[2026, 2027, 2028])
-nxt = nxt.assign(group=nxt["Gnrc_Name"]).drop_duplicates("group").head(25)
+nxt = screen(cand, "2027-02-01", Y, [2026, 2027, 2028], GEN_BY_LATEST, top=25).copy()
 nxt["rank"] = range(1, len(nxt) + 1)
-watch = nxt[["rank", "Brnd_Name", "Gnrc_Name", "spend", "app_type", "first_approval", "years_on_market", "sponsor"]].copy()
+watch = nxt[["rank", "lead_brand", "brands", "key", "spend", "is_bla", "clock_start", "years_on_market", "sponsor"]].copy()
+watch["type"] = np.where(watch.pop("is_bla"), "BLA", "NDA")
 watch["spend_$B"] = (watch.pop("spend") / 1e9).round(2)
 watch.to_csv(TAB / "ipay2029_watchlist.csv", index=False)
 watch
@@ -301,16 +358,17 @@ watch
 # %%
 w = watch.head(15).iloc[::-1]
 fig, ax = plt.subplots(figsize=(10, 6))
-ax.barh(w["Brnd_Name"], w["spend_$B"] * 1e9, color=[style.ACCENT_2 if t == "BLA" else style.ACCENT for t in w["app_type"]])
+ax.barh(w["lead_brand"], w["spend_$B"] * 1e9, color=[style.ACCENT_2 if t == "BLA" else style.ACCENT for t in w["type"]])
 for y, (v, yrs) in enumerate(zip(w["spend_$B"], w["years_on_market"])):
     ax.text(v * 1e9, y, f" ${v:,.1f}B · {yrs:.0f} yrs on market", va="center", fontsize=8.5)
 style.dollars(ax, "x")
+ax.set_xlim(0, w["spend_$B"].max() * 1e9 * 1.3)
 ax.grid(axis="y", visible=False)
 handles = [plt.Rectangle((0, 0), 1, 1, color=c) for c in (style.ACCENT, style.ACCENT_2)]
-ax.legend(handles, ["Small molecule (7-yr rule)", "Biologic (11-yr rule)"], loc="lower right", fontsize=9)
+ax.legend(handles, ["Small molecule (7-year rule)", "Biologic (11-year rule)"], loc="lower right", fontsize=9)
 ax.set_title("Screened candidates for the February 2027 selection")
-style.subtitle(ax, f"Top 15 eligible drugs by {Y} Medicare Part B + D gross spend, before orphan review")
-style.source(fig, SRC + "; openFDA Drugs@FDA for approval dates and generics")
+style.subtitle(ax, f"Top 15 eligible drugs by {Y} Medicare Part B + D gross spend")
+style.source(fig, SRC + "; openFDA Drugs@FDA for approval dates")
 style.save(fig, FIG / "03_ipay2029_candidates.png")
 
 # %% [markdown]
@@ -328,7 +386,8 @@ summary = {
     "top_manufacturers": {k: float(v) for k, v in mx["impact_mid"].head(5).items()},
     "backtest_2027_hits": len(hits), "backtest_2027_hit_names": sorted(hits),
     "backtest_2028_hits": len(hits2), "backtest_2028_hit_names": sorted(hits2),
-    "watchlist_top10": watch["Brnd_Name"].head(10).tolist(),
+    "watchlist_top15": watch["lead_brand"].head(15).tolist(),
+    "backtest_2027_misses": sorted(actual_2027 - hits), "backtest_2028_misses": sorted(actual_2028 - hits2),
 }
 (TAB / "summary.json").write_text(json.dumps(summary, indent=1))
 summary
