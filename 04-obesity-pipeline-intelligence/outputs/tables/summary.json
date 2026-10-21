@@ -1,0 +1,15 @@
+{
+ "trials_total":8309.0,
+ "industry_trials":1300.0,
+ "named_molecules":48.0,
+ "in_development":32.0,
+ "in_development_ph3":23.0,
+ "in_development_ph3_us":15.0,
+ "in_development_ph2_us":12.0,
+ "china_first_ph3":8.0,
+ "china_site_share_2015":0.0,
+ "china_site_share_2025":0.3596491228,
+ "top2_ph3_patient_share":0.483,
+ "expected_new_by_2030_base":10.2,
+ "expected_new_by_2030_upside":14.9
+}

@@ -1,0 +1,106 @@
+{
+ "latest_quarter": "2026Q1",
+ "training_analogs": [
+  "dimethyl fumarate",
+  "fingolimod",
+  "lisdexamfetamine",
+  "lurasidone",
+  "mirabegron",
+  "pregabalin",
+  "teriflunomide"
+ ],
+ "excluded": {
+  "varenicline": "brand withdrawn (2021 recall), not a normal LOE",
+  "rivaroxaban": "partial generic entry, one quarter of data"
+ },
+ "tests": [
+  "ticagrelor",
+  "sacubitril/valsartan"
+ ],
+ "median_brand_share_q1": 0.4767255216693419,
+ "median_brand_share_q4": 0.39917154980804204,
+ "normal_regime_q4_median": 0.21176470588235294,
+ "normal_regime": [
+  "fingolimod",
+  "dimethyl fumarate",
+  "teriflunomide",
+  "lurasidone",
+  "pregabalin"
+ ],
+ "retained_regime": [
+  "lisdexamfetamine",
+  "mirabegron"
+ ],
+ "backtest_mae": 0.13331631743500102,
+ "backtest_detail": [
+  {
+   "molecule": "ticagrelor",
+   "t": 0.0,
+   "brand_share": 0.891,
+   "forecast": 0.804
+  },
+  {
+   "molecule": "ticagrelor",
+   "t": 1.0,
+   "brand_share": 0.747,
+   "forecast": 0.531
+  },
+  {
+   "molecule": "ticagrelor",
+   "t": 2.0,
+   "brand_share": 0.637,
+   "forecast": 0.364
+  },
+  {
+   "molecule": "ticagrelor",
+   "t": 3.0,
+   "brand_share": 0.441,
+   "forecast": 0.263
+  },
+  {
+   "molecule": "sacubitril/valsartan",
+   "t": 0.0,
+   "brand_share": 0.807,
+   "forecast": 0.804
+  },
+  {
+   "molecule": "sacubitril/valsartan",
+   "t": 1.0,
+   "brand_share": 0.483,
+   "forecast": 0.531
+  },
+  {
+   "molecule": "sacubitril/valsartan",
+   "t": 2.0,
+   "brand_share": 0.236,
+   "forecast": 0.364
+  }
+ ],
+ "eliquis_usd_per_rx_2025q4": 652.9340004025852,
+ "eliquis_usd_per_rx_latest": 421.37464669292774,
+ "eliquis_rx_2025": 2188265.0,
+ "eliquis_2029_rx": {
+  "Normal erosion (median)": 527126.840149846,
+  "Normal erosion (slow)": 916200.7968672612,
+  "Brand retained": 1887966.089861786
+ },
+ "biologic_share_q4": {
+  "adalimumab": 0.8604067305724764,
+  "ustekinumab": NaN
+ },
+ "entries": {
+  "adalimumab": "2023Q4",
+  "dimethyl fumarate": "2020Q3",
+  "fingolimod": "2022Q4",
+  "lisdexamfetamine": "2023Q3",
+  "lurasidone": "2023Q1",
+  "mirabegron": "2024Q2",
+  "pregabalin": "2019Q3",
+  "rivaroxaban": "2026Q1",
+  "sacubitril/valsartan": "2025Q3",
+  "teriflunomide": "2023Q1",
+  "ticagrelor": "2025Q2",
+  "ustekinumab": "2025Q2",
+  "varenicline": "2021Q4"
+ }
+}
