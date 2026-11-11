@@ -1,0 +1,51 @@
+{
+ "annual_spend_musd":236.6,
+ "promotion_share_of_nrx":0.153,
+ "in_sample_mape":0.0093,
+ "in_sample_r2":0.982,
+ "holdout_mape":0.0067,
+ "holdout_interval_coverage":1.0,
+ "max_rhat":1.004,
+ "divergences":9,
+ "truth_inside_90pct_uncalibrated":5,
+ "truth_inside_90pct_calibrated":6,
+ "roi_calibrated":{
+  "Field rep details":1.39,
+  "Speaker programs":1.06,
+  "HCP digital & email":2.4,
+  "DTC television":0.61,
+  "DTC social & video":1.21,
+  "Paid search":2.21
+ },
+ "roi_true":{
+  "Field rep details":1.37,
+  "Speaker programs":1.79,
+  "HCP digital & email":2.95,
+  "DTC television":0.69,
+  "DTC social & video":1.31,
+  "Paid search":2.11
+ },
+ "reallocation_gain_musd_median":25.3,
+ "reallocation_gain_musd_p5":11.1,
+ "reallocation_gain_musd_p95":40.3,
+ "reallocation_gain_true_musd":5.6,
+ "plan_change":{
+  "Field rep details":0.2,
+  "Speaker programs":0.398,
+  "HCP digital & email":0.5,
+  "DTC television":-0.5,
+  "DTC social & video":0.5,
+  "Paid search":0.5
+ },
+ "oracle_gain_true_musd":8.2,
+ "cautious_gain_musd_median":13.7,
+ "cautious_gain_true_musd":1.2,
+ "cautious_plan_change":{
+  "Field rep details":0.156,
+  "Speaker programs":-0.2,
+  "HCP digital & email":0.147,
+  "DTC television":-0.2,
+  "DTC social & video":0.173,
+  "Paid search":0.2
+ }
+}

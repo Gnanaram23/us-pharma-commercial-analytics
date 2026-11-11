@@ -1,0 +1,4 @@
+plan,model: expected gain ($M/yr),model: 90% low,model: 90% high,TRUE gain ($M/yr)
+Bold (channels 50-150%),25.3,11.1,40.3,5.6
+Cautious (all channels 80-120%),13.7,4.6,20.9,1.2
+"Best possible (true curves, bold limits)",,,,8.2
