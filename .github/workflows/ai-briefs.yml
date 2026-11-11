@@ -11,7 +11,7 @@ on:
     inputs:
       model:
         description: "Ollama model tag"
-        default: "qwen2.5:7b"
+        default: "qwen2.5:14b"
   push:
     branches: [briefs-run]
   pull_request:
@@ -21,7 +21,7 @@ permissions:
   contents: write
 
 env:
-  BRIEF_MODEL: ${{ inputs.model || 'qwen2.5:7b' }}
+  BRIEF_MODEL: ${{ inputs.model || 'qwen2.5:14b' }}
 
 jobs:
   test:
@@ -37,7 +37,7 @@ jobs:
     if: github.event_name != 'pull_request'
     needs: test
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 300
     strategy:
       fail-fast: false
       matrix:

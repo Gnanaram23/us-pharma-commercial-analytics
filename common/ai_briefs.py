@@ -19,6 +19,12 @@ draft is not trusted. Every number in it is checked against the summary file:
 3. If any number fails, the model gets the list back and rewrites. After the
    last attempt, sentences that still contain an unsupported number are
    removed, and the removal is recorded.
+4. A number can be right and the sentence around it wrong ("NC had the largest
+   drop" when another state's was larger). So a second pass reads each
+   sentence against the project's write-up (its README, which a person
+   checked) and the fact sheet, and removes any claim the sources do not
+   support. This check is itself done by a language model, so it reduces
+   errors rather than ruling them out; every removal is logged.
 
 The published brief has the citations stripped. A copy with citations and a
 JSON report of every check sit beside it, so a reader can audit any sentence.
@@ -32,7 +38,7 @@ Ungrounded the number matches nothing in summary.json: treated as invented.
 Usage
 -----
     python -m common.ai_briefs                       # all projects, Ollama at localhost:11434
-    python -m common.ai_briefs 07-test-and-control-experiments --model qwen2.5:7b
+    python -m common.ai_briefs 07-test-and-control-experiments --model qwen2.5:14b
     python -m common.ai_briefs --check path/to/brief.md 07-test-and-control-experiments
 """
 from __future__ import annotations
@@ -103,12 +109,21 @@ AUDIENCES = {
 
 SYSTEM = """You write short, plain-English briefs from analysis results.
 
+You are given the project's write-up and a numbered fact sheet. The write-up says what the numbers mean; follow its interpretation exactly. Do not reinterpret a statistic, do not compare items unless the write-up or the numbers make the comparison, and do not add recommendations the write-up does not make.
+
 Rules:
 - Use only numbers from the fact sheet. Every number you write must be followed by the fact it came from in square brackets, e.g. "fell 88% [F3]" or "$21.3B [F9]".
 - You may convert a fact to a percentage (0.568 -> 57%), round it, drop a minus sign when the verb says the direction ("fell 88%"), or show it in thousands, millions or billions.
 - Do not add, subtract, multiply or average facts. Do not write any number that is not in the fact sheet, including dates and counts, unless it appears in the project description.
 - Prefer short sentences and ordinary words. No hype ("game-changing", "unlock", "leverage"). No emojis.
-- Output Markdown only, starting with the headline. No preamble."""
+- Do not start with a title or heading of your own; start with the one-sentence headline in bold.
+- Output Markdown only. No preamble."""
+
+JUDGE = """You check a short brief against its sources: a project write-up and a fact sheet.
+
+For each numbered sentence of the brief, decide whether the sources support it. A sentence is NOT supported if it states something the sources do not say, interprets a statistic differently from the write-up, attaches a number to the wrong thing, claims a ranking ("largest", "highest", "best") the numbers do not show, or recommends something the write-up does not recommend. Wording can differ; meaning must match.
+
+Reply with JSON only: {"unsupported": [{"n": <sentence number>, "why": "<short reason>"}]}. Use an empty list if every sentence is supported."""
 
 
 # ---------------------------------------------------------------- fact sheet
@@ -151,6 +166,15 @@ def render_facts(facts: list[Fact]) -> str:
     return "\n".join(f"[{f.fid}] {f.key} = {fmt(f.value)}" for f in facts)
 
 
+def writeup(project: str, limit: int = 9000) -> str:
+    """The project README from its findings onwards: the human-checked interpretation of the numbers."""
+    text = (ROOT / project / "README.md").read_text()
+    text = re.sub(r"!\[[^\]]*\]\([^)]*\)\n?", "", text)          # images
+    text = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)          # links -> their text
+    text = text.split("## Reproduce")[0]
+    return text[:limit]
+
+
 # ---------------------------------------------------------------- checking
 
 NUM = re.compile(
@@ -158,6 +182,7 @@ NUM = re.compile(
     r"\s?(?P<unit>%|pp\b|percentage points?|points?|bn\b|billion|B\b|million|mn\b|M\b|k\b|K\b|thousand)?"
     r"(?P<cite>(?:\s?\[F\d+\])+)?")
 CITE = re.compile(r"\[F(\d+)\]")
+CITE_GROUP = re.compile(r"\s?\[F\d+(?:\s*,\s*F?\d+)*\]")
 SCALE = {"bn": 1e9, "billion": 1e9, "B": 1e9, "million": 1e6, "mn": 1e6, "M": 1e6, "k": 1e3, "K": 1e3, "thousand": 1e3}
 
 
@@ -221,11 +246,6 @@ def check(text: str, facts: list[Fact], context: str = "") -> Report:
         value = float(raw.replace(",", ""))
         if unit and unit.startswith(("point", "percentage")):
             unit = None
-        # exempt: years and quarters, and small counts written as numerals
-        if (unit is None and not cur and value == int(value) and (1990 <= value <= 2040 or value <= 12)
-                and not cited) or raw.replace(",", "") in ctx_numbers:
-            rep.checks.append(NumberCheck(m.group(0).strip(), value, cited, "exempt"))
-            continue
         status, hit = "ungrounded", None
         for fid in cited:
             if fid in by_id and matches(raw, unit, cur, by_id[fid].value):
@@ -236,12 +256,43 @@ def check(text: str, facts: list[Fact], context: str = "") -> Report:
                 if matches(raw, unit, cur, f.value):
                     status, hit = "uncited", f.fid
                     break
+        # otherwise exempt: years, small counts written as numerals, and numbers stated in the write-up
+        if status == "ungrounded" and ((unit is None and not cur and value == int(value)
+                                        and (1990 <= value <= 2040 or value <= 12) and not cited)
+                                       or raw.replace(",", "") in ctx_numbers):
+            status = "exempt"
         rep.checks.append(NumberCheck(m.group(0).strip(), value, cited, status, hit))
     return rep
 
 
 def strip_citations(text: str) -> str:
-    return re.sub(r"\s?\[F\d+\]", "", text)
+    return CITE_GROUP.sub("", text)
+
+
+def split_citation_groups(text: str) -> str:
+    """'[F4, F6]' -> '[F4][F6]', so each cited fact is checked."""
+    return CITE_GROUP.sub(lambda m: " " + "".join(f"[F{n}]" for n in re.findall(r"\d+", m.group(0))), text)
+
+
+HEADING = re.compile(r"^\s*(#+\s.*|(?:[-*]\s*)?\*\*[^*]*[^*.!?]\*\*:?)\s*$")  # '# x' or a bold label not ending a sentence
+
+
+def is_heading(line: str) -> bool:
+    return bool(HEADING.match(line))
+
+
+def tidy(text: str) -> str:
+    """Remove headings left with nothing under them, and runs of blank lines."""
+    lines = text.splitlines()
+    out = []
+    for i, line in enumerate(lines):
+        if is_heading(line):
+            rest = [l for l in lines[i + 1:] if l.strip()]
+            nxt = rest[0] if rest else ""
+            if not rest or (is_heading(nxt) and len(nxt) - len(nxt.lstrip()) <= len(line) - len(line.lstrip())):
+                continue
+        out.append(line)
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(out)).strip()
 
 
 def drop_ungrounded_sentences(text: str, rep: Report) -> tuple[str, list[str]]:
@@ -264,15 +315,68 @@ def drop_ungrounded_sentences(text: str, rep: Report) -> tuple[str, list[str]]:
     return "\n".join(keep_lines), removed
 
 
+def sentences(text: str) -> list[tuple[int, int, str]]:
+    """(line index, position, sentence) for every sentence with content, skipping headings."""
+    out = []
+    for li, line in enumerate(text.splitlines()):
+        body = line.strip()
+        if not body or is_heading(body):
+            continue
+        for pi, sent in enumerate(re.split(r"(?<=[.!?])\s+(?=[A-Z*(])", body)):
+            if len(re.sub(r"[^A-Za-z]", "", sent)) > 12:
+                out.append((li, pi, sent.strip()))
+    return out
+
+
+def judge(text: str, facts: list[Fact], wu: str, model: str, host: str) -> list[dict]:
+    sents = sentences(text)
+    listing = "\n".join(f"{n}. {strip_citations(s)}" for n, (_, _, s) in enumerate(sents, 1))
+    msg = (f"Project write-up:\n{wu}\n\nFact sheet:\n{render_facts(facts)}\n\nBrief, one sentence per line:\n{listing}")
+    raw = ollama_chat([{"role": "system", "content": JUDGE}, {"role": "user", "content": msg}], model, host, fmt="json",
+                      temperature=0.0)
+    try:
+        flagged = json.loads(raw).get("unsupported", [])
+    except (json.JSONDecodeError, AttributeError):
+        return []
+    out = []
+    for f in flagged:
+        try:
+            n = int(f.get("n"))
+        except (TypeError, ValueError, AttributeError):
+            continue
+        if 1 <= n <= len(sents):
+            li, pi, s = sents[n - 1]
+            out.append({"line": li, "part": pi, "sentence": s, "why": str(f.get("why", ""))[:200]})
+    return out
+
+
+def remove_sentences(text: str, flagged: list[dict]) -> str:
+    lines = text.splitlines()
+    for li in sorted({f["line"] for f in flagged}, reverse=True):
+        drop = {f["part"] for f in flagged if f["line"] == li}
+        line = lines[li]
+        lead = re.match(r"^(\s*(?:[-*]|\d+\.)?\s*)", line).group(1)
+        parts = re.split(r"(?<=[.!?])\s+(?=[A-Z*(])", line.strip())
+        # sentences() numbers parts of the stripped line, bullet marker included in the first part
+        kept = [p for i, p in enumerate(parts) if i not in drop]
+        if not kept or all(re.fullmatch(r"[-*]?\s*(\*\*[^*]+\*\*:?)?\s*", p) for p in kept):
+            lines[li] = None
+        else:
+            new = " ".join(kept)
+            lines[li] = new if new.lstrip().startswith(("-", "*")) or not lead.strip() else lead + new.lstrip("-* ")
+    return "\n".join(l for l in lines if l is not None)
+
+
 # ---------------------------------------------------------------- generation
 
-def ollama_chat(messages: list[dict], model: str, host: str) -> str:
+def ollama_chat(messages: list[dict], model: str, host: str, fmt: str | None = None, temperature: float = 0.2) -> str:
     import requests
 
-    r = requests.post(f"{host}/api/chat", json={
-        "model": model, "messages": messages, "stream": False,
-        "options": {"temperature": 0.2, "num_ctx": 8192, "seed": 7},
-    }, timeout=1800)
+    body = {"model": model, "messages": messages, "stream": False,
+            "options": {"temperature": temperature, "num_ctx": 16384, "seed": 7}}
+    if fmt:
+        body["format"] = fmt
+    r = requests.post(f"{host}/api/chat", json=body, timeout=3600)
     r.raise_for_status()
     return r.json()["message"]["content"].strip()
 
@@ -281,14 +385,15 @@ def draft(project: str, audience: str, model: str, host: str, attempts: int = 3)
     summary = json.loads((ROOT / project / "outputs" / "tables" / "summary.json").read_text())
     facts = fact_sheet(summary)
     ctx = CONTEXT[project]
-    user = (f"Project description:\n{ctx}\n\nFact sheet (from summary.json):\n{render_facts(facts)}\n\n"
-            f"Task: {AUDIENCES[audience]['ask']}")
+    wu = writeup(project)
+    user = (f"Project description:\n{ctx}\n\nProject write-up:\n{wu}\n\nFact sheet (from summary.json):\n"
+            f"{render_facts(facts)}\n\nTask: {AUDIENCES[audience]['ask']}")
     messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
     history = []
     text, rep = "", Report()
     for attempt in range(1, attempts + 1):
-        text = ollama_chat(messages, model, host)
-        rep = check(text, facts, ctx)
+        text = split_citation_groups(ollama_chat(messages, model, host))
+        rep = check(text, facts, ctx + " " + wu)
         history.append({"attempt": attempt, **rep.counts(), "ungrounded": [c.text for c in rep.ungrounded]})
         if not rep.ungrounded:
             break
@@ -301,9 +406,11 @@ def draft(project: str, audience: str, model: str, host: str, attempts: int = 3)
     removed: list[str] = []
     if rep.ungrounded:
         text, removed = drop_ungrounded_sentences(text, rep)
-        rep = check(text, facts, ctx)
+    flagged = judge(text, facts, wu, model, host)
+    text = tidy(remove_sentences(text, flagged))
+    rep = check(text, facts, ctx + " " + wu)
     return {"project": project, "audience": audience, "model": model, "facts": len(facts),
-            "attempts": history, "removed_sentences": removed, "final": rep.counts(),
+            "attempts": history, "removed_sentences": removed, "claims_removed": flagged, "final": rep.counts(),
             "checks": [c.__dict__ for c in rep.checks], "text_cited": text}
 
 
@@ -311,41 +418,43 @@ def write(result: dict, out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     a = result["audience"]
     c = result["final"]
-    head = (f"<!-- Drafted by the open-weights model {result['model']} from outputs/tables/summary.json on "
-            f"{dt.date.today().isoformat()}. Numbers checked: {c['grounded'] + c['uncited']} traced to the "
-            f"summary, {c['ungrounded']} unsupported, {len(result['removed_sentences'])} sentences removed. "
-            f"Audit trail: {a}.cited.md and grounding.json. -->\n\n")
+    n_ok = c["grounded"] + c["uncited"] + c["exempt"]
+    head = (f"*Drafted by the open-weights model {result['model']} on {dt.date.today().isoformat()} from this "
+            f"project's results. {n_ok} of {n_ok + c['ungrounded']} numbers traced to the results; "
+            f"{len(result['removed_sentences']) + len(result['claims_removed'])} unsupported sentences removed. "
+            f"Audit trail: [{a}.cited.md]({a}.cited.md), [grounding.json](grounding.json).*\n\n")
     (out_dir / f"{a}.md").write_text(f"# {AUDIENCES[a]['title']}\n\n" + head + strip_citations(result["text_cited"]) + "\n")
     (out_dir / f"{a}.cited.md").write_text(result["text_cited"] + "\n")
 
 
 def index() -> str:
-    """A table of every brief and how its numbers fared, for the repository README."""
-    rows = ["| Project | Brief | Numbers traced to results | Unsupported | Sentences removed | Drafts needed |",
+    """A table of every brief and how its checks went, for the repository README."""
+    rows = ["| Project | Brief | Numbers traced to results | Unsupported numbers left | Sentences removed (numbers / claims) | Drafts |",
             "|---|---|---|---|---|---|"]
-    tot = {"ok": 0, "bad": 0, "removed": 0}
+    tot = {"ok": 0, "bad": 0, "rn": 0, "rc": 0}
+    names = {"brand_lead": "Brand lead", "analytics_review": "Analytics reviewer"}
     for project in sorted(CONTEXT):
         g = ROOT / project / "outputs" / "briefs" / "grounding.json"
         if not g.exists():
             continue
         for r in json.loads(g.read_text()):
             c = r["final"]
-            ok = c["grounded"] + c["uncited"]
+            ok = c["grounded"] + c["uncited"] + c["exempt"]
+            rn, rc = len(r["removed_sentences"]), len(r.get("claims_removed", []))
             tot["ok"] += ok
             tot["bad"] += c["ungrounded"]
-            tot["removed"] += len(r["removed_sentences"])
-            first = r["attempts"][0]
-            rows.append(f"| {project[:2]} | [{AUDIENCES[r['audience']]['title'].replace('Brief for ', '')}]"
-                        f"({project}/outputs/briefs/{r['audience']}.md) | {ok} | {c['ungrounded']} | "
-                        f"{len(r['removed_sentences'])} | {len(r['attempts'])} (first draft: {first['ungrounded']} unsupported) |")
-    rows.append(f"| | **All** | **{tot['ok']}** | **{tot['bad']}** | **{tot['removed']}** | |")
+            tot["rn"] += rn
+            tot["rc"] += rc
+            rows.append(f"| {project[:2]} | [{names[r['audience']]}]({project}/outputs/briefs/{r['audience']}.md) | "
+                        f"{ok} | {c['ungrounded']} | {rn} / {rc} | {len(r['attempts'])} |")
+    rows.append(f"| | **All** | **{tot['ok']}** | **{tot['bad']}** | **{tot['rn']} / {tot['rc']}** | |")
     return "\n".join(rows)
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("projects", nargs="*", default=sorted(CONTEXT))
-    ap.add_argument("--model", default=os.environ.get("BRIEF_MODEL", "qwen2.5:7b"))
+    ap.add_argument("--model", default=os.environ.get("BRIEF_MODEL", "qwen2.5:14b"))
     ap.add_argument("--host", default=os.environ.get("OLLAMA_HOST", "http://localhost:11434"))
     ap.add_argument("--check", metavar="BRIEF", help="only check an existing brief against the first project's facts")
     ap.add_argument("--index", action="store_true", help="print a Markdown table of all briefs' checks")

@@ -62,6 +62,7 @@ up, so no draft is trusted:
 1. The model gets a numbered fact sheet built from the project's `summary.json` and must cite the fact behind every number, like "57% [F18]".
 2. A checker extracts every number from the draft and matches it to the cited fact, allowing only rounding, percentages, units ($M, $B, k) and a dropped minus sign.
 3. Unsupported numbers go back to the model for a rewrite. Anything still unsupported after the last attempt is removed, and the removal is logged.
+4. A right number can sit in a wrong sentence ("North Carolina had the largest drop" when Pennsylvania's was larger). A second pass reads every sentence against the project's write-up and removes claims the sources do not support. That pass is also a language model, so it reduces errors rather than ruling them out, and every removal is logged with its reason.
 
 Each project's `outputs/briefs/` folder holds the briefs, a copy with
 citations, and a JSON audit of every number. The checker has its own tests
@@ -116,7 +117,7 @@ python 07-test-and-control-experiments/fetch_data.py
 python -m common.build_notebooks
 
 # 3. Optional: draft and check the AI briefs (needs Ollama running locally)
-ollama pull qwen2.5:7b
+ollama pull qwen2.5:14b
 python -m common.ai_briefs
 python -m pytest tests
 ```

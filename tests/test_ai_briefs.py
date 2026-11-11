@@ -58,3 +58,21 @@ def test_drop_and_strip():
     cleaned, removed = drop_ungrounded_sentences(text, rep)
     assert "63%" not in cleaned and "99%" not in cleaned and "Fine bullet" in cleaned and len(removed) == 2
     assert strip_citations("57% [F5] and [F2]") == "57% and"
+
+
+def test_citation_groups_are_split_and_stripped():
+    from common.ai_briefs import split_citation_groups
+    t = split_citation_groups(f"Drops of 88% and 93% [{ID['removal_drop.NC']}, {ID['removal_drop.CA']}].")
+    assert "[F1][F2]" in t.replace(" ", "")
+    assert strip_citations("Drops of 88% [F4, F6].") == "Drops of 88%."
+
+
+def test_claim_removal_keeps_structure():
+    from common.ai_briefs import remove_sentences, sentences, tidy
+    text = "**Headline here is fine.**\n\n**What we found**\n- First claim is right. Second claim is wrong.\n- Third claim is wrong too.\n\n**What could change this**\n- Only claim is wrong here."
+    s = sentences(text)
+    bad = [{"line": li, "part": pi} for li, pi, sent in s if "wrong" in sent]
+    out = tidy(remove_sentences(text, bad))
+    assert "First claim is right." in out and "wrong" not in out
+    assert "What could change this" not in out  # heading left empty is removed
+    assert "What we found" in out
