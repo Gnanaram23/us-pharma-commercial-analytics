@@ -620,7 +620,187 @@ pd.crosstab(hcp["cluster"], hcp["segment"], normalize="index").round(2).join(pro
 # would have produced a misleading "segment".
 
 # %% [markdown]
-# ## 9. Summary numbers used in the README
+# ## 9. Why the model ranks a prescriber highly: SHAP explanations
+#
+# A score a rep cannot interpret will not be used. **SHAP** (SHapley Additive
+# exPlanations) splits each prescriber's score into the contribution of each
+# input, so every score comes with reasons. It uses the same Shapley idea as
+# in project 05: the average change in the prediction when a feature is added,
+# over every order features could be added in. Values are in log-odds; positive
+# pushes the prescriber up the list.
+
+# %%
+import shap  # noqa: E402
+
+rs = np.random.default_rng(0)
+samp = X.iloc[rs.choice(len(X), 6000, replace=False)]
+explainer = shap.TreeExplainer(final)
+sv = np.asarray(explainer.shap_values(samp))
+if sv.ndim == 3:
+    sv = sv[..., 1] if sv.shape[-1] == 2 else sv[1]
+mean_abs = pd.Series(np.abs(sv).mean(axis=0), index=X.columns).sort_values(ascending=False)
+top_f = mean_abs.head(7).index.tolist()
+
+fig, ax = plt.subplots(figsize=(10, 5.2))
+for i, f in enumerate(top_f[::-1]):
+    j = list(X.columns).index(f)
+    vals = samp[f].to_numpy(dtype=float)
+    jit = i + rs.normal(0, 0.12, len(vals))
+    if f in ("specialty", "state"):  # categories have no high or low, so they are drawn in grey
+        ax.scatter(sv[:, j], jit, color=style.NEUTRAL, s=5, alpha=0.5, rasterized=True)
+    else:
+        col = pd.Series(vals).rank(pct=True).to_numpy()
+        ax.scatter(sv[:, j], jit, c=col, cmap="coolwarm", s=5, alpha=0.5, rasterized=True)
+ax.set_yticks(range(len(top_f)), [labels.get(f, f) for f in top_f[::-1]])
+ax.axvline(0, color=style.INK, lw=0.8)
+ax.set_xlabel("SHAP value (effect on the log-odds of being a top grower)")
+ax.set_title("What drives each prescriber's growth score")
+style.subtitle(ax, "Each dot is a prescriber; red = high value of that input, blue = low, grey = a category")
+style.source(fig, SRC)
+style.save(fig, FIG / "09_shap_drivers.png")
+
+top3 = F24.sort_values("growth_score", ascending=False).head(3)
+sv_top = np.asarray(explainer.shap_values(matrix(top3)))
+if sv_top.ndim == 3:
+    sv_top = sv_top[..., 1] if sv_top.shape[-1] == 2 else sv_top[1]
+reasons = []
+for k, (npi, r) in enumerate(top3.iterrows()):
+    contrib = pd.Series(sv_top[k], index=X.columns).sort_values(ascending=False).head(3)
+    reasons.append({"prescriber": f"#{k + 1} ({r['specialty']}, {r['state']})", "growth score": round(float(r["growth_score"]), 3),
+                    "top reasons": "; ".join(f"{labels.get(f, f)} (+{v:.2f})" for f, v in contrib.items())})
+print(pd.DataFrame(reasons).to_string())
+j_spec = list(X.columns).index("specialty")
+spec_names = samp["specialty"].map(dict(enumerate(cats["specialty"])))
+spec_shap = (pd.DataFrame({"specialty": spec_names.to_numpy(), "shap": sv[:, j_spec]})
+             .groupby("specialty")["shap"].agg(["mean", "size"]).query("size >= 50").sort_values("mean", ascending=False))
+print(spec_shap.round(2).to_string())
+pd.DataFrame(reasons)
+
+# %% [markdown]
+# **Reading the chart.** SHAP adds direction to the importance ranking in
+# section 8:
+#
+# - **Specialty** moves scores most. Family practice and endocrinology push a
+#   prescriber up; nurse practitioners and physician assistants much less, once
+#   their other characteristics are known.
+# - **New to GLP-1s** is the clearest single signal: prescribers who wrote their
+#   first reportable GLP-1 claims in 2023 keep ramping, and those who did not
+#   are pushed down.
+# - **Using several GLP-1 brands** and a **higher cost per claim** (higher doses,
+#   newer brands) push scores up: these prescribers are titrating patients up
+#   and trying the newer agents.
+# - **A large existing panel pulls the score down.** For the same volume, a
+#   prescriber already treating many GLP-1 patients has less room left to add.
+#   The model is looking for prescribers early in their ramp, which is why it
+#   beats a list ranked by volume.
+#
+# Each prescriber also gets *reason codes*, the three inputs that raise their
+# score most. The top-scored prescriber, for instance, is an endocrinologist
+# whose reasons are specialty, number of GLP-1 brands used and cost per claim.
+# A call plan can show these next to the name, so the rep knows why the
+# prescriber is on the list and what to talk about.
+#
+# ## 10. Where the class is heading: a saturation forecast, back-tested
+#
+# Three curve families are fitted to national Part D GLP-1 claims, 2018–2024:
+#
+# - **Exponential:** constant growth, the naive extrapolation.
+# - **Logistic:** S-shaped growth towards a ceiling.
+# - **Gompertz:** S-shaped but asymmetric, slowing earlier; common in drug-uptake forecasting.
+#
+# Each is first fitted on 2018–2022 only and judged on how well it predicts
+# 2023–2024, the two years it did not see.
+
+# %%
+from scipy.optimize import curve_fit  # noqa: E402
+
+yc = (cls_trend["Tot_Clms"]["GLP-1"] / 1e6).astype(float)
+tt = (yc.index - 2018).to_numpy(dtype=float)
+MODELS = {  # (curve, starting values, bounds); bounds keep the ceiling above the data and below 1 billion claims
+    "Exponential": (lambda t, a, b: a * np.exp(b * t), [3, 0.3], ([0, 0], [1e3, 2])),
+    "Logistic": (lambda t, K, r, t0: K / (1 + np.exp(-r * (t - t0))), [60, 0.5, 7], ([1, 0.01, 0], [1e3, 5, 40])),
+    "Gompertz": (lambda t, K, b, c: K * np.exp(-b * np.exp(-c * t)), [60, 3, 0.3], ([1, 0.01, 0.01], [1e3, 50, 3])),
+}
+
+
+def fit_curve(f, t, y, p0, bounds):
+    return curve_fit(f, t, y, p0=p0, bounds=bounds, max_nfev=20000)[0]
+
+
+bt = {}
+for name, (f, p0, bnd) in MODELS.items():
+    try:
+        pr = fit_curve(f, tt[:5], yc.to_numpy()[:5], p0, bnd)
+        pred = f(tt[5:], *pr)
+        err = (pred - yc.to_numpy()[5:]) / yc.to_numpy()[5:]
+        bt[name] = {"MAPE 2023-24": float(np.mean(np.abs(err))), "bias 2023-24": float(np.mean(err)),
+                    "2024 forecast, M": float(pred[-1])}
+    except (RuntimeError, ValueError):
+        bt[name] = {"MAPE 2023-24": float("nan"), "bias 2023-24": float("nan"), "2024 forecast, M": float("nan")}
+bt_tab = pd.DataFrame(bt).T
+backtest = bt_tab["MAPE 2023-24"]
+print(f"2024 actual {yc.iloc[-1]:.1f}M;", bt_tab.round(3).to_dict(orient="index"))
+bt_tab.round(3)
+
+# %%
+fc_years = np.arange(2025, 2029)
+paths = {}
+for name, (f, p0, bnd) in MODELS.items():
+    pr = fit_curve(f, tt, yc.to_numpy(), p0, bnd)
+    fit = f(tt, *pr)
+    resid = np.log(yc.to_numpy()) - np.log(fit)
+    sims = []
+    for _ in range(500):  # residual bootstrap on the log scale
+        yb = fit * np.exp(rs.choice(resid, len(resid)))
+        try:
+            pb = fit_curve(f, tt, yb, np.clip(pr, bnd[0], bnd[1]), bnd)
+            sims.append(f(fc_years - 2018.0, *pb))
+        except (RuntimeError, ValueError):
+            continue
+    paths[name] = (np.array(sims), pr)
+
+best_model = backtest.idxmin()
+sims_b, pr_b = paths[best_model]
+fc = pd.DataFrame({"median": np.median(sims_b, axis=0), "low (10%)": np.percentile(sims_b, 10, axis=0),
+                   "high (90%)": np.percentile(sims_b, 90, axis=0)}, index=fc_years)
+
+fig, ax = plt.subplots(figsize=(10, 4.6))
+ax.plot(yc.index, yc, "o-", color=style.INK, lw=2, label="Actual Part D GLP-1 claims")
+for name in MODELS:
+    col = style.ACCENT if name == best_model else (style.NEUTRAL if name == "Gompertz" else style.PALETTE[1])
+    ax.plot(fc_years, np.median(paths[name][0], axis=0), color=col, lw=2 if name == best_model else 1.2,
+            ls="-" if name == best_model else "--", label=f"{name}{' (narrowly best back-test)' if name == best_model else ''}")
+ax.fill_between(fc_years, fc["low (10%)"], fc["high (90%)"], color=style.ACCENT, alpha=0.15, label=f"{best_model} 80% interval")
+ax.set_ylabel("Claims, millions")
+ax.set_xticks(list(yc.index) + list(fc_years))
+ax.set_title("Medicare Part D GLP-1 claims: history and forecast")
+med27 = {n: float(np.median(paths[n][0], axis=0)[list(fc_years).index(2027)]) for n in MODELS}
+style.subtitle(ax, f"Curves that fit history equally well disagree on 2027: {min(med27.values()):.0f}M to "
+               f"{max(med27.values()):.0f}M claims, before any Medicare obesity coverage")
+ax.legend(loc="upper left", fontsize=8.5)
+style.source(fig, SRC + ". Forecast excludes the Medicare obesity coverage announced on 6 November 2025")
+style.save(fig, FIG / "10_class_forecast.png")
+fc.round(1)
+
+# %% [markdown]
+# **A humbling back-test.** Fitted on 2018–2022, all three curves
+# under-forecast 2023–2024 by a fifth or more, and by almost the same amount.
+# Growth accelerated in 2023 as Mounjaro (launched in mid-2022) took off and
+# supply improved: a change in the market, not noise, so no curve fitted to
+# earlier years could have seen it. The back-test cannot separate the curve
+# families, which means the choice between them is a judgement, not a result.
+#
+# Fitted to the full history, the curves agree on 2025 and then diverge. The
+# honest forecast is therefore the spread between them: the S-shaped curves for
+# a market that is starting to saturate in its current (diabetes) use, the
+# exponential for one that keeps compounding. The forecast also deliberately
+# leaves out one known upside: the November 2025 agreement under which Medicare
+# is to start covering GLP-1s for obesity in 2026. That is a structural break a
+# curve fitted to history cannot know about; it belongs in a scenario on top of
+# this baseline, not inside it.
+
+# %% [markdown]
+# ## 11. Summary numbers used in the README
 
 # %%
 summary = {
@@ -640,6 +820,11 @@ summary = {
     "ml_top_features": imp.sort_values(ascending=False).head(4).index.tolist(),
     "ml_top5000_segments": seg_of_top.round(3).to_dict(),
     "ml_overlap_with_growth_targets": float(overlap), "kmeans_ari": float(ari),
+    "shap_top_features": [labels.get(f, f) for f in top_f[:4]],
+    "forecast_backtest_mape": backtest.round(4).to_dict(), "forecast_best_model": best_model,
+    "forecast_claims_m": fc["median"].round(1).to_dict(), "forecast_backtest_bias": bt_tab["bias 2023-24"].round(3).to_dict(),
+    "forecast_2027_by_model_m": {k: round(v, 1) for k, v in med27.items()},
+    "forecast_claims_m_low": fc["low (10%)"].round(1).to_dict(), "forecast_claims_m_high": fc["high (90%)"].round(1).to_dict(),
 }
 pd.Series(summary).to_json(TAB / "summary.json", indent=1)
 pd.Series(summary)

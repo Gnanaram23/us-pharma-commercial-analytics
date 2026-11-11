@@ -1,0 +1,41 @@
+{
+ "payments_2024":1105279,
+ "dollars_2024_musd":54.4,
+ "hcps_reached_2024":154019,
+ "meal_share_of_payments_2024":0.971,
+ "speaker_share_of_dollars_2024":0.513,
+ "top_decile_reach":{
+  "Novo":0.57,
+  "Lilly":0.494
+ },
+ "bottom_half_reach_any":0.277,
+ "lilly_sov_minus_som_median_state":-0.048,
+ "psm_matched_pairs":6870,
+ "psm_max_abs_smd_after":0.087,
+ "psm_max_abs_smd_before":0.933,
+ "psm_att_points":2.37,
+ "psm_att_ci":[
+  1.78,
+  2.93
+ ],
+ "psm_pretrend_points":0.59,
+ "attribution_misallocation":{
+  "Last touch":0.324,
+  "First touch":0.329,
+  "Linear":0.308,
+  "Markov removal":0.298,
+  "Shapley":0.312
+ },
+ "uplift_top_decile_true":0.1148,
+ "uplift_bottom_decile_true":0.0167,
+ "uplift_top_half_capture":0.802,
+ "response_top_half_capture":0.66,
+ "email_optimal_per_month":3.2,
+ "bandit_net_value_musd":{
+  "Random":57.25,
+  "Fixed rules":67.6,
+  "Thompson sampling, 9 segments":63.75,
+  "Contextual bandit, gradient boosting":76.1,
+  "Oracle (ceiling)":85.6
+ }
+}

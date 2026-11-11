@@ -505,7 +505,156 @@ nlp_eval.round(3)
 # conclusion can be checked rather than taken on trust.
 
 # %% [markdown]
-# ## 10. Summary numbers used in the README
+# ## 10. Survival analysis: how long obesity trials take, and who is fastest
+#
+# Trial timelines decide when competitors arrive. **Survival analysis** handles
+# a problem simple averages cannot: many trials are still running, so their
+# true duration is unknown, only that it is *at least* as long as they have run
+# so far. These are "censored" observations.
+#
+# - **Kaplan–Meier curve:** the share of trials still running after each month,
+#   using censored trials correctly.
+# - **Cox proportional hazards model:** how much each factor speeds up or slows
+#   down reaching primary completion. A hazard ratio above 1 means faster.
+#
+# Duration runs from the start date to the primary completion date. It is
+# observed when ClinicalTrials.gov marks the completion as actual, and censored
+# at the data date when the completion date is still an estimate.
+
+# %%
+import statsmodels.api as sm  # noqa: E402
+from statsmodels.duration.hazard_regression import PHReg  # noqa: E402
+
+DATA_DATE = pd.Timestamp("2026-10-21")
+sv = trials[(trials["sponsor_class"] == "INDUSTRY") & trials["phase"].isin(["PHASE2", "PHASE3"]) & trials["start"].notna()].copy()
+sv = sv[~sv["overall_status"].isin(["WITHDRAWN"])]
+sv["observed"] = (sv["primary_completion_type"] == "ACTUAL") & sv["pcd"].notna()
+end = np.where(sv["observed"], sv["pcd"], np.minimum(sv["pcd"].fillna(DATA_DATE), DATA_DATE))
+sv["months"] = (pd.to_datetime(end) - sv["start"]).dt.days / 30.44
+sv = sv[sv["months"] > 0]
+BIG2 = ("Eli Lilly", "Novo Nordisk")
+sv["big2"] = sv["sponsor"].str.startswith(BIG2).astype(int)
+sv["phase3"] = (sv["phase"] == "PHASE3").astype(int)
+sv["china_site"] = sv["countries"].fillna("").str.contains("China").astype(int)
+sv["us_site"] = sv["countries"].fillna("").str.contains("United States").astype(int)
+sv["log_enrol"] = np.log1p(sv["enrollment"].fillna(sv["enrollment"].median()))
+sv["after_2020"] = (sv["start"].dt.year >= 2020).astype(int)
+
+fig, ax = plt.subplots(figsize=(10, 4.6))
+km_rows = []
+for (ph, big), col in zip([(0, 1), (0, 0), (1, 1), (1, 0)], [style.ACCENT, style.PALETTE[5], style.ACCENT_2, style.PALETTE[3]]):
+    g_ = sv[(sv["phase3"] == ph) & (sv["big2"] == big)]
+    if len(g_) < 10:
+        continue
+    sf = sm.SurvfuncRight(g_["months"].to_numpy(), g_["observed"].astype(int).to_numpy())
+    lab = f"Phase {3 if ph else 2}, {'Lilly / Novo' if big else 'other sponsors'} (n={len(g_)})"
+    ax.step(sf.surv_times, sf.surv_prob, where="post", color=col, lw=2, label=lab)
+    try:
+        med = float(sf.quantile(0.5))
+    except Exception:  # noqa: BLE001
+        med = float("nan")
+    km_rows.append({"group": lab, "trials": len(g_), "completed": int(g_["observed"].sum()), "median months to primary completion": med})
+ax.set_xlabel("Months since trial start")
+ax.set_ylabel("Share of trials not yet at primary completion")
+style.pct(ax)
+ax.set_xlim(0, 72)
+ax.set_title("How long obesity trials take to reach their primary endpoint")
+style.subtitle(ax, "Kaplan-Meier curves; trials still running are counted correctly as censored")
+ax.legend(loc="upper right", fontsize=8.5)
+style.source(fig, SRC + "; industry Phase 2 and 3 trials")
+style.save(fig, FIG / "07_trial_survival.png")
+km = pd.DataFrame(km_rows)
+km.round(1)
+
+# %%
+cov = ["phase3", "big2", "china_site", "us_site", "log_enrol", "after_2020"]
+ph = PHReg(sv["months"].to_numpy(), sv[cov].to_numpy(dtype=float), status=sv["observed"].astype(int).to_numpy(), ties="efron").fit()
+hr = pd.DataFrame({"hazard ratio": np.exp(ph.params), "95% low": np.exp(ph.conf_int()[:, 0]), "95% high": np.exp(ph.conf_int()[:, 1]),
+                   "p-value": ph.pvalues},
+                  index=["Phase 3 (vs 2)", "Lilly or Novo sponsor", "Has a China site", "Has a US site", "log enrolment", "Started 2020 or later"])
+hr.round(3)
+
+# %% [markdown]
+# **Reading the hazard ratios:** above 1 means a trial reaches primary
+# completion sooner, below 1 later, holding the other factors fixed.
+#
+# Two factors matter. Phase 3 trials reach their primary endpoint at well under
+# half the rate of Phase 2 trials, and larger trials take longer. Once phase and
+# size are allowed for, nothing else is detectable: Lilly and Novo do not run
+# trials faster than other sponsors, trials with Chinese or US sites are no
+# faster or slower, and trials started since 2020 are no quicker than older ones.
+# Every one of those confidence intervals spans 1.
+#
+# That is a useful negative result for competitive planning. The two leaders'
+# Phase 3 trials actually take a little longer at the median, because they are
+# bigger. Their lead comes from running more and larger programmes in parallel,
+# not from faster execution, so a challenger's readout dates can be projected
+# with the same duration curves as theirs.
+#
+# ## 11. Text mining: is obesity development moving into comorbidities?
+#
+# Unsupervised topic modelling (non-negative matrix factorisation on trial text)
+# was tried first. It mostly rediscovered sponsor house styles ("the study
+# medicine", "the main purpose of this study"), which echoes the negative result
+# in section 9. A targeted dictionary approach works better: tag each trial's
+# conditions, title and keywords for ten clinical themes, and track the share of
+# industry obesity trials that mention each theme over time.
+
+# %%
+THEMES = {
+    "Type 2 diabetes": r"type 2 diabetes|t2d|diabetes mellitus, type 2|type ii diabetes",
+    "Obstructive sleep apnoea": r"sleep apn",
+    "Heart failure / CV outcomes": r"heart failure|hfpef|cardiovascular|atherosclero|myocardial",
+    "Chronic kidney disease": r"kidney|renal|ckd|nephropathy",
+    "Knee osteoarthritis": r"osteoarthritis",
+    "Liver (MASH / NASH)": r"nash|mash|steatohepatitis|fatty liver|nafld|masld",
+    "Muscle / body composition": r"muscle|lean mass|body composition|sarcopen",
+    "Adolescents / children": r"adolescen|pediatric|paediatric|children|child",
+    "Weight maintenance": r"maintenance|maintain|regain|withdraw",
+    "Genetic / hypothalamic obesity": r"prader|bardet|hypothalamic|pomc|lepr|genetic obesity",
+}
+ti = trials[(trials["sponsor_class"] == "INDUSTRY") & trials["start_year"].between(2015, 2026)].copy()
+txt = (ti["conditions"].fillna("") + " | " + ti["title"].fillna("") + " | " + ti["keywords"].fillna("")).str.lower()
+for k, rx in THEMES.items():
+    ti[k] = txt.str.contains(rx)
+COMORB = ["Obstructive sleep apnoea", "Heart failure / CV outcomes", "Chronic kidney disease", "Knee osteoarthritis"]
+ti["Any obesity-related outcome (OSA, CV, CKD, OA)"] = ti[COMORB].any(axis=1)
+ti["era"] = pd.cut(ti["start_year"], [2014, 2019, 2022, 2026], labels=["2015-19", "2020-22", "2023-26"])
+theme_tab = ti.groupby("era", observed=True)[list(THEMES) + ["Any obesity-related outcome (OSA, CV, CKD, OA)"]].mean().T
+theme_tab["trials"] = None
+counts = ti.groupby("era", observed=True).size()
+
+fig, ax = plt.subplots(figsize=(10, 4.8))
+plot_t = theme_tab.drop(columns="trials").sort_values("2023-26")
+yy = np.arange(len(plot_t))
+for j, (era, col) in enumerate(zip(["2015-19", "2020-22", "2023-26"], [style.NEUTRAL, style.PALETTE[1], style.ACCENT])):
+    ax.barh(yy + (j - 1) * 0.27, plot_t[era].astype(float), 0.27, color=col, label=f"{era} (n={counts[era]})")
+ax.set_yticks(yy, plot_t.index)
+style.pct(ax, "x")
+ax.xaxis.set_major_locator(plt.MultipleLocator(0.02))
+ax.set_xlabel("Share of industry obesity trials mentioning the theme")
+ax.set_title("Themes in industry obesity trials, by start period")
+any_now, any_then = float(theme_tab.loc["Any obesity-related outcome (OSA, CV, CKD, OA)", "2023-26"]), float(theme_tab.loc["Any obesity-related outcome (OSA, CV, CKD, OA)", "2015-19"])
+style.subtitle(ax, f"Trials built around obesity-related diseases rose from {any_then:.0%} to {any_now:.0%} of starts: the label-expansion race has begun")
+ax.legend(loc="lower right", fontsize=8.5)
+style.source(fig, SRC + "; keyword tagging of conditions, titles and keywords")
+style.save(fig, FIG / "08_trial_themes.png")
+theme_tab.drop(columns="trials").round(3)
+
+# %% [markdown]
+# The share of trials aimed at obesity-related diseases (sleep apnoea, heart
+# failure and cardiovascular outcomes, kidney disease, knee osteoarthritis) rose
+# from about 2% of industry starts in 2015-19 to about 9% since 2023, still a
+# small share but a fourfold increase. That matters commercially. Medicare
+# Part D cannot cover a drug for weight loss alone, but it can cover the same
+# molecule for a separate approved indication, which is exactly how Wegovy
+# (cardiovascular risk) and Zepbound (sleep apnoea) gained Medicare access.
+# Liver and genetic-obesity trials fell as a share, partly because the field
+# grew so fast elsewhere and partly because MASH trials are often registered
+# under the liver condition rather than obesity, so this search under-counts them.
+
+# %% [markdown]
+# ## 12. Summary numbers used in the README
 
 # %%
 summary = {
@@ -527,6 +676,9 @@ summary = {
     "nlp_labelled_trials": int(len(one)), "nlp_eval": nlp_eval.round(4).to_dict(),
     "expected_new_by_2030_base": round(float(exp.loc[exp["year"] == 2030, "base"].iloc[0]), 1) if 2030 in exp["year"].values else None,
     "expected_new_by_2030_upside": round(float(exp.loc[exp["year"] == 2030, "upside"].iloc[0]), 1) if 2030 in exp["year"].values else None,
+    "survival_km": km.round(1).to_dict("records"),
+    "cox_hazard_ratios": hr.round(3).to_dict(orient="index"),
+    "theme_shares": theme_tab.drop(columns="trials").astype(float).round(3).to_dict(orient="index"),
 }
 pd.Series(summary).to_json(TAB / "summary.json", indent=1)
 pd.Series(summary)

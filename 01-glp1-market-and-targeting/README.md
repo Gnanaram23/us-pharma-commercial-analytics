@@ -124,6 +124,35 @@ grouped by state**, so every score is for a state the model did not learn from.
   claims fall in a single drug class, an artifact of CMS's small-count
   suppression. The transparent rules were kept.
 
+### 8. Explaining each score with SHAP
+
+![SHAP drivers](outputs/figures/09_shap_drivers.png)
+
+A score a rep cannot interpret will not be used. **SHAP** (SHapley Additive
+exPlanations) splits each prescriber's score into the contribution of each
+input: the average change in the prediction when that input is added, over
+every order in which inputs could be added.
+
+- **Specialty** moves scores most: family practice and endocrinology push a prescriber up.
+- **New to GLP-1s** is the clearest single signal: prescribers who wrote their first reportable GLP-1 claims in 2023 keep ramping.
+- **Several GLP-1 brands** and **higher cost per claim** (higher doses, newer brands) push scores up: these prescribers are titrating up and trying newer agents.
+- **A large existing panel pulls the score down.** The model looks for prescribers early in their ramp, which is why it beats ranking by volume.
+
+Every prescriber on the list gets three **reason codes**, the inputs that raise
+their score most (for the top-scored endocrinologist: specialty, number of
+brands used, cost per claim), so the call plan says why the prescriber is there.
+
+### 9. Where the class is heading: a forecast that admits its uncertainty
+
+![Class forecast](outputs/figures/10_class_forecast.png)
+
+Three growth curves (exponential, logistic and Gompertz) were fitted to
+national Part D GLP-1 claims from 2018 to 2022, then tested on 2023–2024.
+
+- **All three under-forecast by a fifth or more** (mean errors of 21%, 21% and 25%). Growth accelerated in 2023 as Mounjaro took off, a change in the market that no curve fitted to earlier years could see. The back-test cannot separate the curve families.
+- Fitted to the full history, the curves agree on 2025 and then diverge: **42M to 60M claims in 2027**, against 22M in 2024. The forecast is presented as that range, with a bootstrapped 80% interval, rather than one line.
+- The forecast leaves out Medicare's planned obesity coverage. That is a policy change a curve cannot know about, so it belongs in a scenario on top of this baseline.
+
 ## Recommendations
 
 1. **Re-weight field effort to primary care.** Put the first wave of rep calls on the

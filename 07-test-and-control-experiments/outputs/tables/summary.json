@@ -1,0 +1,55 @@
+{
+ "nc_aom_rate_2025Q3":165.1,
+ "nc_aom_rate_2025Q4":18.7,
+ "nc_aom_reimbursed_covered_quarters_musd":335.5,
+ "removal_drop_vs_synthetic":{
+  "NC":-0.875,
+  "CA":-0.753,
+  "PA":-0.928,
+  "NH":-0.859
+ },
+ "removal_drop_vs_did":{
+  "NC":-0.891,
+  "CA":-0.744,
+  "PA":-0.927,
+  "NH":-0.846
+ },
+ "removal_lost_rx_first_quarter":{
+  "NC":72828.0,
+  "CA":386771.0,
+  "PA":74739.0,
+  "NH":3798.0
+ },
+ "placebo_effect_range":[
+  -0.338,
+  0.149
+ ],
+ "nc_recovered_share_2026Q1":0.568,
+ "spillover_break_after_coverage":{
+  "break_after_coverage":-0.018,
+  "ci_low":-0.059,
+  "ci_high":0.024,
+  "nc_extra_trend_per_quarter":0.033
+ },
+ "mde_at_80pct_power":{
+  "Post-only":{
+   "4 states":null,
+   "8 states":null,
+   "12 states":null,
+   "16 states":null
+  },
+  "DiD":{
+   "4 states":0.2,
+   "8 states":0.15,
+   "12 states":0.15,
+   "16 states":0.1
+  },
+  "DiD + pre-period adjustment":{
+   "4 states":0.2,
+   "8 states":0.15,
+   "12 states":0.1,
+   "16 states":0.1
+  }
+ },
+ "matched_market_pre_rmse_log":0.0326
+}

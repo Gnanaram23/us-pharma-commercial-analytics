@@ -59,5 +59,45 @@
   "Low priority":0.003
  },
  "ml_overlap_with_growth_targets":0.1226,
- "kmeans_ari":0.2384661486
+ "kmeans_ari":0.2384661486,
+ "shap_top_features":[
+  "Specialty",
+  "New to GLP-1s",
+  "Cost per claim (dose \/ brand mix)",
+  "GLP-1 patients"
+ ],
+ "forecast_backtest_mape":{
+  "Exponential":0.2057,
+  "Logistic":0.2077,
+  "Gompertz":0.2463
+ },
+ "forecast_best_model":"Exponential",
+ "forecast_claims_m":{
+  "2025":31.3,
+  "2026":43.3,
+  "2027":60.0,
+  "2028":82.9
+ },
+ "forecast_backtest_bias":{
+  "Exponential":-0.206,
+  "Logistic":-0.208,
+  "Gompertz":-0.246
+ },
+ "forecast_2027_by_model_m":{
+  "Exponential":60.0,
+  "Logistic":54.8,
+  "Gompertz":42.2
+ },
+ "forecast_claims_m_low":{
+  "2025":27.9,
+  "2026":37.3,
+  "2027":49.6,
+  "2028":66.3
+ },
+ "forecast_claims_m_high":{
+  "2025":35.6,
+  "2026":50.7,
+  "2027":72.1,
+  "2028":103.0
+ }
 }

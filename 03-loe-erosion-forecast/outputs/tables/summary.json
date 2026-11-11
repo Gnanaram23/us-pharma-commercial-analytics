@@ -128,5 +128,33 @@
    "National analog curve": 0.3273,
    "Persistence (share at t=1)": 0.2679
   }
+ },
+ "bayes_hierarchical": {
+  "p_retained_mean": 0.319,
+  "heldout_points_inside_80pct": 7,
+  "heldout_points": 7,
+  "new_brand_share_t4_normal_p10_p50_p90": [
+   0.073,
+   0.191,
+   0.43
+  ],
+  "new_brand_share_t4_retained_p10_p50_p90": [
+   0.359,
+   0.694,
+   0.908
+  ],
+  "divergences": 101
+ },
+ "conformal_80": {
+  "Gradient boosting": {
+   "average half-width (share points)": 32.1212,
+   "average coverage": 0.785,
+   "worst molecule coverage": 0.6667
+  },
+  "Persistence (share at t=1)": {
+   "average half-width (share points)": 25.6651,
+   "average coverage": 0.775,
+   "worst molecule coverage": 0.6275
+  }
  }
 }

@@ -48,5 +48,126 @@
   "Majority-class baseline accuracy":0.25
  },
  "expected_new_by_2030_base":9.7,
- "expected_new_by_2030_upside":14.1
+ "expected_new_by_2030_upside":14.1,
+ "survival_km":[
+  {
+   "group":"Phase 2, Lilly \/ Novo (n=31)",
+   "trials":31,
+   "completed":22,
+   "median months to primary completion":15.8
+  },
+  {
+   "group":"Phase 2, other sponsors (n=226)",
+   "trials":226,
+   "completed":152,
+   "median months to primary completion":12.8
+  },
+  {
+   "group":"Phase 3, Lilly \/ Novo (n=107)",
+   "trials":107,
+   "completed":58,
+   "median months to primary completion":23.9
+  },
+  {
+   "group":"Phase 3, other sponsors (n=124)",
+   "trials":124,
+   "completed":44,
+   "median months to primary completion":21.9
+  }
+ ],
+ "cox_hazard_ratios":{
+  "Phase 3 (vs 2)":{
+   "hazard ratio":0.434,
+   "95% low":0.326,
+   "95% high":0.578,
+   "p-value":0.0
+  },
+  "Lilly or Novo sponsor":{
+   "hazard ratio":1.051,
+   "95% low":0.753,
+   "95% high":1.468,
+   "p-value":0.768
+  },
+  "Has a China site":{
+   "hazard ratio":1.212,
+   "95% low":0.842,
+   "95% high":1.745,
+   "p-value":0.301
+  },
+  "Has a US site":{
+   "hazard ratio":1.046,
+   "95% low":0.774,
+   "95% high":1.414,
+   "p-value":0.771
+  },
+  "log enrolment":{
+   "hazard ratio":0.877,
+   "95% low":0.784,
+   "95% high":0.98,
+   "p-value":0.021
+  },
+  "Started 2020 or later":{
+   "hazard ratio":1.046,
+   "95% low":0.779,
+   "95% high":1.404,
+   "p-value":0.764
+  }
+ },
+ "theme_shares":{
+  "Type 2 diabetes":{
+   "2015-19":0.165,
+   "2020-22":0.167,
+   "2023-26":0.176
+  },
+  "Obstructive sleep apnoea":{
+   "2015-19":0.0,
+   "2020-22":0.005,
+   "2023-26":0.027
+  },
+  "Heart failure \/ CV outcomes":{
+   "2015-19":0.022,
+   "2020-22":0.03,
+   "2023-26":0.033
+  },
+  "Chronic kidney disease":{
+   "2015-19":0.004,
+   "2020-22":0.015,
+   "2023-26":0.025
+  },
+  "Knee osteoarthritis":{
+   "2015-19":0.0,
+   "2020-22":0.005,
+   "2023-26":0.011
+  },
+  "Liver (MASH \/ NASH)":{
+   "2015-19":0.061,
+   "2020-22":0.059,
+   "2023-26":0.019
+  },
+  "Muscle \/ body composition":{
+   "2015-19":0.039,
+   "2020-22":0.015,
+   "2023-26":0.021
+  },
+  "Adolescents \/ children":{
+   "2015-19":0.03,
+   "2020-22":0.015,
+   "2023-26":0.027
+  },
+  "Weight maintenance":{
+   "2015-19":0.004,
+   "2020-22":0.015,
+   "2023-26":0.016
+  },
+  "Genetic \/ hypothalamic obesity":{
+   "2015-19":0.061,
+   "2020-22":0.064,
+   "2023-26":0.019
+  },
+  "Any obesity-related outcome (OSA, CV, CKD, OA)":{
+   "2015-19":0.022,
+   "2020-22":0.054,
+   "2023-26":0.088
+  }
+ }
 }

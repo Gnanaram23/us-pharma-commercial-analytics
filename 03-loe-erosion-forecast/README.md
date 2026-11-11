@@ -124,6 +124,45 @@ never saw) and on the 2025 LOEs:
   practical rule is to watch each state's first two quarters. The model pipeline
   is ready to retrain as more LOEs mature into training data.
 
+### 6. Bayesian hierarchical model: both regimes, with probabilities
+
+![Bayesian erosion bands](outputs/figures/06_bayesian_erosion_bands.png)
+
+Fitting each analog curve on its own leaves a new brand with no honest range,
+just "fast like these" or "slow like those". A **Bayesian hierarchical model**
+fits all analogs together:
+
+- Each brand has its own erosion speed and floor, drawn from a shared population distribution, so analogs with little data borrow strength from the rest (**partial pooling**).
+- Floors come from a **mixture of two regimes**, normal erosion and brand retained, with the probability of each learned from the data.
+- It is sampled with NUTS (the No-U-Turn Sampler, a standard Markov chain Monte Carlo method).
+
+| A new brand, one year after generic entry | 10th percentile | Median | 90th percentile |
+|---|---|---|---|
+| Normal-erosion regime: brand share | 7% | 19% | 43% |
+| Brand-retained regime: brand share | 36% | 69% | 91% |
+
+The model puts about a one-in-three chance on the retained regime. All seven
+held-out quarters for Brilinta and Entresto fell inside its 80% band. The
+sampler reported about a hundred divergent transitions out of 6,000 draws,
+which is common for mixture models, so the regime probability should be read
+as approximate.
+
+### 7. Conformal prediction: intervals that keep their promise
+
+**Split conformal prediction** turns any point forecast into an interval with
+a stated coverage rate, without assuming normal errors: take the model's errors
+on molecules it was not trained on and use their 80th percentile as the
+half-width.
+
+| 80% intervals, held-out molecule | Average half-width (share points) | Average coverage | Worst molecule |
+|---|---|---|---|
+| Gradient boosting | 32 | 79% | 67% |
+| Persistence | 26 | 78% | 63% |
+
+Coverage is close to the promised 80% on average but swings by molecule, the
+honest limit of seven analogs. Persistence gets the same coverage with narrower
+intervals, which confirms the section 5 result: ship the simpler forecast.
+
 ## Recommendations
 
 - **Generic apixaban makers:** Treat Medicaid's roughly 2 million annual

@@ -20,7 +20,7 @@ def build(folder: Path) -> None:
     src = folder / "analysis.py"
     nb = jupytext.read(src)
     nb.metadata["kernelspec"] = {"display_name": "Python 3", "language": "python", "name": "python3"}
-    ExecutePreprocessor(timeout=1800, kernel_name="python3").preprocess(nb, {"metadata": {"path": str(folder)}})
+    ExecutePreprocessor(timeout=5400, kernel_name="python3").preprocess(nb, {"metadata": {"path": str(folder)}})
     out = folder / "analysis.ipynb"
     nbformat.write(nb, out)
     print(f"built {out.relative_to(ROOT)}")

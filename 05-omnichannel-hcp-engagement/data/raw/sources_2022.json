@@ -1,0 +1,35 @@
+{
+ "brands": {
+  "OZEMPIC": "GLP-1",
+  "RYBELSUS": "GLP-1",
+  "WEGOVY": "GLP-1",
+  "VICTOZA": "GLP-1",
+  "SAXENDA": "GLP-1",
+  "MOUNJARO": "GLP-1",
+  "ZEPBOUND": "GLP-1",
+  "TRULICITY": "GLP-1",
+  "BYDUREON": "GLP-1",
+  "BYETTA": "GLP-1",
+  "XULTOPHY": "GLP-1",
+  "SOLIQUA": "GLP-1",
+  "JARDIANCE": "SGLT2",
+  "FARXIGA": "SGLT2",
+  "INVOKANA": "SGLT2",
+  "STEGLATRO": "SGLT2",
+  "SYNJARDY": "SGLT2",
+  "XIGDUO": "SGLT2",
+  "GLYXAMBI": "SGLT2",
+  "TRIJARDY": "SGLT2",
+  "QTERN": "SGLT2",
+  "JANUVIA": "DPP-4",
+  "JANUMET": "DPP-4",
+  "TRADJENTA": "DPP-4",
+  "JENTADUETO": "DPP-4"
+ },
+ "files": {
+  "2022": {
+   "url": "https://download.cms.gov/openpayments/PGYR2022_P06302026_06032026/OP_DTL_GNRL_PGYR2022_P06302026_06032026.csv",
+   "rows_read": 13322266
+  }
+ }
+}

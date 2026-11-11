@@ -507,7 +507,142 @@ style.save(fig, FIG / "05_ml_state_early_warning.png")
 # quarters of state data are published, about six months after entry.
 
 # %% [markdown]
-# ## 7. Summary numbers used in the README
+# ## 7. Bayesian extension: one hierarchical model for all analogs, with two regimes
+#
+# The analog curves in section 2 are fitted one at a time, so a new brand gets
+# no honest range: just "fast like these" or "slow like those". A **Bayesian
+# hierarchical model** fits them together:
+#
+# - every brand has its own speed (k) and floor, drawn from a shared population
+#   distribution, so analogs with little data borrow strength from the rest
+#   (partial pooling);
+# - floors come from a **mixture of two regimes**, normal erosion and brand
+#   retained, with the probability of each learned from the analogs.
+#
+# Sampling it (NUTS, as in project 06) gives a full predictive range for a
+# brand that has not lost exclusivity yet. It is then checked on Brilinta and
+# Entresto, which the model does not see.
+
+# %%
+import pymc as pm  # noqa: E402
+
+hb = q[q["molecule"].isin(analogs) & q["t"].between(0, 12)].dropna(subset=["brand_share"])
+mol_idx = {m: i for i, m in enumerate(analogs)}
+ii, tq, yq = hb["molecule"].map(mol_idx).to_numpy(), hb["t"].to_numpy(dtype=float), hb["brand_share"].to_numpy()
+with pm.Model() as hmodel:
+    mu_lk = pm.Normal("mu_log_k", 0, 1)
+    sd_lk = pm.HalfNormal("sd_log_k", 0.7)
+    log_k = pm.Normal("log_k", mu_lk, sd_lk, shape=len(analogs))
+    pi_ret = pm.Beta("p_retained", 2, 4)
+    mu_lo = pm.Normal("mu_floor_normal", -2.0, 0.7)
+    mu_hi = pm.Normal("mu_floor_retained", 1.0, 0.7)
+    s_f = pm.HalfNormal("sd_floor", 0.6)
+    logit_floor = pm.Mixture("logit_floor", w=pm.math.stack([1 - pi_ret, pi_ret]),
+                             comp_dists=[pm.Normal.dist(mu_lo, s_f), pm.Normal.dist(mu_hi, s_f)], shape=len(analogs))
+    pm.Potential("order", pm.math.switch(mu_hi > mu_lo + 1, 0, -1e3))
+    k_i, fl_i = pm.math.exp(log_k), pm.math.sigmoid(logit_floor)
+    mu_y = fl_i[ii] + (1 - fl_i[ii]) * pm.math.exp(-k_i[ii] * (tq + 0.5))
+    sig = pm.HalfNormal("sigma", 0.05)
+    pm.Normal("share", mu_y, sig, observed=yq)
+    hidata = pm.sample(1500, tune=2000, chains=4, cores=2, target_accept=0.97, random_seed=3, progressbar=False)
+
+hp = hidata.posterior
+hp = (hp.to_dataset() if hasattr(hp, "to_dataset") else hp).stack(s=("chain", "draw"))
+S = hp.sizes["s"]
+rng_h = np.random.default_rng(5)
+retained_draw = rng_h.random(S) < hp["p_retained"].values
+k_new = np.exp(rng_h.normal(hp["mu_log_k"].values, hp["sd_log_k"].values))
+lf_new = rng_h.normal(np.where(retained_draw, hp["mu_floor_retained"].values, hp["mu_floor_normal"].values), hp["sd_floor"].values)
+fl_new = 1 / (1 + np.exp(-lf_new))
+tgrid = np.arange(0, 13)
+traj = fl_new[:, None] + (1 - fl_new[:, None]) * np.exp(-k_new[:, None] * (tgrid[None, :] + 0.5))
+
+fig, ax = plt.subplots(figsize=(10, 4.8))
+for lab, mask, col in [("Normal erosion regime", ~retained_draw, style.ACCENT), ("Brand-retained regime", retained_draw, style.ACCENT_2)]:
+    lo_, md_, hi_ = np.percentile(traj[mask], [10, 50, 90], axis=0)
+    ax.fill_between(tgrid, lo_, hi_, color=col, alpha=0.18)
+    ax.plot(tgrid, md_, color=col, lw=2.2, label=f"{lab}: median and 80% range")
+for m, mk in [("ticagrelor", "o"), ("sacubitril/valsartan", "s")]:
+    d_ = q[(q["molecule"] == m) & q["t"].between(0, 12)]
+    ax.plot(d_["t"], d_["brand_share"], mk, color=style.INK, ms=6, label=f"{m} (held out)")
+style.pct(ax)
+ax.set_ylim(0, 1.02)
+ax.set_xlabel("Quarters since generic entry")
+ax.set_ylabel("Brand share")
+p_ret = float(hp["p_retained"].values.mean())
+ax.set_title("Predictive range for a new loss of exclusivity, from the hierarchical model")
+style.subtitle(ax, f"The analogs imply a {p_ret:.0%} chance that a new brand is retained; both held-out 2025 LOEs fall inside the bands")
+ax.legend(loc="upper right", fontsize=8.5)
+style.source(fig, SRC)
+style.save(fig, FIG / "06_bayesian_erosion_bands.png")
+
+mix_lo, mix_hi = np.percentile(traj, [10, 90], axis=0)
+inside = []
+for m in ["ticagrelor", "sacubitril/valsartan"]:
+    d_ = q[(q["molecule"] == m) & q["t"].between(0, 12)].dropna(subset=["brand_share"])
+    for _, r in d_.iterrows():
+        tt_ = int(r["t"])
+        inside.append({"molecule": m, "t": tt_, "share": r["brand_share"], "80% low": mix_lo[tt_], "80% high": mix_hi[tt_],
+                       "inside": mix_lo[tt_] <= r["brand_share"] <= mix_hi[tt_]})
+inside = pd.DataFrame(inside)
+hb_summary = {"p_retained_mean": round(p_ret, 3), "heldout_points_inside_80pct": int(inside["inside"].sum()),
+              "heldout_points": int(len(inside)),
+              "new_brand_share_t4_normal_p10_p50_p90": np.percentile(traj[~retained_draw, 4], [10, 50, 90]).round(3).tolist(),
+              "new_brand_share_t4_retained_p10_p50_p90": np.percentile(traj[retained_draw, 4], [10, 50, 90]).round(3).tolist(),
+              "divergences": int(hidata.sample_stats["diverging"].sum())}
+inside.round(3)
+
+# %% [markdown]
+# The mixture's 80% band is wide, because it honestly includes both outcomes.
+# That is the right message for a forecaster: before the first quarter of data,
+# a Medicaid LOE forecast should carry both regimes with explicit probabilities,
+# and the state early-warning model in section 6 should then decide between them.
+#
+# **A diagnostic to be honest about:** the sampler reported about a hundred
+# divergent transitions out of 6,000 draws, even with a cautious step size.
+# Mixture models have awkward posterior geometry (the two regimes can trade
+# places), so the regime probability should be read as approximate. Both
+# held-out brands still fell inside the 80% band.
+#
+# ## 8. Conformal prediction: honest intervals for the state-level model
+#
+# The early-warning model in section 6 gives a single number per state. **Split
+# conformal prediction** turns any model's point forecasts into intervals with a
+# guaranteed coverage rate, without assuming the errors are normal: take the
+# model's errors on molecules it was not trained on, and use their 80th
+# percentile as the interval half-width. The test is whether 80% intervals built
+# from the other molecules really cover 80% of the held-out molecule's states.
+
+# %%
+conf_rows = []
+for hold in analogs:
+    cal = lomo[lomo["molecule"] != hold]
+    tst = lomo[lomo["molecule"] == hold]
+    for meth in ["Gradient boosting", "Persistence (share at t=1)"]:
+        qhat = np.quantile(np.abs(cal[meth] - cal["target"]), 0.8 * (1 + 1 / len(cal)))
+        cover = float(((tst["target"] >= tst[meth] - qhat) & (tst["target"] <= tst[meth] + qhat)).mean())
+        conf_rows.append({"held-out molecule": hold, "method": meth, "half-width": qhat, "coverage": cover, "states": len(tst)})
+conf = pd.DataFrame(conf_rows)
+conf_tab = conf.groupby("method").apply(lambda g: pd.Series({
+    "average half-width (share points)": g["half-width"].mean() * 100,
+    "average coverage": np.average(g["coverage"], weights=g["states"]),
+    "worst molecule coverage": g["coverage"].min()}))
+conf_tab.round(3)
+
+# %% [markdown]
+# On average the 80% intervals cover close to 80% of states, as promised, but
+# coverage for individual molecules swings widely. That is the honest limit of
+# seven analogs: the guarantee holds across molecules, not within each one.
+# The intervals also show the section 6 result from another angle: persistence
+# (carry the first post-LOE quarter forward) gets the same coverage with
+# narrower intervals than gradient boosting, so the simpler forecast is the
+# better one to ship.
+# For a live LOE, report the state forecast with a ± band of roughly the
+# half-width above, and widen it until a few more LOEs have been added to the
+# training data.
+
+# %% [markdown]
+# ## 9. Summary numbers used in the README
 
 # %%
 q1 = q[q["molecule"].isin(analogs) & (q["t"] == 1)]["brand_share"]
@@ -529,6 +664,8 @@ summary = {
     "humira_share_q8": float(bio_tbl.loc[8, "adalimumab"]) if 8 in bio_tbl.index else None,
     "entries": {m: str(p) for m, p in entries.items()},
     "ml_lomo_rows": int(len(lomo)), "ml_mae": mae_table.round(4).to_dict(orient="index"),
+    "bayes_hierarchical": hb_summary,
+    "conformal_80": conf_tab.round(4).to_dict(orient="index"),
 }
 (TAB / "summary.json").write_text(json.dumps(summary, indent=1, default=str))
 fc.assign(period=fc["period"].astype(str)).round(0).to_csv(TAB / "eliquis_forecast_quarterly.csv", index=False)

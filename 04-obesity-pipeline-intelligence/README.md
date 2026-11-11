@@ -114,6 +114,61 @@ mechanism. Registry text rarely names the mechanism, so mapping new codes still
 needs curated sources. The attempt is kept in the notebook so the conclusion can
 be checked.
 
+### 7. Survival analysis: the leaders are not faster, they are bigger
+
+![Trial survival curves](outputs/figures/07_trial_survival.png)
+
+How long a trial takes from start to its primary completion decides when a
+competitor's data arrives. Many trials are still running, so their duration is
+only known to be *at least* as long as they have run. Survival analysis handles
+these "censored" trials correctly; a simple average of finished trials would
+understate durations.
+
+- **Kaplan–Meier curve:** the share of trials not yet at primary completion after each month.
+- **Cox proportional hazards model:** how much each factor speeds up (hazard ratio above 1) or slows down (below 1) reaching primary completion, holding the others fixed.
+
+Industry Phase 2 and 3 trials, censored at 21 October 2026 where completion is
+still an estimate:
+
+| Group | Trials | Median months to primary completion |
+|---|---|---|
+| Phase 2, Lilly or Novo | 31 | 15.8 |
+| Phase 2, other sponsors | 226 | 12.8 |
+| Phase 3, Lilly or Novo | 107 | 23.9 |
+| Phase 3, other sponsors | 124 | 21.9 |
+
+| Factor (Cox model) | Hazard ratio | 95% interval |
+|---|---|---|
+| Phase 3 rather than Phase 2 | 0.43 | 0.33–0.58 |
+| Enrolment (per log unit) | 0.88 | 0.78–0.98 |
+| Lilly or Novo sponsor | 1.05 | 0.75–1.47 |
+| Has a China site | 1.21 | 0.84–1.75 |
+| Has a US site | 1.05 | 0.77–1.41 |
+| Started 2020 or later | 1.05 | 0.78–1.40 |
+
+Only phase and size matter. Lilly and Novo do not execute trials faster than
+anyone else; their lead comes from running more and larger programmes in
+parallel. For planning, that means a challenger's readout dates can be
+projected with the same duration curves.
+
+### 8. Text mining: the race to add obesity-related indications
+
+![Trial themes](outputs/figures/08_trial_themes.png)
+
+Unsupervised topic modelling (non-negative matrix factorisation on trial text)
+was tried first. It mostly rediscovered each sponsor's house style ("the study
+medicine", "the main purpose of this study"), so a dictionary approach was used
+instead: tag each trial's conditions, title and keywords for ten clinical
+themes.
+
+Trials built around obesity-related diseases (sleep apnoea, heart failure and
+cardiovascular outcomes, kidney disease, knee osteoarthritis) rose from about
+2% of industry starts in 2015–19 to about 9% since 2023. That matters
+commercially: Medicare Part D cannot cover a drug for weight loss alone, but it
+can cover the same molecule for a separate approved indication. That is how
+Wegovy (cardiovascular risk) and Zepbound (sleep apnoea) gained Medicare
+access, and every new entrant will need the same route.
+
 ## Recommendations
 
 **For a challenger without an obesity asset (business development):**

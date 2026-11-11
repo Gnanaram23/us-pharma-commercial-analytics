@@ -1,0 +1,94 @@
+# Drafts audience briefs for every project with an open-weights language model,
+# checks every number in each draft against the project's summary.json, and
+# commits the briefs to the `briefs` branch for review before they reach main.
+#
+# Runs from the Actions tab or by pushing to the `briefs-run` branch. Pull
+# requests that touch the checker run its tests only.
+name: Draft and fact-check AI briefs
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Ollama model tag"
+        default: "qwen2.5:7b"
+  push:
+    branches: [briefs-run]
+  pull_request:
+    paths: ["common/ai_briefs.py", "tests/**"]
+
+permissions:
+  contents: write
+
+env:
+  BRIEF_MODEL: ${{ inputs.model || 'qwen2.5:7b' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install pytest requests
+      - run: python -m pytest -q tests
+
+  draft:
+    if: github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - 01-glp1-market-and-targeting
+          - 02-ira-negotiation-exposure
+          - 03-loe-erosion-forecast
+          - 04-obesity-pipeline-intelligence
+          - 05-omnichannel-hcp-engagement
+          - 06-marketing-mix-model
+          - 07-test-and-control-experiments
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install requests
+      - name: Install Ollama and pull the model
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          (ollama serve > ollama.log 2>&1 &)
+          for i in $(seq 1 30); do curl -s localhost:11434/api/tags >/dev/null && break; sleep 2; done
+          ollama pull "$BRIEF_MODEL"
+      - name: Draft and check
+        run: |
+          set -o pipefail
+          python -m common.ai_briefs ${{ matrix.project }} --model "$BRIEF_MODEL" 2>&1 | tee run.log
+          sed 's/^/::notice::/' run.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: briefs-${{ matrix.project }}
+          path: ${{ matrix.project }}/outputs/briefs
+
+  commit:
+    needs: draft
+    if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { path: _briefs }
+      - name: Commit to the briefs branch
+        run: |
+          set -e
+          for d in _briefs/briefs-*; do
+            p="${d#_briefs/briefs-}"
+            mkdir -p "$p/outputs/briefs" && cp -r "$d"/. "$p/outputs/briefs/"
+          done
+          rm -rf _briefs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B briefs
+          git add -A */outputs/briefs
+          git commit -m "Draft audience briefs with $BRIEF_MODEL and check every number" || echo "nothing to commit"
+          git push -f origin briefs
