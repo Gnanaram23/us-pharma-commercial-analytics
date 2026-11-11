@@ -1,0 +1,210 @@
+[
+ {
+  "project": "04-obesity-pipeline-intelligence",
+  "audience": "brand_lead",
+  "model": "qwen2.5:14b",
+  "facts": 103,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 0,
+    "uncited": 1,
+    "ungrounded": [],
+    "exempt": 7
+   },
+   {
+    "attempt": 2,
+    "after_review": true,
+    "grounded": 0,
+    "uncited": 1,
+    "ungrounded": [],
+    "exempt": 7
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [
+   {
+    "line": 12,
+    "part": 0,
+    "sentence": "- Delays or failures in key trials could alter the timeline.",
+    "why": "not mentioned"
+   },
+   {
+    "line": 13,
+    "part": 0,
+    "sentence": "- Changes in regulatory requirements could impact approval timelines.",
+    "why": "not mentioned"
+   }
+  ],
+  "claims_flagged_first_review": [
+   {
+    "line": 12,
+    "part": 0,
+    "sentence": "- Unexpected delays or failures in key trials.",
+    "why": "The brief mentions 'unexpected delays or failures in key trials' which is not a limitation listed in the sources."
+   },
+   {
+    "line": 13,
+    "part": 0,
+    "sentence": "- Rapidly changing regulatory requirements for obesity drugs.",
+    "why": "The brief mentions 'rapidly changing regulatory requirements for obesity drugs' which is not a limitation listed in the sources."
+   }
+  ],
+  "final": {
+   "grounded": 0,
+   "uncited": 1,
+   "ungrounded": 0,
+   "exempt": 7
+  },
+  "checks": [
+   {
+    "text": "2030",
+    "value": 2030.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2029",
+    "value": 2029.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2030",
+    "value": 2030.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "130",
+    "value": 130.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2025",
+    "value": 2025.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "36%",
+    "value": 36.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F10"
+   },
+   {
+    "text": "2025",
+    "value": 2025.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2029",
+    "value": 2029.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   }
+  ]
+ },
+ {
+  "project": "04-obesity-pipeline-intelligence",
+  "audience": "analytics_review",
+  "model": "qwen2.5:14b",
+  "facts": 103,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 2,
+    "uncited": 11,
+    "ungrounded": [],
+    "exempt": 2
+   },
+   {
+    "attempt": 2,
+    "after_review": true,
+    "grounded": 0,
+    "uncited": 8,
+    "ungrounded": [],
+    "exempt": 2
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [
+   {
+    "line": 0,
+    "part": 0,
+    "sentence": "**Estimated:** About 11 new obesity drugs are expected to reach US approval by 2030, with a 98% chance of at least 5 approvals and a 65% chance of at least 10 approvals [F17] [F19] [F20].",
+    "why": "The brief states 11 new drugs with 98% chance of at least 5 and 65% chance of at least 10, but the sources provide a range of 7 to 14 with 98% chance of at least 5 and 65% chance of at least 10."
+   },
+   {
+    "line": 3,
+    "part": 0,
+    "sentence": "- Used historical metabolic drug success rates as a prior and updated them based on current obesity programmes [F12] [F13] [F14] [F15].",
+    "why": "The brief incorrectly states the prior was updated based on current programmes; the sources indicate the prior was updated but do not specify it was based on current programmes."
+   }
+  ],
+  "claims_flagged_first_review": [
+   {
+    "line": 3,
+    "part": 0,
+    "sentence": "- Used historical metabolic drug success rates as a prior.",
+    "why": "The sentence does not match the sources; the sources mention using historical metabolic drug success rates as a prior and updating them based on current obesity programmes, but do not state this was u"
+   },
+   {
+    "line": 4,
+    "part": 0,
+    "sentence": "- Updated success rates based on current obesity programmes: Phase 2 to Phase 3 success rate rose to 59% [F12][F13].",
+    "why": "The sentence does not match the sources; the sources mention updating success rates based on current obesity programmes, but do not state this was done without updating."
+   }
+  ],
+  "final": {
+   "grounded": 0,
+   "uncited": 3,
+   "ungrounded": 0,
+   "exempt": 1
+  },
+  "checks": [
+   {
+    "text": "10,000",
+    "value": 10000.0,
+    "cited": [
+     "F16"
+    ],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "15%",
+    "value": 15.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F30"
+   },
+   {
+    "text": "25%",
+    "value": 25.0,
+    "cited": [
+     "F30"
+    ],
+    "status": "uncited",
+    "matched": "F32"
+   },
+   {
+    "text": "40%",
+    "value": 40.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F28"
+   }
+  ]
+ }
+]

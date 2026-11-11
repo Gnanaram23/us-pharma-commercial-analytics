@@ -68,6 +68,52 @@ Each project's `outputs/briefs/` folder holds the briefs, a copy with
 citations, and a JSON audit of every number. The checker has its own tests
 ([`tests/`](tests/)).
 
+### How well it worked
+
+The pipeline was run three times, and each run's output was reviewed by hand
+before the next change. The open model was qwen2.5 (7B parameters, then 14B),
+run on standard GitHub Actions CPU runners.
+
+| Run | Change | What the review found |
+|---|---|---|
+| 1 | Fact sheet only, 7B model | Every number traced, yet many sentences were wrong: a matching statistic read as an effect size, "North Carolina had the largest drop" when Pennsylvania's was larger. Not published. |
+| 2 | Drafts written from the README; claim check added; 14B model | Far fewer errors, but the claim check rejected recommendations that were in the README, because the write-up passed to it was cut short, and removals left sections empty. Not published. |
+| 3 | Full write-up for the checker; flagged sentences go back for one rewrite | Published below. |
+
+Run 3, by brief:
+
+| Project | Brief | Numbers traced to results | Unsupported numbers left | Sentences removed (numbers / claims) | Drafts |
+|---|---|---|---|---|---|
+| 01 | [Brand lead](01-glp1-market-and-targeting/outputs/briefs/brand_lead.md) | 11 | 0 | 0 / 1 | 2 |
+| 01 | [Analytics reviewer](01-glp1-market-and-targeting/outputs/briefs/analytics_review.md) | 14 | 0 | 0 / 0 | 2 |
+| 02 | [Brand lead](02-ira-negotiation-exposure/outputs/briefs/brand_lead.md) | 8 | 0 | 0 / 2 | 2 |
+| 02 | [Analytics reviewer](02-ira-negotiation-exposure/outputs/briefs/analytics_review.md) | 13 | 0 | 0 / 0 | 1 |
+| 03 | [Brand lead](03-loe-erosion-forecast/outputs/briefs/brand_lead.md) | 6 | 0 | 0 / 1 | 2 |
+| 03 | [Analytics reviewer](03-loe-erosion-forecast/outputs/briefs/analytics_review.md) | 13 | 0 | 0 / 1 | 2 |
+| 04 | [Brand lead](04-obesity-pipeline-intelligence/outputs/briefs/brand_lead.md) | 8 | 0 | 0 / 2 | 2 |
+| 04 | [Analytics reviewer](04-obesity-pipeline-intelligence/outputs/briefs/analytics_review.md) | 4 | 0 | 0 / 2 | 2 |
+| 05 | [Brand lead](05-omnichannel-hcp-engagement/outputs/briefs/brand_lead.md) | 10 | 0 | 0 / 0 | 1 |
+| 05 | [Analytics reviewer](05-omnichannel-hcp-engagement/outputs/briefs/analytics_review.md) | 13 | 0 | 0 / 0 | 2 |
+| 06 | [Brand lead](06-marketing-mix-model/outputs/briefs/brand_lead.md) | 6 | 0 | 0 / 1 | 2 |
+| 06 | [Analytics reviewer](06-marketing-mix-model/outputs/briefs/analytics_review.md) | 12 | 0 | 0 / 2 | 2 |
+| 07 | [Brand lead](07-test-and-control-experiments/outputs/briefs/brand_lead.md) | 4 | 0 | 0 / 0 | 2 |
+| 07 | [Analytics reviewer](07-test-and-control-experiments/outputs/briefs/analytics_review.md) | 20 | 0 | 0 / 0 | 1 |
+| | **All** | **142** | **0** | **0 / 12** | |
+
+**The review after run 3:** all 142 numbers trace to the results, and the
+claim check removed 12 sentences. A read-through still found 4 of the 14
+briefs with problems: two factual slips the claim check missed (a marginal
+return described as over- rather than under-estimated; a recovery described
+against the wrong baseline), one brief left without its main results, and one
+with no headline and a filler sentence. Each is marked with a review note at
+the top of the brief rather than edited, so the published text stays exactly
+what the pipeline produced.
+
+**The lesson:** checking numbers mechanically works and is cheap. Checking
+meaning with a second model catches most errors but not all. Briefs like these
+are drafts for an analyst to finish in minutes, not text to send without
+reading.
+
 ## How each project is organised
 
 ```

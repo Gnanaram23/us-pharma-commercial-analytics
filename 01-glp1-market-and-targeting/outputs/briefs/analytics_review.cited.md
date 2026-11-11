@@ -1,0 +1,5 @@
+**Estimated:** Medicare Part D GLP-1 gross spend grew 40% annually to $27.9B in 2024 [F4] [F5]. The opportunity to generate extra claims by moving under-adopting primary care prescribers to the median adoption of their peers is significant [F16] [F17].
+
+**How:** Segmented 231,338 prescribers into four groups based on potential and adoption [F10] [F11] [F12] [F13] [F14] [F15]. Used gradient-boosted trees to predict top growth contributors, validated with cross-validation [F31] [F32] [F33] [F34] [F35] [F36]. Fitted three growth curves to GLP-1 claims from 2018 to 2024, tested on 2023–2024 data [F47] [F48] [F49] [F50] [F51] [F52] [F53].
+
+**How far to trust it:** Model reached 10% more of next year's growth for the same number of calls compared to ranking by current volume [F34] [F35]. Cross-validation showed modest improvement over current volume ranking [F32] [F33]. Growth curves under-forecast by 20–25% due to accelerating growth in 2023 [F44] [F45] [F46]. Known limitations include CMS's small-count suppression and focus on Medicare only [F6] [F8].

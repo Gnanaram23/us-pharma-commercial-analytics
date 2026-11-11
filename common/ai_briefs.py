@@ -449,9 +449,10 @@ def write(result: dict, out_dir: Path) -> None:
     a = result["audience"]
     c = result["final"]
     n_ok = c["grounded"] + c["uncited"] + c["exempt"]
+    n_rm = len(result["removed_sentences"]) + len(result["claims_removed"])
     head = (f"*Drafted by the open-weights model {result['model']} on {dt.date.today().isoformat()} from this "
             f"project's results. {n_ok} of {n_ok + c['ungrounded']} numbers traced to the results; "
-            f"{len(result['removed_sentences']) + len(result['claims_removed'])} unsupported sentences removed. "
+            f"{n_rm} unsupported sentence{'' if n_rm == 1 else 's'} removed. "
             f"Audit trail: [{a}.cited.md]({a}.cited.md), [grounding.json](grounding.json).*\n\n")
     (out_dir / f"{a}.md").write_text(f"# {AUDIENCES[a]['title']}\n\n" + head + strip_citations(result["text_cited"]) + "\n")
     (out_dir / f"{a}.cited.md").write_text(result["text_cited"] + "\n")

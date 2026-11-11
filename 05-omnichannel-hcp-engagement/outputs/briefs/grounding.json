@@ -1,0 +1,239 @@
+[
+ {
+  "project": "05-omnichannel-hcp-engagement",
+  "audience": "brand_lead",
+  "model": "qwen2.5:14b",
+  "facts": 31,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 0,
+    "uncited": 7,
+    "ungrounded": [],
+    "exempt": 3
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [],
+  "claims_flagged_first_review": [],
+  "final": {
+   "grounded": 0,
+   "uncited": 7,
+   "ungrounded": 0,
+   "exempt": 3
+  },
+  "checks": [
+   {
+    "text": "97%",
+    "value": 97.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F4"
+   },
+   {
+    "text": "2024",
+    "value": 2024.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "51%",
+    "value": 51.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F5"
+   },
+   {
+    "text": "57%",
+    "value": 57.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F6"
+   },
+   {
+    "text": "49%",
+    "value": 49.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F7"
+   },
+   {
+    "text": "1",
+    "value": 1.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F4"
+   },
+   {
+    "text": "28%",
+    "value": 28.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F8"
+   },
+   {
+    "text": "30%",
+    "value": 30.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F20"
+   },
+   {
+    "text": "78%",
+    "value": 78.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "67%",
+    "value": 67.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   }
+  ]
+ },
+ {
+  "project": "05-omnichannel-hcp-engagement",
+  "audience": "analytics_review",
+  "model": "qwen2.5:14b",
+  "facts": 31,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 3,
+    "uncited": 5,
+    "ungrounded": [
+     "154,000"
+    ],
+    "exempt": 5
+   },
+   {
+    "attempt": 2,
+    "grounded": 2,
+    "uncited": 6,
+    "ungrounded": [],
+    "exempt": 5
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [],
+  "claims_flagged_first_review": [],
+  "final": {
+   "grounded": 2,
+   "uncited": 6,
+   "ungrounded": 0,
+   "exempt": 5
+  },
+  "checks": [
+   {
+    "text": "2024",
+    "value": 2024.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "1.1 million",
+    "value": 1.1,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F1"
+   },
+   {
+    "text": "$54.4M",
+    "value": 54.4,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F2"
+   },
+   {
+    "text": "154,019",
+    "value": 154019.0,
+    "cited": [
+     "F1"
+    ],
+    "status": "uncited",
+    "matched": "F3"
+   },
+   {
+    "text": "57%",
+    "value": 57.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F6"
+   },
+   {
+    "text": "49%",
+    "value": 49.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F7"
+   },
+   {
+    "text": "1",
+    "value": 1.0,
+    "cited": [
+     "F6"
+    ],
+    "status": "grounded",
+    "matched": "F6"
+   },
+   {
+    "text": "28%",
+    "value": 28.0,
+    "cited": [
+     "F8"
+    ],
+    "status": "grounded",
+    "matched": "F8"
+   },
+   {
+    "text": "20,000",
+    "value": 20000.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "52",
+    "value": 52.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "30%",
+    "value": 30.0,
+    "cited": [
+     "F17"
+    ],
+    "status": "uncited",
+    "matched": "F20"
+   },
+   {
+    "text": "78%",
+    "value": 78.0,
+    "cited": [
+     "F24"
+    ],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "14% [F27] [F28] [F29] [F30]",
+    "value": 14.0,
+    "cited": [
+     "F27",
+     "F28",
+     "F29",
+     "F30"
+    ],
+    "status": "exempt",
+    "matched": null
+   }
+  ]
+ }
+]
