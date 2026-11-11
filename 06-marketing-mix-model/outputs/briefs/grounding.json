@@ -1,0 +1,259 @@
+[
+ {
+  "project": "06-marketing-mix-model",
+  "audience": "brand_lead",
+  "model": "qwen2.5:14b",
+  "facts": 41,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 7,
+    "uncited": 0,
+    "ungrounded": [],
+    "exempt": 2
+   },
+   {
+    "attempt": 2,
+    "after_review": true,
+    "grounded": 5,
+    "uncited": 0,
+    "ungrounded": [],
+    "exempt": 1
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [
+   {
+    "line": 12,
+    "part": 0,
+    "sentence": "- Real-world data could alter channel ROIs and the model's accuracy.",
+    "why": "The brief suggests real-world data could alter channel ROIs and the model's accuracy, but the write-up does not make this claim."
+   }
+  ],
+  "claims_flagged_first_review": [
+   {
+    "line": 3,
+    "part": 0,
+    "sentence": "- The Bayesian model accurately recovers the field force's ROI of 1.39 [F11], but overstates social media's ROI to 2.01 [F15] before lift tests correct it to 1.21 [F15].",
+    "why": "The brief states the model overstates social media's ROI to 2.01 before lift tests, but the write-up does not specify the exact overstated value."
+   },
+   {
+    "line": 5,
+    "part": 0,
+    "sentence": "- The model's budget reallocation promises a $25M gain [F23], but the true gain is only $5.6M [F26].",
+    "why": "The brief states the model promises a $25M gain, but the write-up mentions both the bold and cautious plans' gains, not just the $25M."
+   }
+  ],
+  "final": {
+   "grounded": 5,
+   "uncited": 0,
+   "ungrounded": 0,
+   "exempt": 1
+  },
+  "checks": [
+   {
+    "text": "1.39 [F11]",
+    "value": 1.39,
+    "cited": [
+     "F11"
+    ],
+    "status": "grounded",
+    "matched": "F11"
+   },
+   {
+    "text": "1.21 [F15]",
+    "value": 1.21,
+    "cited": [
+     "F15"
+    ],
+    "status": "grounded",
+    "matched": "F15"
+   },
+   {
+    "text": "98% [F4]",
+    "value": 98.0,
+    "cited": [
+     "F4"
+    ],
+    "status": "grounded",
+    "matched": "F4"
+   },
+   {
+    "text": "0.9%",
+    "value": 0.9,
+    "cited": [
+     "F3"
+    ],
+    "status": "grounded",
+    "matched": "F3"
+   },
+   {
+    "text": "13",
+    "value": 13.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "0.7%",
+    "value": 0.7,
+    "cited": [
+     "F5"
+    ],
+    "status": "grounded",
+    "matched": "F5"
+   }
+  ]
+ },
+ {
+  "project": "06-marketing-mix-model",
+  "audience": "analytics_review",
+  "model": "qwen2.5:14b",
+  "facts": 41,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 9,
+    "uncited": 6,
+    "ungrounded": [],
+    "exempt": 1
+   },
+   {
+    "attempt": 2,
+    "after_review": true,
+    "grounded": 9,
+    "uncited": 6,
+    "ungrounded": [],
+    "exempt": 1
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [
+   {
+    "line": 4,
+    "part": 1,
+    "sentence": "The model's median gain of $25.3M [F23] is off by a factor of four compared to the true gain of $5.6M [F26].",
+    "why": "The sentence claims the model's median gain is off by a factor of four, but it does not specify the comparison is between the model's median gain and the true gain, which is a key detail."
+   },
+   {
+    "line": 4,
+    "part": 2,
+    "sentence": "The cautious plan's median gain of $13.7M [F34] is also off, with a true gain of $1.2M [F35].",
+    "why": "The sentence claims the cautious plan's median gain is off, but it does not specify the comparison is between the cautious plan's median gain and the true gain, which is a key detail."
+   }
+  ],
+  "claims_flagged_first_review": [
+   {
+    "line": 0,
+    "part": 2,
+    "sentence": "The model overstates HCP digital's ROI, estimating 2.40 compared to the true 2.95 [F13][F19].",
+    "why": "The brief states the model overstates HCP digital's ROI, but the fact sheet shows the model underestimates it."
+   }
+  ],
+  "final": {
+   "grounded": 5,
+   "uncited": 6,
+   "ungrounded": 0,
+   "exempt": 1
+  },
+  "checks": [
+   {
+    "text": "1.37",
+    "value": 1.37,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F17"
+   },
+   {
+    "text": "1.39 [F11]",
+    "value": 1.39,
+    "cited": [
+     "F11"
+    ],
+    "status": "grounded",
+    "matched": "F11"
+   },
+   {
+    "text": "0.69",
+    "value": 0.69,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F20"
+   },
+   {
+    "text": "0.61 [F14]",
+    "value": 0.61,
+    "cited": [
+     "F14"
+    ],
+    "status": "grounded",
+    "matched": "F14"
+   },
+   {
+    "text": "1.31",
+    "value": 1.31,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F21"
+   },
+   {
+    "text": "1.21 [F15]",
+    "value": 1.21,
+    "cited": [
+     "F15"
+    ],
+    "status": "grounded",
+    "matched": "F15"
+   },
+   {
+    "text": "2.40",
+    "value": 2.4,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F13"
+   },
+   {
+    "text": "2.95 [F13] [F19]",
+    "value": 2.95,
+    "cited": [
+     "F13",
+     "F19"
+    ],
+    "status": "grounded",
+    "matched": "F19"
+   },
+   {
+    "text": "98%",
+    "value": 98.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F4"
+   },
+   {
+    "text": "0.9%",
+    "value": 0.9,
+    "cited": [
+     "F4"
+    ],
+    "status": "uncited",
+    "matched": "F3"
+   },
+   {
+    "text": "13",
+    "value": 13.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "0.7%",
+    "value": 0.7,
+    "cited": [
+     "F5"
+    ],
+    "status": "grounded",
+    "matched": "F5"
+   }
+  ]
+ }
+]

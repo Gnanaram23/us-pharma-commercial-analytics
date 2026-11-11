@@ -1,0 +1,256 @@
+[
+ {
+  "project": "03-loe-erosion-forecast",
+  "audience": "brand_lead",
+  "model": "qwen2.5:14b",
+  "facts": 65,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 1,
+    "uncited": 3,
+    "ungrounded": [],
+    "exempt": 4
+   },
+   {
+    "attempt": 2,
+    "after_review": true,
+    "grounded": 1,
+    "uncited": 2,
+    "ungrounded": [],
+    "exempt": 4
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [
+   {
+    "line": 13,
+    "part": 0,
+    "sentence": "- Unexpected changes in Medicaid PDL decisions.",
+    "why": "Sentence does not appear in the sources and is not supported by the findings or recommendations."
+   }
+  ],
+  "claims_flagged_first_review": [
+   {
+    "line": 3,
+    "part": 0,
+    "sentence": "- Most small-molecule brands lose about 80% of prescriptions within a year after generics enter the market [F3].",
+    "why": "The write-up states that most small-molecule brands keep about 20% of prescriptions a year after generics enter, not lose 80%."
+   },
+   {
+    "line": 13,
+    "part": 0,
+    "sentence": "- Medicaid free-supply terms ending before 2028 [F33].",
+    "why": "The brief sentence is not supported by the sources and introduces an unsupported condition about Medicaid free-supply terms."
+   }
+  ],
+  "final": {
+   "grounded": 1,
+   "uncited": 2,
+   "ungrounded": 0,
+   "exempt": 3
+  },
+  "checks": [
+   {
+    "text": "20%",
+    "value": 20.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "19 points",
+    "value": 19.0,
+    "cited": [
+     "F6"
+    ],
+    "status": "grounded",
+    "matched": "F6"
+   },
+   {
+    "text": "72%",
+    "value": 72.0,
+    "cited": [
+     "F34"
+    ],
+    "status": "uncited",
+    "matched": "F35"
+   },
+   {
+    "text": "1.9 million",
+    "value": 1.9,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F33"
+   },
+   {
+    "text": "2029 [F33]",
+    "value": 2029.0,
+    "cited": [
+     "F33"
+    ],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2028",
+    "value": 2028.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   }
+  ]
+ },
+ {
+  "project": "03-loe-erosion-forecast",
+  "audience": "analytics_review",
+  "model": "qwen2.5:14b",
+  "facts": 65,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 4,
+    "uncited": 5,
+    "ungrounded": [],
+    "exempt": 5
+   },
+   {
+    "attempt": 2,
+    "after_review": true,
+    "grounded": 4,
+    "uncited": 5,
+    "ungrounded": [],
+    "exempt": 5
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [
+   {
+    "line": 2,
+    "part": 0,
+    "sentence": "**Estimated:** In Medicaid, brands have a median share of 21% a year after generics enter [F3].",
+    "why": "The write-up states a median of 21% four quarters after entry, not one year after entry."
+   }
+  ],
+  "claims_flagged_first_review": [
+   {
+    "line": 2,
+    "part": 0,
+    "sentence": "**Estimated:** In Medicaid, brands typically keep 21% of prescriptions a year after generics enter [F3].",
+    "why": "The write-up states a median of 21%, but 'typically' implies an average, which is not provided and may differ from the median."
+   }
+  ],
+  "final": {
+   "grounded": 3,
+   "uncited": 5,
+   "ungrounded": 0,
+   "exempt": 5
+  },
+  "checks": [
+   {
+    "text": "2028",
+    "value": 2028.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "64%",
+    "value": 64.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F14"
+   },
+   {
+    "text": "78% [F2]",
+    "value": 78.0,
+    "cited": [
+     "F2"
+    ],
+    "status": "uncited",
+    "matched": "F61"
+   },
+   {
+    "text": "2026",
+    "value": 2026.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "1.9 million",
+    "value": 1.9,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F33"
+   },
+   {
+    "text": "2029 [F33]",
+    "value": 2029.0,
+    "cited": [
+     "F33"
+    ],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2017",
+    "value": 2017.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "1",
+    "value": 1.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F8"
+   },
+   {
+    "text": "2026",
+    "value": 2026.0,
+    "cited": [
+     "F1"
+    ],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "6 points [F5]",
+    "value": 6.0,
+    "cited": [
+     "F5"
+    ],
+    "status": "grounded",
+    "matched": "F5"
+   },
+   {
+    "text": "19 points [F6]",
+    "value": 19.0,
+    "cited": [
+     "F6"
+    ],
+    "status": "grounded",
+    "matched": "F6"
+   },
+   {
+    "text": "26",
+    "value": 26.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F18"
+   },
+   {
+    "text": "32 points [F63] [F60]",
+    "value": 32.0,
+    "cited": [
+     "F63",
+     "F60"
+    ],
+    "status": "grounded",
+    "matched": "F60"
+   }
+  ]
+ }
+]

@@ -1,0 +1,5 @@
+**Estimated:** The 40 drugs selected so far took $126B of Medicare spend in 2024, and their negotiated prices cost manufacturers an estimated $21–25B a year in net revenue [F10][F11][F12].
+
+**How:** The analysis used CMS Medicare Part D and Part B spending data from 2020 to 2024 [F1][F2][F3]. It also incorporated CMS's own net-savings estimates for the first two negotiation cycles [F4][F5][F6]. The net revenue impact was calculated by applying the published list-price cuts to gross spend and adjusting for existing rebates [F10].
+
+**How far to trust it:** The back-test showed the screen correctly identified 11 of 15 actual selections in both the 2027 and 2028 cycles [F18][F19]. However, the model's performance was mixed, with the hybrid approach (rules + logistic regression) performing best by finding 10 of the 15 actual picks [F22]. The analysis relies on Medicare gross spend before rebates, and the net impact estimates are based on CMS's aggregate estimates [F10][F11][F12]. Known limitations include hand-coded orphan status and biosimilar presence, which may not be exhaustive [F18][F19].

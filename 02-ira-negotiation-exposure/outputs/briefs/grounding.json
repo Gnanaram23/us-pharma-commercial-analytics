@@ -1,0 +1,245 @@
+[
+ {
+  "project": "02-ira-negotiation-exposure",
+  "audience": "brand_lead",
+  "model": "qwen2.5:14b",
+  "facts": 31,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 0,
+    "uncited": 6,
+    "ungrounded": [],
+    "exempt": 2
+   },
+   {
+    "attempt": 2,
+    "after_review": true,
+    "grounded": 0,
+    "uncited": 6,
+    "ungrounded": [],
+    "exempt": 2
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [
+   {
+    "line": 13,
+    "part": 0,
+    "sentence": "- CMS could make changes to the selection process.",
+    "why": "The sources do not mention CMS could make changes to the selection process."
+   },
+   {
+    "line": 14,
+    "part": 0,
+    "sentence": "- Changes in Medicare spend patterns could affect the list of selected drugs.",
+    "why": "The sources do not mention changes in Medicare spend patterns affecting the list of selected drugs."
+   }
+  ],
+  "claims_flagged_first_review": [
+   {
+    "line": 13,
+    "part": 0,
+    "sentence": "- CMS could alter selection criteria or timing.",
+    "why": "The sources do not mention CMS could alter selection criteria or timing."
+   },
+   {
+    "line": 14,
+    "part": 0,
+    "sentence": "- Market dynamics could shift with new drug approvals or changes in Medicare spend patterns.",
+    "why": "The sources do not discuss market dynamics shifting with new drug approvals or changes in Medicare spend patterns."
+   }
+  ],
+  "final": {
+   "grounded": 0,
+   "uncited": 6,
+   "ungrounded": 0,
+   "exempt": 2
+  },
+  "checks": [
+   {
+    "text": "40",
+    "value": 40.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "$126B",
+    "value": 126.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2024",
+    "value": 2024.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F1"
+   },
+   {
+    "text": "$21",
+    "value": 21.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F7"
+   },
+   {
+    "text": "25B",
+    "value": 25.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F12"
+   },
+   {
+    "text": "$4.9B",
+    "value": 4.9,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F13"
+   },
+   {
+    "text": "11",
+    "value": 11.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F18"
+   },
+   {
+    "text": "15",
+    "value": 15.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F8"
+   }
+  ]
+ },
+ {
+  "project": "02-ira-negotiation-exposure",
+  "audience": "analytics_review",
+  "model": "qwen2.5:14b",
+  "facts": 31,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 1,
+    "uncited": 7,
+    "ungrounded": [],
+    "exempt": 5
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [],
+  "claims_flagged_first_review": [],
+  "final": {
+   "grounded": 1,
+   "uncited": 7,
+   "ungrounded": 0,
+   "exempt": 5
+  },
+  "checks": [
+   {
+    "text": "40",
+    "value": 40.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "$126B",
+    "value": 126.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2024",
+    "value": 2024.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F1"
+   },
+   {
+    "text": "$21",
+    "value": 21.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F7"
+   },
+   {
+    "text": "25B",
+    "value": 25.0,
+    "cited": [
+     "F10"
+    ],
+    "status": "uncited",
+    "matched": "F12"
+   },
+   {
+    "text": "2020",
+    "value": 2020.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2024 [F1][F2][F3]",
+    "value": 2024.0,
+    "cited": [
+     "F1",
+     "F2",
+     "F3"
+    ],
+    "status": "grounded",
+    "matched": "F1"
+   },
+   {
+    "text": "11",
+    "value": 11.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F18"
+   },
+   {
+    "text": "15",
+    "value": 15.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F8"
+   },
+   {
+    "text": "2027",
+    "value": 2027.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2028",
+    "value": 2028.0,
+    "cited": [
+     "F18"
+    ],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "10",
+    "value": 10.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F22"
+   },
+   {
+    "text": "15",
+    "value": 15.0,
+    "cited": [
+     "F22"
+    ],
+    "status": "uncited",
+    "matched": "F8"
+   }
+  ]
+ }
+]

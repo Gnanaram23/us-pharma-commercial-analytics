@@ -1,0 +1,295 @@
+[
+ {
+  "project": "01-glp1-market-and-targeting",
+  "audience": "brand_lead",
+  "model": "qwen2.5:14b",
+  "facts": 64,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 1,
+    "uncited": 13,
+    "ungrounded": [],
+    "exempt": 4
+   },
+   {
+    "attempt": 2,
+    "after_review": true,
+    "grounded": 1,
+    "uncited": 11,
+    "ungrounded": [],
+    "exempt": 4
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [
+   {
+    "line": 0,
+    "part": 0,
+    "sentence": "**Medicare GLP-1 spend grew 40% to $27.9B in 2024, but 33,000 primary care prescribers still favour older diabetes classes.**",
+    "why": "Sentence combines findings but adds '33,000 primary care prescribers still favour older diabetes classes' which is not directly stated in the sources."
+   }
+  ],
+  "claims_flagged_first_review": [
+   {
+    "line": 0,
+    "part": 0,
+    "sentence": "**Medicare GLP-1 spend grew 40% to $27.9B in 2024, but 33,000 primary care prescribers still favour older diabetes classes.**",
+    "why": "Sentence combines findings but implies a direct causal link between the growth and the prescribing habits of primary care physicians, which is not stated in the sources."
+   },
+   {
+    "line": 12,
+    "part": 0,
+    "sentence": "- Medicare's planned obesity coverage could boost GLP-1 use [F2].",
+    "why": "The sources do not mention Medicare's planned obesity coverage or its potential impact on GLP-1 use."
+   },
+   {
+    "line": 13,
+    "part": 0,
+    "sentence": "- Market dynamics could shift if new GLP-1 brands enter the market [F29].",
+    "why": "The sources do not discuss potential shifts in market dynamics due to new GLP-1 brands entering the market."
+   }
+  ],
+  "final": {
+   "grounded": 1,
+   "uncited": 7,
+   "ungrounded": 0,
+   "exempt": 3
+  },
+  "checks": [
+   {
+    "text": "1",
+    "value": 1.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F7"
+   },
+   {
+    "text": "40%",
+    "value": 40.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F5"
+   },
+   {
+    "text": "$27.9B",
+    "value": 27.9,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F4"
+   },
+   {
+    "text": "2024 [F4]",
+    "value": 2024.0,
+    "cited": [
+     "F4"
+    ],
+    "status": "uncited",
+    "matched": "F2"
+   },
+   {
+    "text": "75%",
+    "value": 75.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "1",
+    "value": 1.0,
+    "cited": [
+     "F8"
+    ],
+    "status": "uncited",
+    "matched": "F7"
+   },
+   {
+    "text": "32,793",
+    "value": 32793.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F13"
+   },
+   {
+    "text": "34%",
+    "value": 34.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "33%",
+    "value": 33.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "1",
+    "value": 1.0,
+    "cited": [
+     "F16"
+    ],
+    "status": "uncited",
+    "matched": "F7"
+   },
+   {
+    "text": "6,738",
+    "value": 6738.0,
+    "cited": [
+     "F21"
+    ],
+    "status": "grounded",
+    "matched": "F21"
+   }
+  ]
+ },
+ {
+  "project": "01-glp1-market-and-targeting",
+  "audience": "analytics_review",
+  "model": "qwen2.5:14b",
+  "facts": 64,
+  "attempts": [
+   {
+    "attempt": 1,
+    "grounded": 0,
+    "uncited": 12,
+    "ungrounded": [],
+    "exempt": 5
+   },
+   {
+    "attempt": 2,
+    "after_review": true,
+    "grounded": 0,
+    "uncited": 10,
+    "ungrounded": [],
+    "exempt": 4
+   }
+  ],
+  "removed_sentences": [],
+  "claims_removed": [],
+  "claims_flagged_first_review": [
+   {
+    "line": 0,
+    "part": 1,
+    "sentence": "In 2024, 4 million extra claims could be generated if 33,000 under-adopting primary care prescribers reached the median adoption of their peers [F16][F17][F18].",
+    "why": "Sentence combines two points from sources but attaches a specific number (4 million) to a broader statement about potential growth, which is not clearly quantified in the sources."
+   }
+  ],
+  "final": {
+   "grounded": 0,
+   "uncited": 10,
+   "ungrounded": 0,
+   "exempt": 4
+  },
+  "checks": [
+   {
+    "text": "1",
+    "value": 1.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F7"
+   },
+   {
+    "text": "40%",
+    "value": 40.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F5"
+   },
+   {
+    "text": "$27.9B",
+    "value": 27.9,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F4"
+   },
+   {
+    "text": "2024 [F4] [F5]",
+    "value": 2024.0,
+    "cited": [
+     "F4",
+     "F5"
+    ],
+    "status": "uncited",
+    "matched": "F2"
+   },
+   {
+    "text": "231,338",
+    "value": 231338.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F10"
+   },
+   {
+    "text": "1",
+    "value": 1.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F7"
+   },
+   {
+    "text": "2018",
+    "value": 2018.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F1"
+   },
+   {
+    "text": "2024",
+    "value": 2024.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F2"
+   },
+   {
+    "text": "2023",
+    "value": 2023.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "2024",
+    "value": 2024.0,
+    "cited": [
+     "F47"
+    ],
+    "status": "uncited",
+    "matched": "F2"
+   },
+   {
+    "text": "10%",
+    "value": 10.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "20",
+    "value": 20.0,
+    "cited": [],
+    "status": "exempt",
+    "matched": null
+   },
+   {
+    "text": "25%",
+    "value": 25.0,
+    "cited": [],
+    "status": "uncited",
+    "matched": "F35"
+   },
+   {
+    "text": "2023 [F44] [F45] [F46]",
+    "value": 2023.0,
+    "cited": [
+     "F44",
+     "F45",
+     "F46"
+    ],
+    "status": "exempt",
+    "matched": null
+   }
+  ]
+ }
+]
