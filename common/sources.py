@@ -151,6 +151,61 @@ def medicaid_sdud_filter(url: str, prefixes: Iterable[str]) -> list[dict]:
     return keep
 
 
+def stream_csv(url: str) -> Iterator[dict]:
+    """Stream a large CSV over HTTP, yielding rows as dicts with normalised headers."""
+    r = get(url, stream=True)
+    lines = (line.decode("utf-8-sig", "replace") for line in r.iter_lines())
+    reader = csv.reader(lines)
+    header = [_norm(h) for h in next(reader)]
+    for row in reader:
+        if len(row) == len(header):
+            yield dict(zip(header, row))
+
+
+def medicaid_sdud_filter_with_totals(url: str, prefixes: Iterable[str]) -> tuple[list[dict], list[dict]]:
+    """Like medicaid_sdud_filter, and also total prescriptions per state, quarter and
+    utilisation type across every drug, which gives a denominator for rates."""
+    prefixes = tuple(p.upper() for p in prefixes)
+    keep, totals = [], {}
+    for row in stream_csv(url):
+        key = (row.get("state"), row.get("year"), row.get("quarter"), row.get("utilization_type"))
+        t = totals.setdefault(key, {"prescriptions": 0.0, "reimbursed": 0.0, "rows": 0})
+        t["rows"] += 1
+        try:
+            t["prescriptions"] += float(row.get("number_of_prescriptions") or 0)
+            t["reimbursed"] += float(row.get("total_amount_reimbursed") or 0)
+        except ValueError:
+            pass
+        if row.get("product_name", "").strip().upper().startswith(prefixes):
+            keep.append(row)
+    tot_rows = [
+        {"state": k[0], "year": k[1], "quarter": k[2], "utilization_type": k[3], **v} for k, v in totals.items()
+    ]
+    return keep, tot_rows
+
+
+# ------------------------------------------------------------- Open Payments
+
+def openpayments_general_urls() -> dict[int, str]:
+    """Map program year -> CSV download URL for CMS Open Payments General Payment data."""
+    items = get("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items").json()
+    urls = {}
+    for it in items:
+        title = it.get("title", "")
+        low = title.lower()
+        if "general payment" not in low or "research" in low or "ownership" in low:
+            continue
+        m = re.search(r"(20\d\d)", title)
+        if not m:
+            continue
+        for dist in it.get("distribution", []):
+            u = dist.get("downloadURL") or (dist.get("data") or {}).get("downloadURL")
+            if u and u.lower().endswith(".csv"):
+                urls[int(m.group(1))] = u
+        print(f"  catalogue: {title!r} -> {urls.get(int(m.group(1)))}")
+    return dict(sorted(urls.items()))
+
+
 # --------------------------------------------------------------------- openFDA
 
 def fda_applications(search: str, limit: int = 100, tries: int = 6) -> list[dict]:
