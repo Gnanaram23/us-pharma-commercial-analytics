@@ -76,3 +76,23 @@ def test_claim_removal_keeps_structure():
     assert "First claim is right." in out and "wrong" not in out
     assert "What could change this" not in out  # heading left empty is removed
     assert "What we found" in out
+
+
+def test_review_round_rewrites_flagged_claims(monkeypatch):
+    """With a scripted model: the reviewer flags a wrong ranking, the drafter rewrites, the rewrite passes."""
+    import json
+    import common.ai_briefs as B
+
+    reviews = iter([{"unsupported": [{"n": 2, "why": "PA had the larger drop"}]}, {"unsupported": []}])
+
+    def fake(messages, model, host, fmt=None, temperature=0.2):
+        if fmt == "json":
+            return json.dumps(next(reviews))
+        if any("reviewer found" in m["content"] for m in messages if m["role"] == "user"):
+            return "**Coverage loss removed most use.**\n\n**What we found**\n- Pennsylvania fell 93% [F6], the largest drop."
+        return "**Coverage loss removed most use.**\n\n**What we found**\n- North Carolina had the largest drop."
+
+    monkeypatch.setattr(B, "ollama_chat", fake)
+    r = B.draft("07-test-and-control-experiments", "brand_lead", "m", "h")
+    assert "Pennsylvania" in r["text_cited"] and "North Carolina had" not in r["text_cited"]
+    assert r["claims_flagged_first_review"] and not r["claims_removed"]

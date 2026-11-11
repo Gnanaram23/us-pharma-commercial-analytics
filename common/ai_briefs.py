@@ -121,7 +121,15 @@ Rules:
 
 JUDGE = """You check a short brief against its sources: a project write-up and a fact sheet.
 
-For each numbered sentence of the brief, decide whether the sources support it. A sentence is NOT supported if it states something the sources do not say, interprets a statistic differently from the write-up, attaches a number to the wrong thing, claims a ranking ("largest", "highest", "best") the numbers do not show, or recommends something the write-up does not recommend. Wording can differ; meaning must match.
+The write-up's findings, recommendations and limitations all count as sources. A sentence is supported when its meaning matches something the sources say, even if the wording, order or emphasis differs, or it combines two points the sources make separately.
+
+Flag a sentence only when it clearly does one of these:
+- states something the sources do not say at all;
+- contradicts the sources, or interprets a statistic differently from the write-up;
+- attaches a number to the wrong thing (the wrong state, channel, plan or year);
+- claims a ranking ("largest", "highest", "best") that the numbers do not show.
+
+When in doubt, treat the sentence as supported.
 
 Reply with JSON only: {"unsupported": [{"n": <sentence number>, "why": "<short reason>"}]}. Use an empty list if every sentence is supported."""
 
@@ -166,13 +174,15 @@ def render_facts(facts: list[Fact]) -> str:
     return "\n".join(f"[{f.fid}] {f.key} = {fmt(f.value)}" for f in facts)
 
 
-def writeup(project: str, limit: int = 9000) -> str:
-    """The project README from its findings onwards: the human-checked interpretation of the numbers."""
+def writeup(project: str, limit: int = 16000) -> str:
+    """The project README without images, links, term glossary or set-up steps: the human-checked
+    interpretation of the numbers, including its recommendations and limitations."""
     text = (ROOT / project / "README.md").read_text()
     text = re.sub(r"!\[[^\]]*\]\([^)]*\)\n?", "", text)          # images
     text = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)          # links -> their text
+    text = re.sub(r"\*\*Terms used below\*\*.*?(?=\n---|\n## )", "", text, flags=re.S)
     text = text.split("## Reproduce")[0]
-    return text[:limit]
+    return re.sub(r"\n{3,}", "\n\n", text)[:limit]
 
 
 # ---------------------------------------------------------------- checking
@@ -274,7 +284,8 @@ def split_citation_groups(text: str) -> str:
     return CITE_GROUP.sub(lambda m: " " + "".join(f"[F{n}]" for n in re.findall(r"\d+", m.group(0))), text)
 
 
-HEADING = re.compile(r"^\s*(#+\s.*|(?:[-*]\s*)?\*\*[^*]*[^*.!?]\*\*:?)\s*$")  # '# x' or a bold label not ending a sentence
+HEADING = re.compile(r"^\s*(#+\s.*|(?:[-*]\s*)?\*\*[^*]*[^*.!?]\*\*:?|[*_]?[A-Z][^.!?]{0,40}:[*_]?)\s*$")
+# '# x', a bold label that does not end a sentence, or a short label ending in a colon ("What to do:")
 
 
 def is_heading(line: str) -> bool:
@@ -292,6 +303,7 @@ def tidy(text: str) -> str:
             if not rest or (is_heading(nxt) and len(nxt) - len(nxt.lstrip()) <= len(line) - len(line.lstrip())):
                 continue
         out.append(line)
+    out = [l[1:] if re.match(r"^\*[^\s*]", l) and l.count("*") % 2 else l for l in out]  # orphaned italic marker
     return re.sub(r"\n{3,}", "\n\n", "\n".join(out)).strip()
 
 
@@ -407,10 +419,28 @@ def draft(project: str, audience: str, model: str, host: str, attempts: int = 3)
     if rep.ungrounded:
         text, removed = drop_ungrounded_sentences(text, rep)
     flagged = judge(text, facts, wu, model, host)
+    first_flags = list(flagged)
+    if flagged:
+        # one repair round: the drafter sees the objections and rewrites the whole brief
+        messages += [{"role": "assistant", "content": text},
+                     {"role": "user", "content": (
+                         "A reviewer found these sentences unsupported by the write-up:\n"
+                         + "\n".join(f"- \"{strip_citations(f['sentence'])}\" ({f['why']})" for f in flagged)
+                         + "\nRewrite the whole brief in the same structure. Fix or drop those claims, keep every "
+                           "section filled using only what the write-up says, and keep the [F] citations.")}]
+        text = split_citation_groups(ollama_chat(messages, model, host))
+        rep = check(text, facts, ctx + " " + wu)
+        history.append({"attempt": len(history) + 1, "after_review": True, **rep.counts(),
+                        "ungrounded": [c.text for c in rep.ungrounded]})
+        if rep.ungrounded:
+            text, more = drop_ungrounded_sentences(text, rep)
+            removed += more
+        flagged = judge(text, facts, wu, model, host)
     text = tidy(remove_sentences(text, flagged))
     rep = check(text, facts, ctx + " " + wu)
     return {"project": project, "audience": audience, "model": model, "facts": len(facts),
-            "attempts": history, "removed_sentences": removed, "claims_removed": flagged, "final": rep.counts(),
+            "attempts": history, "removed_sentences": removed, "claims_removed": flagged,
+            "claims_flagged_first_review": first_flags, "final": rep.counts(),
             "checks": [c.__dict__ for c in rep.checks], "text_cited": text}
 
 
