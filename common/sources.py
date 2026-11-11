@@ -189,20 +189,23 @@ def medicaid_sdud_filter_with_totals(url: str, prefixes: Iterable[str]) -> tuple
 def openpayments_general_urls(years: Iterable[int]) -> dict[int, str]:
     """Map program year -> CSV download URL for CMS Open Payments General Payment data.
 
-    The download links (on download.cms.gov) are listed in the federal data
-    catalogue, catalog.data.gov, which has a public CKAN API."""
+    The files live on download.cms.gov and are listed on each year's page in the
+    federal data catalogue (catalog.data.gov/dataset/<year>-general-payment-data).
+    The page is read for the current link; if that fails, the link from the
+    June 2026 publication is used."""
+    known = {y: f"https://download.cms.gov/openpayments/PGYR{y}_P06302026_06032026/"
+                f"OP_DTL_GNRL_PGYR{y}_P06302026_06032026.csv" for y in (2022, 2023, 2024)}
     urls = {}
     for year in years:
         try:
-            pkg = get("https://catalog.data.gov/api/3/action/package_show",
-                      params={"id": f"{year}-general-payment-data"}).json()["result"]
+            html = get(f"https://catalog.data.gov/dataset/{year}-general-payment-data").text
+            found = re.findall(r"https://download\.cms\.gov/openpayments/[^\"'<>\s]+?GNRL[^\"'<>\s]+?\.csv", html)
+            if found:
+                urls[year] = found[0]
         except Exception as exc:  # noqa: BLE001
-            print(f"  catalogue lookup failed for {year}: {exc}")
-            continue
-        for res in pkg.get("resources", []):
-            u = res.get("url", "")
-            if u.lower().endswith(".csv") and "GNRL" in u.upper():
-                urls[year] = u
+            print(f"  catalogue page failed for {year}: {exc}")
+        if year not in urls and year in known:
+            urls[year] = known[year]
         print(f"  {year}: {urls.get(year)}")
     return urls
 

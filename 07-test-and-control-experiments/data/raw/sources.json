@@ -1,0 +1,48 @@
+{
+ "prefixes": [
+  "WEGOVY",
+  "ZEPBOUND",
+  "SAXENDA",
+  "OZEMPIC",
+  "MOUNJARO",
+  "RYBELSUS",
+  "TRULICITY",
+  "VICTOZA",
+  "LIRAGLUTID",
+  "BYDUREON",
+  "BYETTA",
+  "EXENATIDE"
+ ],
+ "files": {
+  "2021": {
+   "url": "https://download.medicaid.gov/data/sdud2021_updatedJuly2026.csv",
+   "glp1_rows": 5997,
+   "total_rows": 376
+  },
+  "2022": {
+   "url": "https://download.medicaid.gov/data/sdud2022_updatedJuly2026.csv",
+   "glp1_rows": 7679,
+   "total_rows": 376
+  },
+  "2023": {
+   "url": "https://download.medicaid.gov/data/sdud2023_updatedJuly2026.csv",
+   "glp1_rows": 9259,
+   "total_rows": 380
+  },
+  "2024": {
+   "url": "https://download.medicaid.gov/data/sdud2024_updatedJuly2026.csv",
+   "glp1_rows": 10155,
+   "total_rows": 383
+  },
+  "2025": {
+   "url": "https://download.medicaid.gov/data/sdud2025_updatedjuly2026.csv",
+   "glp1_rows": 12410,
+   "total_rows": 384
+  },
+  "2026": {
+   "url": "https://download.medicaid.gov/data/sdud2026_updated072026.csv",
+   "glp1_rows": 3360,
+   "total_rows": 94
+  }
+ }
+}
