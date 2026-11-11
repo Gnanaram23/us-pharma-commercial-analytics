@@ -91,7 +91,7 @@ def fetch_year(year: int, url: str) -> int:
 
 def main() -> None:
     years = [int(a) for a in sys.argv[1:]] or [2022, 2023, 2024]
-    urls = openpayments_general_urls()
+    urls = openpayments_general_urls(years)
     meta = {}
     for y in years:
         if y not in urls:

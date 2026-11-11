@@ -186,25 +186,25 @@ def medicaid_sdud_filter_with_totals(url: str, prefixes: Iterable[str]) -> tuple
 
 # ------------------------------------------------------------- Open Payments
 
-def openpayments_general_urls() -> dict[int, str]:
-    """Map program year -> CSV download URL for CMS Open Payments General Payment data."""
-    items = get("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items").json()
-    urls = {}
-    for it in items:
-        title = it.get("title", "")
-        low = title.lower()
-        if "general payment" not in low or "research" in low or "ownership" in low:
-            continue
-        m = re.search(r"(20\d\d)", title)
-        if not m:
-            continue
-        for dist in it.get("distribution", []):
-            u = dist.get("downloadURL") or (dist.get("data") or {}).get("downloadURL")
-            if u and u.lower().endswith(".csv"):
-                urls[int(m.group(1))] = u
-        print(f"  catalogue: {title!r} -> {urls.get(int(m.group(1)))}")
-    return dict(sorted(urls.items()))
+def openpayments_general_urls(years: Iterable[int]) -> dict[int, str]:
+    """Map program year -> CSV download URL for CMS Open Payments General Payment data.
 
+    The download links (on download.cms.gov) are listed in the federal data
+    catalogue, catalog.data.gov, which has a public CKAN API."""
+    urls = {}
+    for year in years:
+        try:
+            pkg = get("https://catalog.data.gov/api/3/action/package_show",
+                      params={"id": f"{year}-general-payment-data"}).json()["result"]
+        except Exception as exc:  # noqa: BLE001
+            print(f"  catalogue lookup failed for {year}: {exc}")
+            continue
+        for res in pkg.get("resources", []):
+            u = res.get("url", "")
+            if u.lower().endswith(".csv") and "GNRL" in u.upper():
+                urls[year] = u
+        print(f"  {year}: {urls.get(year)}")
+    return urls
 
 # --------------------------------------------------------------------- openFDA
 
